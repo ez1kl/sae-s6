@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<!-- saved from url=(0094)https://webetud.iut-blagnac.fr/pluginfile.php/65639/mod_resource/content/8/projet-2026-FA.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>projet-2026-FA.md</title>
+
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///d%3A//_Formation//_vscode//style-markdown-fp.css" type="text/css">
+<script src="./projet-2026-FA.md_files/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<p><em>SAE S6 - 2026</em></p>
+<h1 id="projet-sae-s6-fa--gestion-de-biblioth%C3%A8que---version-fa">Projet SAE S6-FA : Gestion de Bibliothèque - version FA</h1>
+<h2 id="pr%C3%A9sentation-g%C3%A9n%C3%A9rale">Présentation générale</h2>
+<p>Le but de ce projet est de réaliser une application web de <strong>Gestion de Bibliothèque</strong> en utilisant les technologies et méthodes mises en œuvre lors du POC (<strong>outils et langages imposés</strong>).</p>
+<p>L'application se compose de trois briques :</p>
+<ul>
+<li><strong>Back-office</strong> (Symfony + EasyAdmin) : gestion des auteurs, livres, catégories, adhérents et emprunts.</li>
+<li><strong>API REST</strong> (Symfony) : exposition des données et services pour le front-office.</li>
+<li><strong>Front-office</strong> (Angular) : consultation du catalogue, recherche, réservation et gestion de compte adhérent.</li>
+</ul>
+<hr>
+<h2 id="diagramme-de-classes-minimal">Diagramme de Classes (minimal)</h2>
+<img src="./projet-2026-FA.md_files/VLF1JiCm3BtdAqAFe4qCRfms3P2G9eG6Fn1QircaIUKuam3nxpZfccv3MWwj7VlbsI_EFB0XZgrLys9P-63DNXDkjgmR9AWPlLCNl8KMT6SDEXK-qNM6JAi3VrcGBs6TuMEajYQ41KlaFJ8yrTwzuZVewuCKyj4rjIS7f6StIcM8NZHR872iVvJM4sp4JqPZ658ef6h4TxvDlqvIUoibF1iC8JdG6hJ9C0r12F3YfKCB6HZRDyYnRklPgz-1U0q" alt="uml diagram">
+<p>Vous vous baserez sur ce diagramme de classes pour créer vos entités Doctrine. Vous choisirez les détails d'implémentation (types, valeurs par défaut, contraintes de validation, etc.) selon ce qui vous paraît le plus cohérent.</p>
+<hr>
+<h2 id="diagramme-minimal-des-cas-dutilisation">Diagramme (minimal) des Cas d'Utilisation</h2>
+<img src="./projet-2026-FA.md_files/TLJRRjim37tNLn1zwVPGODi754dQfYWme422xdLGPDeHgaW6ANVOxN_MxyYFZP9lQeCyEB7F8SL3yjWBZffYTt1gCTqvh2F406IRVOJA4ffeWrVyR7shIH-0uq-7yalMv8oPCKupBwCmkoxYWmb-QtyXV2f2A7I-Ce4y4dp-eWgcrUPPDxZDfwUgsZSEoxfxNOKVrZTGQyUeb3On45mig_tnbT372z0CyZGI3puYUIrICYEF8xEoEsT3b3oZfSD" alt="uml diagram">
+<hr>
+<h2 id="d%C3%A9tails-des-cas-dutilisation">Détails des Cas d'Utilisation</h2>
+<h3 id="internaute-front-office--acc%C3%A8s-public">Internaute (Front-office — accès public)</h3>
+<ul>
+<li>Peut voir la liste des livres de la bibliothèque (avec pagination)</li>
+<li>Peut faire des recherches de livres (par titre, date de sortie, auteur, langue, catégorie, …)</li>
+<li>Peut consulter la fiche détaillée d'un livre (auteur(s), catégorie(s), disponibilité)</li>
+</ul>
+<h3 id="adh%C3%A9rent-front-office--acc%C3%A8s-authentifi%C3%A9">Adhérent (Front-office — accès authentifié)</h3>
+<ul>
+<li>Hérite de toutes les fonctionnalités de l'Internaute</li>
+<li>Peut gérer son compte adhérent (consulter ses informations, modifier email, téléphone, adresse…)</li>
+<li>Peut voir l'historique de ses emprunts et ses réservations en cours</li>
+<li>Peut réserver un livre (pour un emprunt dans un futur proche)</li>
+</ul>
+<p><strong>Règles de gestion des réservations :</strong></p>
+<ul>
+<li>3 réservations maximum simultanées par adhérent</li>
+<li>L'adhérent peut librement annuler une réservation</li>
+<li>Une réservation qui se transforme en emprunt disparaît automatiquement</li>
+<li>Une réservation de plus de 7 jours expire automatiquement</li>
+<li>On ne peut pas réserver un livre déjà réservé par un autre adhérent</li>
+<li>On ne peut pas réserver un livre actuellement emprunté</li>
+</ul>
+<h3 id="biblioth%C3%A9caire-back-office">Bibliothécaire (Back-office)</h3>
+<ul>
+<li>Peut inscrire/créer un adhérent (et suspendre son inscription)</li>
+<li>Peut enregistrer les emprunts de livres par les adhérents
+<ul>
+<li>Un emprunt dure 15 jours maximum ; au-delà, il est considéré « en retard »</li>
+<li>Un adhérent peut avoir <strong>5 emprunts en cours</strong> maximum</li>
+</ul>
+</li>
+<li>Peut enregistrer les retours d'emprunts</li>
+<li>Peut voir la liste des emprunteurs actuels (à jour et en retard)</li>
+<li>Peut accéder au front-office comme un internaute</li>
+</ul>
+<h3 id="responsable-biblioth%C3%A8que-back-office">Responsable Bibliothèque (Back-office)</h3>
+<ul>
+<li>Hérite de toutes les fonctionnalités du Bibliothécaire</li>
+<li>Dispose d'un CRUD complet sur toutes les entités (auteurs, livres, catégories, adhérents)</li>
+<li>Peut voir des statistiques sur les emprunts terminés (tableau de bord)</li>
+<li>Peut gérer les comptes bibliothécaires</li>
+<li>Peut accéder au front-office comme un internaute</li>
+</ul>
+<hr>
+<h2 id="exigences-techniques">Exigences techniques</h2>
+<h3 id="stack-impos%C3%A9e">Stack imposée</h3>
+<table>
+<thead>
+<tr>
+<th>Composant</th>
+<th>Technologie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Back-end</td>
+<td><strong>Symfony 7.x</strong>, PHP 8.4</td>
+</tr>
+<tr>
+<td>Back-office</td>
+<td><strong>EasyAdmin 4.x</strong></td>
+</tr>
+<tr>
+<td>API</td>
+<td><strong>API REST manuelle</strong> (contrôleurs Symfony, groupes de sérialisation)</td>
+</tr>
+<tr>
+<td>Front-end</td>
+<td><strong>Angular 21</strong> (standalone components, signals, nouvelle syntaxe <code>@if</code>/<code>@for</code>)</td>
+</tr>
+<tr>
+<td>Authentification</td>
+<td><strong>JWT</strong> (<code>lexik/jwt-authentication-bundle</code>)</td>
+</tr>
+<tr>
+<td>BDD</td>
+<td><strong>MariaDB / MySQL</strong></td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>Framework CSS au choix (Bootstrap, Tailwind, …)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="exigences-back-office-symfony--easyadmin">Exigences Back-office (Symfony + EasyAdmin)</h3>
+<ol>
+<li><strong>Dashboard</strong> : page d'accueil du back-office avec un tableau de bord affichant des statistiques (nombre de livres, emprunts en cours, emprunts en retard, adhérents actifs, etc.).</li>
+<li><strong>CRUD configurés</strong> : chaque entité doit avoir un CRUD controller EasyAdmin avec des champs correctement typés (<code>AssociationField</code>, <code>BooleanField</code>, <code>DateTimeField</code>, <code>ImageField</code>, etc.).</li>
+<li><strong>Formulaire complexe</strong> : au moins un formulaire géré « à la main » dans EasyAdmin — le formulaire de gestion d'emprunts permettant de sélectionner un adhérent et un ou plusieurs livres, tout en vérifiant la disponibilité des livres et la limite d'emprunt (5 max en cours).</li>
+<li><strong>Gestion des mots de passe</strong> : le champ mot de passe doit être correctement géré en édition (champ masqué, optionnel en modification, hashage uniquement si rempli).</li>
+<li><strong>Rôles et accès</strong> : le back-office doit appliquer une distinction entre Bibliothécaire (<code>ROLE_BIBLIO</code>) et Responsable (<code>ROLE_ADMIN</code>). Le bibliothécaire ne doit pas voir les mêmes menus/CRUD que le responsable.</li>
+<li><strong>Fixtures</strong> : un jeu de données suffisant pour la démonstration (au moins 5 auteurs, 20 livres, 5 catégories, 10 adhérents, 15 emprunts variés).</li>
+</ol>
+<h3 id="exigences-api-rest">Exigences API REST</h3>
+<ol>
+<li><strong>Endpoints publics</strong> : liste des livres (avec pagination), détail d'un livre, liste des catégories, liste des auteurs.</li>
+<li><strong>Endpoint de recherche avancée</strong> : recherche de livres selon plusieurs critères combinables (titre, auteur, catégorie, langue, période de sortie).</li>
+<li><strong>Endpoints protégés (JWT)</strong> : profil de l'adhérent connecté, ses emprunts, ses réservations, création/annulation de réservation.</li>
+<li><strong>Groupes de sérialisation</strong> : utilisation de <code>#[Groups]</code> pour éviter les références circulaires et adapter la réponse au contexte (liste vs détail).</li>
+<li><strong>Codes HTTP appropriés</strong> : <code>200</code>, <code>201</code>, <code>400</code>, <code>401</code>, <code>403</code>, <code>404</code>, <code>409</code> (conflit de réservation), etc.</li>
+<li><strong>CORS</strong> : configuré correctement pour permettre les appels depuis le front Angular.</li>
+</ol>
+<h3 id="exigences-front-office-angular">Exigences Front-office (Angular)</h3>
+<ol>
+<li><strong>Architecture</strong> : composants standalone, injection via <code>inject()</code>, signaux (<code>signal</code>, <code>computed</code>), nouvelle syntaxe de templates (<code>@if</code>, <code>@for</code>, <code>@empty</code>).</li>
+<li><strong>Pages publiques</strong> :
+<ul>
+<li>Accueil avec présentation et statistiques générales</li>
+<li>Catalogue des livres avec recherche multi-critères et pagination</li>
+<li>Fiche détaillée d'un livre (auteurs, catégories, disponibilité)</li>
+<li>Liste des auteurs / fiche auteur</li>
+</ul>
+</li>
+<li><strong>Pages authentifiées</strong> (adhérent connecté) :
+<ul>
+<li>Tableau de bord personnel (emprunts en cours, réservations)</li>
+<li>Gestion du profil (modification des informations personnelles)</li>
+<li>Réservation d'un livre (avec feedback en cas d'erreur : déjà réservé, limite atteinte, etc.)</li>
+<li>Annulation de réservation</li>
+</ul>
+</li>
+<li><strong>Authentification</strong> :
+<ul>
+<li>Page de connexion / déconnexion</li>
+<li>Intercepteur HTTP ajoutant le token JWT</li>
+<li>Navigation conditionnelle selon l'état de connexion</li>
+<li>Guard sur les routes protégées (redirection vers login si non authentifié)</li>
+</ul>
+</li>
+<li><strong>UX</strong> : l'interface doit être soignée, responsive, et offrir un feedback utilisateur clair (messages de succès, d'erreur, spinners de chargement).</li>
+</ol>
+<h3 id="exigences-transversales">Exigences transversales</h3>
+<ol>
+<li><strong>Qualité du code</strong> : code lisible, bien structuré, nommage cohérent (français ou anglais, mais pas un mélange des deux).</li>
+<li><strong>Validation</strong> : contraintes de validation côté serveur (Symfony Validator) sur les entités.</li>
+<li><strong>Gestion des erreurs</strong> : messages d'erreur explicites côté API et côté front.</li>
+</ol>
+<hr>
+<h2 id="constitution-des-groupes">Constitution des groupes</h2>
+<p>Les groupes de 3 étudiants sont constitués au choix des étudiants, en suivant les consignes des enseignants (qui peuvent réarranger les groupes au besoin).</p>
+<hr>
+<h2 id="travail-%C3%A0-effectuer">Travail à effectuer</h2>
+<p>En suivant la logique du POC et avec les connaissances acquises en Symfony et Angular, développer l'application complète respectant le cahier des charges ci-dessus.</p>
+<p>Une fois les fonctionnalités minimales en place, vous pouvez enrichir votre application de fonctionnalités complémentaires qui valoriseront votre travail lors de l'évaluation. Exemples :</p>
+<ul>
+<li>Système de notifications (emprunts bientôt en retard)</li>
+<li>Export PDF des fiches d'emprunt</li>
+<li>Filtres avancés avec sauvegarde des recherches</li>
+<li>Mode sombre / thème personnalisé</li>
+<li>Upload et gestion des photos (couvertures, auteurs)</li>
+<li>Historique des actions (logs)</li>
+</ul>
+<p>Vous êtes libres d'utiliser des outils complémentaires (Git, Docker, …) pour votre projet mais vous devrez être autonomes sur ces outils.</p>
+<hr>
+<h2 id="livrables">Livrables</h2>
+<h3 id="l1--d%C3%A9p%C3%B4t-du-code-source">L1 — Dépôt du code source</h3>
+<p>Le code source complet du projet doit être déposé sur Moodle. Il contiendra :</p>
+<ul>
+<li>Le projet Symfony complet (<code>back_biblio/</code> ou nom de votre choix)</li>
+<li>Le projet Angular complet (<code>front_biblio/</code> ou nom de votre choix)</li>
+<li>Un fichier <code>README.md</code> à la racine avec les instructions d'installation et de lancement (prérequis, commandes, URL d'accès, <strong>users/passwd</strong> des acteurs présents dans le dump SQL)</li>
+<li>Un dump SQL de votre base de données contenant les fixtures de recette (<code>dump_recette.sql</code>)</li>
+</ul>
+<h3 id="l2--cahier-de-recette">L2 — Cahier de recette</h3>
+<p>Un document PDF structuré décrivant les scénarios de test que vous déroulerez lors de la soutenance. Format imposé :</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Scénario</th>
+<th>Prérequis</th>
+<th>Actions</th>
+<th>Résultat attendu</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Connexion adhérent</td>
+<td>Adhérent existant en BDD</td>
+<td>Saisir email + mdp, cliquer Connexion</td>
+<td>Redirection vers dashboard, email affiché</td>
+<td>Adhérent</td>
+</tr>
+<tr>
+<td>2</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>Le cahier de recette doit couvrir <strong>au minimum</strong> :</p>
+<ul>
+<li>3 scénarios front-office public (consultation, recherche)</li>
+<li>3 scénarios front-office adhérent (connexion, réservation, annulation, profil)</li>
+<li>3 scénarios back-office bibliothécaire (emprunt, retour, liste emprunteurs)</li>
+<li>3 scénarios back-office responsable (CRUD, statistiques, gestion accès)</li>
+<li>2 scénarios API REST (requêtes protégées et publiques; recup données du profil adhérent)</li>
+</ul>
+<h3 id="l3--documentation-technique">L3 — Documentation technique</h3>
+<p>Un document PDF (8-15 pages) contenant :</p>
+<ol>
+<li><strong>Architecture du projet</strong> : schéma global (front ↔ API ↔ BDD ↔ back-office), diagramme de classes final</li>
+<li><strong>Choix techniques</strong> : justification des choix d'implémentation (structure des entités, gestion des réservations, recherche, etc.)</li>
+<li><strong>Guide d'installation</strong> : étapes pour installer et lancer le projet sur une machine vierge</li>
+<li><strong>Difficultés rencontrées</strong> et solutions apportées</li>
+<li><strong>Répartition du travail</strong> dans le groupe (qui a fait quoi)</li>
+</ol>
+<h3 id="calendrier-des-livrables">Calendrier des livrables</h3>
+<table>
+<thead>
+<tr>
+<th>Livrable</th>
+<th>Date limite</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 — Code source</td>
+<td>semaine 12 : Jeudi 19/03, 14h00</td>
+<td>Archive ZIP sur Moodle</td>
+</tr>
+<tr>
+<td>L2 — Cahier de recette</td>
+<td>semaine 12 : Jeudi 19/03, 23h59</td>
+<td>PDF sur Moodle</td>
+</tr>
+<tr>
+<td>L3 — Documentation technique</td>
+<td>semaine 12 : Jeudi 19/03, 23h59</td>
+<td>PDF sur Moodle</td>
+</tr>
+<tr>
+<td>Soutenance</td>
+<td>semaine 12 : Vendredi 20/03, dernier créneau SAE</td>
+<td>Présentation live</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="%C3%A9valuation">Évaluation</h2>
+<p>La note finale est composée de trois parties :</p>
+<h3 id="note-collective--soutenance-de-recette-coeff-3">Note collective — Soutenance de recette (coeff. 3)</h3>
+<p>Durée : <strong>20 minutes de démonstration + 10 minutes de questions</strong>.</p>
+<p>Le groupe déroule son cahier de recette devant le client (enseignant). Le client évalue selon la grille suivante :</p>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Points</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fonctionnalités Back-office</strong></td>
+<td>/5</td>
+<td>CRUD, dashboard, formulaire complexe (emprunts), gestion des rôles</td>
+</tr>
+<tr>
+<td><strong>Fonctionnalités API REST</strong></td>
+<td>/3</td>
+<td>Endpoints publics et protégés, recherche avancée, codes HTTP</td>
+</tr>
+<tr>
+<td><strong>Fonctionnalités Front-office</strong></td>
+<td>/5</td>
+<td>Catalogue, recherche, réservation, profil, auth JWT</td>
+</tr>
+<tr>
+<td><strong>Qualité de l'UI/UX</strong></td>
+<td>/3</td>
+<td>Design soigné, responsive, feedback utilisateur</td>
+</tr>
+<tr>
+<td><strong>Robustesse</strong></td>
+<td>/2</td>
+<td>Gestion des erreurs, cas limites, validations</td>
+</tr>
+<tr>
+<td><strong>Fonctionnalités bonus</strong></td>
+<td>/2</td>
+<td>Enrichissements au-delà du cahier des charges</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>/20</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Méthode d'évaluation</strong> : Le client (enseignant) suit le cahier de recette du groupe et coche les scénarios réussis/échoués. Chaque scénario raté impacte la rubrique correspondante. Les 10 minutes de questions permettent de vérifier la compréhension technique de chaque membre.</p>
+<h3 id="note-collective--documentation-coeff-1">Note collective — Documentation (coeff. 1)</h3>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Points</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cahier de recette</strong></td>
+<td>/8</td>
+<td>Complétude, clarté, format respecté</td>
+</tr>
+<tr>
+<td><strong>Documentation technique</strong></td>
+<td>/12</td>
+<td>Architecture, choix techniques, installation, répartition</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>/20</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="note-individuelle--qcm-technique-coeff-1">Note individuelle — QCM technique (coeff. 1)</h3>
+<p>Un QCM individuel portant sur les concepts techniques utilisés dans le projet :</p>
+<ul>
+<li>Symfony (entités, contrôleurs, sécurité, sérialisation)</li>
+<li>EasyAdmin (CRUD, champs, personnalisation)</li>
+<li>API REST (endpoints, JWT, codes HTTP)</li>
+<li>Angular (composants, services, signaux, intercepteurs, routing)</li>
+</ul>
+<p>Ce QCM sera passé en <strong>semaine 12</strong> (mercredi 18 mars 14h15).</p>
+<h3 id="r%C3%A9capitulatif">Récapitulatif</h3>
+<table>
+<thead>
+<tr>
+<th>Évaluation</th>
+<th>Type</th>
+<th>Coeff.</th>
+<th>Semaine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QCM POC</td>
+<td>Individuelle</td>
+<td>1</td>
+<td>11</td>
+</tr>
+<tr>
+<td>QCM technique</td>
+<td>Individuelle</td>
+<td>1</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Soutenance de recette</td>
+<td>Collective</td>
+<td>5</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>Collective</td>
+<td>1</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="conseils">Conseils</h2>
+<ul>
+<li><strong>Commencez par le modèle de données</strong> : créez toutes les entités et les relations avant de construire le reste.</li>
+<li><strong>Travaillez en parallèle</strong> : un membre peut avancer sur le back-office pendant qu'un autre travaille sur l'API et le troisième sur le front.</li>
+<li><strong>Testez au fur et à mesure</strong> : ne laissez pas les tests à la fin. Chaque fonctionnalité terminée doit être vérifiée immédiatement.</li>
+<li><strong>Préparez votre recette tôt</strong> : le cahier de recette vous sert aussi de checklist de progression.</li>
+<li><strong>Gérez les priorités</strong> : implémentez d'abord les fonctionnalités de base (CRUD, liste, recherche) avant les cas complexes (emprunts, réservations, statistiques).</li>
+<li><strong>Préparez soigneusement votre recette</strong> : chaque scénario doit être clair, précis, et réalisable. Répérez la recette à l'avance et assurez vous que tous les membres du groupe maîtrisent les scénarios. Verifiez également que l'ensemble de vos scénarios sont réalisables dans le temps imparti (avec une marge pour les imprévus).</li>
+<li><strong>Soignez votre présentation</strong> : la soutenance est l'occasion de valoriser votre travail. Préparez une démonstration fluide, mettez en avant les points forts de votre projet, et soyez prêts à expliquer vos choix techniques.</li>
+</ul>
+
+
+
+</body></html>

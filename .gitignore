@@ -1,0 +1,54 @@
+.env
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Symfony / PHP
+/var/
+/vendor/
+/public/bundles/
+/public/build/
+/node_modules/
+/.phpunit.result.cache
+/phpunit.xml
+/phpunit.xml.dist
+/.php_cs.cache
+/.php-cs-fixer.cache
+/.phpstorm.meta.php
+/.idea/
+/.vscode/
+/.cache/
+composer.lock
+
+# Logs
+/var/log/
+/var/cache/
+*.log
+
+# Angular / Node
+**/node_modules/
+**/dist/
+**/tmp/
+**/.angular/cache/
+**/.npm/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Adminer
+**/adminer-*.php~
+**/adminer-*.orig.php
+**/adminer-*.bak.php
+
+# Misc
+*.swp
+*.swo
+*.orig
+*.bak
+*.tmp
+
