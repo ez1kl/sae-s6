@@ -6,6 +6,7 @@
 .LSOverride
 ._*
 .Spotlight-V100
+.cursor/
 .Trashes
 
 # Symfony / PHP
@@ -51,4 +52,3 @@ composer.lock
 *.orig
 *.bak
 *.tmp
-
