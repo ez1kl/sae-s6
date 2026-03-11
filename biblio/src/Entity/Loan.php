@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use App\Repository\LoanRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: LoanRepository::class)]
 #[ORM\Table(name: 'loan', indexes: [
     new ORM\Index(name: 'idx_loan_book', columns: ['book_id']),
     new ORM\Index(name: 'idx_loan_member', columns: ['member_id']),
@@ -15,10 +17,12 @@ class Loan
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['loan:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Book::class)]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
+    #[Groups(['loan:read'])]
     private ?Book $book = null;
 
     #[ORM\ManyToOne(targetEntity: Member::class)]
@@ -26,12 +30,15 @@ class Loan
     private ?Member $member = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['loan:read'])]
     private ?\DateTime $loanDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['loan:read'])]
     private ?\DateTime $dueDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['loan:read'])]
     private ?\DateTime $returnDate = null;
 
     public function getId(): ?int

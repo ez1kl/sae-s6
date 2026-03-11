@@ -5,8 +5,10 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use App\Repository\BookRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ORM\Table(name: 'book', indexes: [
     new ORM\Index(name: 'idx_book_author', columns: ['author_id']),
 ])]
@@ -15,19 +17,24 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book:list', 'book:read', 'loan:read', 'reservation:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:list', 'book:read', 'loan:read', 'reservation:read'])]
     private ?string $title = null;
 
     #[ORM\Column]
+    #[Groups(['book:list', 'book:read'])]
     private ?int $releaseYear = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups(['book:list', 'book:read'])]
     private ?string $language = null;
 
     #[ORM\ManyToOne(targetEntity: Author::class)]
     #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
+    #[Groups(['book:list', 'book:read'])]
     private ?Author $author = null;
 
     /**
@@ -37,6 +44,7 @@ class Book
     #[ORM\JoinTable(name: 'book_category')]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[Groups(['book:list', 'book:read'])]
     private Collection $categories;
 
     public function __construct()

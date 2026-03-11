@@ -7,17 +7,21 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "api-platform/core": "*",
         "doctrine/dbal": "4.4.1",
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
         "easycorp/easyadmin-bundle": "^5.0",
+        "lexik/jwt-authentication-bundle": "^3.2",
+        "nelmio/cors-bundle": "*",
         "symfony/console": "7.4.*",
         "symfony/dotenv": "7.4.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.4.*",
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
+        "symfony/serializer": "7.4.*",
         "symfony/yaml": "7.4.*"
     },
     "config": {
@@ -66,7 +70,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.4.*"
         }
     },
