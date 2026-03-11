@@ -52,9 +52,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToRoute('Auteurs', 'fas fa-tags', 'admin_author_index');
         yield MenuItem::linkToRoute('Livres', 'fas fa-newspaper', 'admin_book_index');
-        yield MenuItem::linkToRoute('Membres', 'fas fa-users', 'admin_member_index');
         yield MenuItem::linkToRoute('Emprunts', 'fas fa-users', 'admin_loan_index');
         yield MenuItem::linkToRoute('Réservations', 'fas fa-users', 'admin_reservation_index');
         yield MenuItem::linkToRoute('Catégories', 'fas fa-tags', 'admin_category_index');
+        yield MenuItem::linkToRoute('Utilisateurs', 'fas fa-users', 'admin_user_index');
+        yield MenuItem::linkToRoute('Membres', 'fas fa-users', 'admin_member_index');
     }
 }

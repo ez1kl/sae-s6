@@ -31,6 +31,13 @@ class Loan
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $dueDate = null;
 
+    public function __construct()
+    {
+        $now = new \DateTime();
+        $this->loanDate = $now;
+        $this->dueDate = (clone $now)->modify('+14 days');
+    }
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $returnDate = null;
 

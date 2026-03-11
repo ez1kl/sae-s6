@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 
 class MemberCrudController extends AbstractCrudController
 {
@@ -15,14 +17,17 @@ class MemberCrudController extends AbstractCrudController
         return Member::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id') -> hideOnForm(),
+            DateField::new('membershipDate'),
+            AssociationField::new('user'),
+            TextField::new('lastName'),
+            TextField::new('firstName'),
+            DateField::new('birthDate'),
+            TextField::new('phoneNumber'),
+            TextField::new('address'),
         ];
     }
-    */
 }

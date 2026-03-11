@@ -24,7 +24,7 @@ class ReservationCrudController extends AbstractCrudController
             IdField::new('id') -> hideOnForm(),
             AssociationField::new('book'),
             AssociationField::new('member'),
-            DateTimeField::new('createdAt') -> hideOnForm(),
+            DateTimeField::new(propertyName: 'createdAt') -> hideOnForm(),
         ];
     }
 }
