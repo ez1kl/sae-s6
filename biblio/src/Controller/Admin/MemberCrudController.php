@@ -21,8 +21,8 @@ class MemberCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id') -> hideOnForm(),
-            DateField::new('membershipDate'),
-            AssociationField::new('user'),
+            DateField::new('membershipDate') -> setFormTypeOption('data', new \DateTime()),
+            AssociationField::new('user') -> autocomplete(),
             TextField::new('lastName'),
             TextField::new('firstName'),
             DateField::new('birthDate'),
