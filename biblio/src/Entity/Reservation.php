@@ -30,6 +30,14 @@ class Reservation
     #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
     private ?Member $member = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    #[Groups(['reservation:read'])]
+    private ?\DateTimeInterface $createdAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['reservation:read'])]
     private ?\DateTime $createdAt = null;
@@ -63,12 +71,12 @@ class Reservation
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 

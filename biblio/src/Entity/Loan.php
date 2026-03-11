@@ -37,6 +37,13 @@ class Loan
     #[Groups(['loan:read'])]
     private ?\DateTime $dueDate = null;
 
+    public function __construct()
+    {
+        $now = new \DateTime();
+        $this->loanDate = $now;
+        $this->dueDate = (clone $now)->modify('+14 days');
+    }
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['loan:read'])]
     private ?\DateTime $returnDate = null;

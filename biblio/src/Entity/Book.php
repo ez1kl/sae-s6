@@ -33,7 +33,7 @@ class Book
     private ?string $language = null;
 
     #[ORM\ManyToOne(targetEntity: Author::class)]
-    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: true, onDelete: 'RESTRICT')]
     #[Groups(['book:list', 'book:read'])]
     private ?Author $author = null;
 
@@ -127,6 +127,11 @@ class Book
         $this->categories->removeElement($category);
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->title;
     }
 }
 

@@ -1,0 +1,118 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Tableau de bord{% endblock %}
+
+{% block content_header %}
+    <h1 class="title">
+        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+    </h1>
+{% endblock %}
+
+{% block main %}
+    <div class="row g-3">
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_author_index') }}">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-edit fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbAuthors }}</h2>
+                        <p class="card-text mb-0">Auteurs</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_book_index') }}">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-book fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbBooks }}</h2>
+                        <p class="card-text mb-0">Livres</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_member_index') }}">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbMembers }}</h2>
+                        <p class="card-text mb-0">Membres</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_loan_index') }}">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-hand-holding fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbLoans }}</h2>
+                        <p class="card-text mb-0">Emprunts</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_reservation_index') }}">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bookmark fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbReservations }}</h2>
+                        <p class="card-text mb-0">Réservations</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a class="text-decoration-none" href="{{ path('admin_category_index') }}">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tags fa-3x mb-2"></i>
+                        <h2 class="mb-0">{{ nbCategories }}</h2>
+                        <p class="card-text mb-0">Catégories</p>
+                        <small class="opacity-75">Gérer</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Bienvenue
+                    </h5>
+                    <p class="card-text">
+                        Bienvenue sur le tableau de bord de l'application
+                        <strong>Bibliothèque</strong>.
+                        Utilisez le menu de gauche pour gérer les auteurs, les catégories,
+                        les livres, les membres, les emprunts et les réservations.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ path('admin_author_index') }}">Auteurs</a>
+                        <a class="btn btn-outline-success btn-sm" href="{{ path('admin_book_index') }}">Livres</a>
+                        <a class="btn btn-outline-info btn-sm" href="{{ path('admin_member_index') }}">Membres</a>
+                        <a class="btn btn-outline-warning btn-sm" href="{{ path('admin_loan_index') }}">Emprunts</a>
+                        <a class="btn btn-outline-danger btn-sm" href="{{ path('admin_reservation_index') }}">Réservations</a>
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ path('admin_category_index') }}">Catégories</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

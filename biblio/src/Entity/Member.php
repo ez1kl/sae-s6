@@ -43,7 +43,7 @@ class Member
     #[Groups(['member:read'])]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['member:read'])]
     private ?string $address = null;
 
@@ -134,5 +134,10 @@ class Member
         $this->address = $address;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->lastName . ' ' . $this->firstName;
     }
 }
