@@ -1,0 +1,82 @@
+<div class="hero-section">
+  <div class="hero-overlay">
+    <div class="container py-5 text-center">
+      <p class="hero-subtitle mb-2">Bienvenue à la</p>
+      <h1 class="hero-title display-3 mb-3">BiblioThèque</h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc mt-3 mb-4">Parcourez notre collection, découvrez de nouveaux auteurs<br>et réservez vos prochaines lectures.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a routerLink="/catalogue" class="btn btn-vintage-gold btn-lg">
+          Parcourir le catalogue
+        </a>
+        <a routerLink="/login" class="btn btn-outline-vintage btn-lg">
+          Se connecter
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="card stat-card h-100">
+        <div class="card-body py-4">
+          <div class="stat-icon"><i class="bi bi-book"></i></div>
+          <h3 class="stat-number">{{ totalBooks() }}</h3>
+          <p class="stat-label">Ouvrages</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card h-100">
+        <div class="card-body py-4">
+          <div class="stat-icon"><i class="bi bi-pen"></i></div>
+          <h3 class="stat-number">{{ totalAuthors() }}</h3>
+          <p class="stat-label">Auteurs</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card h-100">
+        <div class="card-body py-4">
+          <div class="stat-icon"><i class="bi bi-bookmark"></i></div>
+          <h3 class="stat-number">{{ totalCategories() }}</h3>
+          <p class="stat-label">Catégories</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider my-5"></div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <div class="card-body text-center py-4">
+          <div class="feature-icon"><i class="bi bi-search"></i></div>
+          <h5>Recherche avancée</h5>
+          <p class="small">Trouvez des livres par titre, auteur, catégorie, langue ou période.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <div class="card-body text-center py-4">
+          <div class="feature-icon"><i class="bi bi-bookmark-check"></i></div>
+          <h5>Réservation en ligne</h5>
+          <p class="small">Réservez vos prochaines lectures depuis votre espace personnel.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <div class="card-body text-center py-4">
+          <div class="feature-icon"><i class="bi bi-person-vcard"></i></div>
+          <h5>Espace adhérent</h5>
+          <p class="small">Suivez vos emprunts, réservations et gérez votre compte.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

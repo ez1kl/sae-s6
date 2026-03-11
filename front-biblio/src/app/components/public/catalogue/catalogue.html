@@ -1,0 +1,128 @@
+<div class="container py-4">
+  <h2 class="section-title mb-4">Catalogue des livres</h2>
+
+  <!-- Barre de recherche -->
+  <div class="card search-card mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3"><i class="bi bi-search me-2"></i>Recherche avancée</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Titre</label>
+          <input type="text" class="form-control" [(ngModel)]="searchTitre" placeholder="Rechercher par titre...">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Auteur</label>
+          <input type="text" class="form-control" [(ngModel)]="searchAuteur" placeholder="Nom de l'auteur...">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" [(ngModel)]="searchCategorie">
+            <option [ngValue]="null">Toutes les catégories</option>
+            @for (cat of categories(); track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.nom }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Langue</label>
+          <input type="text" class="form-control" [(ngModel)]="searchLangue" placeholder="ex: Français">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Date min</label>
+          <input type="date" class="form-control" [(ngModel)]="searchDateMin">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Date max</label>
+          <input type="date" class="form-control" [(ngModel)]="searchDateMax">
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button class="btn btn-primary" (click)="search()">
+            Rechercher
+          </button>
+          <button class="btn btn-outline-secondary" (click)="resetSearch()">
+            Effacer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résultats -->
+  <p class="text-muted mb-3">{{ totalBooks() }} livre(s) trouvé(s)</p>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  } @else {
+    @if (books().length === 0) {
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>Aucun livre trouvé.
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (book of books(); track book.id) {
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm book-card">
+              @if (book.photoCouverture) {
+                <img [src]="book.photoCouverture" class="card-img-top" [alt]="book.titre" style="height: 250px; object-fit: cover;">
+              } @else {
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                  <i class="bi bi-book display-1 text-muted"></i>
+                </div>
+              }
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title fw-bold">{{ book.titre }}</h6>
+                @if (book.auteurs && book.auteurs.length > 0) {
+                  <p class="text-muted small mb-1">
+                    @for (auteur of book.auteurs; track auteur.id; let last = $last) {
+                      {{ auteur.prenom }} {{ auteur.nom }}@if (!last) {, }
+                    }
+                  </p>
+                }
+                @if (book.langue) {
+                  <span class="badge bg-secondary mb-2">{{ book.langue }}</span>
+                }
+                <div class="mt-auto">
+                  @if (book.disponible !== undefined) {
+                    @if (book.disponible) {
+                      <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Disponible</span>
+                    } @else {
+                      <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Indisponible</span>
+                    }
+                  }
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0">
+                <a [routerLink]="['/livres', book.id]" class="btn btn-outline-primary btn-sm w-100">
+                  Voir détails
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <nav class="mt-4">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage() === 1">
+              <button class="page-link" (click)="goToPage(currentPage() - 1)">Précédent</button>
+            </li>
+            @for (page of pages(); track page) {
+              <li class="page-item" [class.active]="page === currentPage()">
+                <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+              </li>
+            }
+            <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+              <button class="page-link" (click)="goToPage(currentPage() + 1)">Suivant</button>
+            </li>
+          </ul>
+        </nav>
+      }
+    }
+  }
+</div>

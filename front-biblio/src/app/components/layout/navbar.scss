@@ -1,0 +1,47 @@
+.navbar-vintage {
+  background-color: #2C1E14;
+  border-bottom: 3px solid #C4993C;
+  font-family: 'Lora', Georgia, serif;
+
+  .navbar-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #F5F0E8;
+    letter-spacing: 0.5px;
+
+    &:hover { color: #C4993C; }
+
+    i { color: #C4993C; }
+  }
+
+  .nav-link {
+    color: #D4C5B0;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s;
+
+    &:hover, &.active {
+      color: #C4993C;
+    }
+  }
+
+  .navbar-toggler {
+    border-color: rgba(196, 153, 60, 0.4);
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(212, 197, 176, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+}
+
+.btn-outline-cream {
+  color: #D4C5B0;
+  border-color: #D4C5B0;
+  font-size: 0.85rem;
+
+  &:hover {
+    background-color: #D4C5B0;
+    color: #2C1E14;
+  }
+}

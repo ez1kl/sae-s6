@@ -1,0 +1,86 @@
+<div class="container py-4">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  } @else if (book()) {
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/catalogue">Catalogue</a></li>
+        <li class="breadcrumb-item active">{{ book()!.titre }}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        @if (book()!.photoCouverture) {
+          <img [src]="book()!.photoCouverture" class="img-fluid rounded shadow" [alt]="book()!.titre">
+        } @else {
+          <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">
+            <i class="bi bi-book display-1 text-muted"></i>
+          </div>
+        }
+      </div>
+      <div class="col-md-8">
+        <h2 class="detail-title mb-3">{{ book()!.titre }}</h2>
+
+        @if (book()!.auteurs && book()!.auteurs!.length > 0) {
+          <div class="mb-3">
+            <strong>Auteur(s) :</strong>
+            @for (auteur of book()!.auteurs!; track auteur.id) {
+              <a [routerLink]="['/auteurs', auteur.id]" class="badge bg-primary text-decoration-none ms-1">
+                {{ auteur.prenom }} {{ auteur.nom }}
+              </a>
+            }
+          </div>
+        }
+
+        @if (book()!.categories && book()!.categories!.length > 0) {
+          <div class="mb-3">
+            <strong>Catégorie(s) :</strong>
+            @for (cat of book()!.categories!; track cat.id) {
+              <span class="badge bg-info ms-1">{{ cat.nom }}</span>
+            }
+          </div>
+        }
+
+        @if (book()!.langue) {
+          <p><strong><i class="bi bi-globe me-2"></i>Langue :</strong> {{ book()!.langue }}</p>
+        }
+
+        @if (book()!.dateSortie) {
+          <p><strong><i class="bi bi-calendar me-2"></i>Date de sortie :</strong> {{ book()!.dateSortie }}</p>
+        }
+
+        <div class="mb-3">
+          <strong>Disponibilité :</strong>
+          @if (book()!.disponible !== undefined) {
+            @if (book()!.disponible) {
+              <span class="badge bg-success ms-2"><i class="bi bi-check-circle me-1"></i>Disponible</span>
+            } @else {
+              <span class="badge bg-danger ms-2"><i class="bi bi-x-circle me-1"></i>Indisponible</span>
+            }
+          }
+        </div>
+
+        @if (authService.isLoggedIn() && book()!.disponible) {
+          <button class="btn btn-vintage-reserve" (click)="reserve()">
+            <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
+          </button>
+        }
+
+        @if (reservationMessage()) {
+          <div class="alert mt-3" [class.alert-success]="!reservationError()" [class.alert-danger]="reservationError()">
+            {{ reservationMessage() }}
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>Livre introuvable.
+    </div>
+  }
+</div>
