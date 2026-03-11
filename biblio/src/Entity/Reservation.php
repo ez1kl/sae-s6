@@ -38,9 +38,6 @@ class Reservation
     {
         $this->createdAt = new \DateTime();
     }
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['reservation:read'])]
-    private ?\DateTime $createdAt = null;
 
     public function getId(): ?int
     {
