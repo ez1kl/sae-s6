@@ -1,0 +1,131 @@
+.hero-section {
+  background:
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%232C1E14"/><circle cx="40" cy="40" r="1" fill="%23C4993C" opacity="0.15"/></svg>'),
+    linear-gradient(160deg, #2C1E14 0%, #3D2B1E 50%, #2C1E14 100%);
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-overlay {
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.hero-subtitle {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  color: #A89880;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #F5F0E8;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.hero-divider {
+  width: 80px;
+  height: 3px;
+  background: #C4993C;
+  margin: 0 auto;
+}
+
+.hero-desc {
+  color: #C4B097;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.btn-vintage-gold {
+  background-color: #C4993C;
+  color: #2C1E14;
+  border: none;
+  font-weight: 600;
+  font-family: 'Lora', Georgia, serif;
+  letter-spacing: 0.5px;
+  padding: 0.6rem 1.8rem;
+
+  &:hover {
+    background-color: #D4A94C;
+    color: #2C1E14;
+  }
+}
+
+.btn-outline-vintage {
+  color: #C4B097;
+  border: 1.5px solid #C4B097;
+  font-family: 'Lora', Georgia, serif;
+  font-weight: 500;
+  padding: 0.6rem 1.8rem;
+
+  &:hover {
+    background-color: rgba(196, 176, 151, 0.1);
+    color: #F5F0E8;
+    border-color: #F5F0E8;
+  }
+}
+
+.stat-card {
+  border: none;
+  background: #F5F0E8;
+  text-align: center;
+
+  .stat-icon {
+    font-size: 2.5rem;
+    color: #C4993C;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    color: #6B3A2A;
+    font-weight: 700;
+  }
+
+  .stat-label {
+    color: #8C6B52;
+    font-family: 'Lora', Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+  }
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #C4993C, transparent);
+}
+
+.feature-card {
+  border: 1px solid rgba(107, 58, 42, 0.1);
+  background: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(44, 30, 20, 0.1);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    color: #6B3A2A;
+    margin-bottom: 0.75rem;
+  }
+
+  h5 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #3A2E25;
+  }
+
+  p {
+    color: #7A6955;
+  }
+}

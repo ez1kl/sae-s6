@@ -1,0 +1,126 @@
+// --- Palette vintage bibliothèque ---
+$primary:   #6B3A2A;
+$secondary: #8C6B52;
+$success:   #5B7A5E;
+$danger:    #9B3B3B;
+$info:      #7A6955;
+$warning:   #C4993C;
+$light:     #F5F0E8;
+$dark:      #2C1E14;
+
+$body-bg: #FAF6F0;
+$body-color: #3A2E25;
+$link-color: #6B3A2A;
+$link-hover-color: #4A2518;
+
+$font-family-sans-serif: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+$headings-font-family: 'Georgia', 'Palatino Linotype', serif;
+$headings-font-weight: 700;
+
+$border-radius: 0.35rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.25rem;
+
+$card-border-color: rgba(107, 58, 42, 0.15);
+$card-cap-bg: rgba(107, 58, 42, 0.06);
+
+$input-border-color: #C4B097;
+$input-focus-border-color: #6B3A2A;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(107, 58, 42, 0.2);
+
+@use 'bootstrap/scss/bootstrap' with (
+  $primary: $primary,
+  $secondary: $secondary,
+  $success: $success,
+  $danger: $danger,
+  $info: $info,
+  $warning: $warning,
+  $light: $light,
+  $dark: $dark,
+  $body-bg: $body-bg,
+  $body-color: $body-color,
+  $link-color: $link-color,
+  $link-hover-color: $link-hover-color,
+  $font-family-sans-serif: $font-family-sans-serif,
+  $border-radius: $border-radius,
+  $border-radius-lg: $border-radius-lg,
+  $border-radius-sm: $border-radius-sm,
+  $card-border-color: $card-border-color,
+  $card-cap-bg: $card-cap-bg,
+  $input-border-color: $input-border-color,
+  $input-focus-border-color: $input-focus-border-color,
+  $input-focus-box-shadow: $input-focus-box-shadow
+);
+
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// --- Import Google Font ---
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lora:wght@400;500;600&display=swap');
+
+body {
+  font-family: 'Lora', Georgia, serif;
+  background-color: #FAF6F0;
+  color: #3A2E25;
+}
+
+h1, h2, h3, h4, h5, h6,
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.card {
+  border: 1px solid rgba(107, 58, 42, 0.12);
+  box-shadow: 0 2px 8px rgba(44, 30, 20, 0.06);
+}
+
+.btn-primary {
+  background-color: #6B3A2A;
+  border-color: #6B3A2A;
+  &:hover {
+    background-color: #4A2518;
+    border-color: #4A2518;
+  }
+}
+
+.btn-outline-primary {
+  color: #6B3A2A;
+  border-color: #6B3A2A;
+  &:hover {
+    background-color: #6B3A2A;
+    color: #F5F0E8;
+  }
+}
+
+.badge.bg-primary { background-color: #6B3A2A !important; }
+.badge.bg-info { background-color: #7A6955 !important; }
+.badge.bg-secondary { background-color: #8C6B52 !important; }
+.badge.bg-success { background-color: #5B7A5E !important; }
+.badge.bg-danger { background-color: #9B3B3B !important; }
+
+.page-link {
+  color: #6B3A2A;
+  &:hover { color: #4A2518; }
+}
+
+.page-item.active .page-link {
+  background-color: #6B3A2A;
+  border-color: #6B3A2A;
+}
+
+::selection {
+  background: rgba(107, 58, 42, 0.2);
+  color: #2C1E14;
+}
+
+.spinner-border {
+  color: #6B3A2A !important;
+}
+
+.text-muted {
+  color: #7A6955 !important;
+}
+
+a {
+  color: #6B3A2A;
+  &:hover { color: #4A2518; }
+}

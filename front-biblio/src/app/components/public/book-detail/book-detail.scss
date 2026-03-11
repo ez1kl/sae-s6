@@ -1,0 +1,18 @@
+.detail-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #3A2E25;
+  font-weight: 700;
+}
+
+.btn-vintage-reserve {
+  background-color: #C4993C;
+  color: #2C1E14;
+  border: none;
+  font-family: 'Lora', Georgia, serif;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #D4A94C;
+    color: #2C1E14;
+  }
+}
