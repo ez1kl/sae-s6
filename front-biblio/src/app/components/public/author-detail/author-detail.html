@@ -1,0 +1,55 @@
+<div class="container py-4">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  } @else if (author()) {
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/auteurs">Auteurs</a></li>
+        <li class="breadcrumb-item active">{{ author()!.firstName }} {{ author()!.lastName }}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-4">
+      <div class="col-md-4 text-center">
+        <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 300px;">
+          <i class="bi bi-person display-1 text-muted"></i>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <h2 class="fw-bold mb-3">{{ author()!.firstName }} {{ author()!.lastName }}</h2>
+
+        @if (author()!.nationality) {
+          <p><strong><i class="bi bi-globe me-2"></i>Nationalité :</strong> {{ author()!.nationality }}</p>
+        }
+        @if (author()!.birthDate) {
+          <p><strong><i class="bi bi-calendar me-2"></i>Naissance :</strong> {{ author()!.birthDate }}</p>
+        }
+        @if (author()!.deathDate) {
+          <p><strong><i class="bi bi-calendar-x me-2"></i>Décès :</strong> {{ author()!.deathDate }}</p>
+        }
+
+        @if (books().length > 0) {
+          <h5 class="mt-4 mb-3">Livres de cet auteur</h5>
+          <div class="list-group">
+            @for (book of books(); track book.id) {
+              <a [routerLink]="['/livres', book.id]" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-book me-2"></i>{{ book.title }}</span>
+                @if (book.language) {
+                  <span class="badge bg-secondary">{{ book.language }}</span>
+                }
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>Auteur introuvable.
+    </div>
+  }
+</div>

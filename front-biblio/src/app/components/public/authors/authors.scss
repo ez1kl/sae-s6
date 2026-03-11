@@ -1,0 +1,18 @@
+.author-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(107, 58, 42, 0.1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(44, 30, 20, 0.12);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #3A2E25;
+  }
+
+  .card-img-top.bg-light {
+    background-color: #EDE8E0 !important;
+  }
+}

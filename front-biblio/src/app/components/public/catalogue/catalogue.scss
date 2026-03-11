@@ -1,0 +1,41 @@
+.section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #3A2E25;
+  position: relative;
+  padding-bottom: 0.75rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #C4993C;
+  }
+}
+
+.search-card {
+  background: #F5F0E8;
+  border: 1px solid rgba(107, 58, 42, 0.1);
+}
+
+.book-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(107, 58, 42, 0.1);
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(44, 30, 20, 0.12);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #3A2E25;
+  }
+
+  .card-img-top.bg-light {
+    background-color: #EDE8E0 !important;
+  }
+}

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MemberRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: 'member', uniqueConstraints: [
@@ -15,6 +16,7 @@ class Member
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['member:read'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
@@ -22,21 +24,27 @@ class Member
     private ?User $user = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['member:read'])]
     private ?\DateTime $membershipDate = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['member:read'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['member:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['member:read'])]
     private ?\DateTime $birthDate = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['member:read'])]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['member:read'])]
     private ?string $address = null;
 
     public function getId(): ?int

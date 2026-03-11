@@ -1,0 +1,62 @@
+<div class="container py-4">
+  <h2 class="section-title mb-4">Mon Profil</h2>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  } @else if (member()) {
+    @if (message()) {
+      <div class="alert" [class.alert-success]="!messageError()" [class.alert-danger]="messageError()">
+        {{ message() }}
+      </div>
+    }
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+              {{ member()!.firstName.charAt(0) }}{{ member()!.lastName.charAt(0) }}
+            </div>
+            <h5>{{ member()!.firstName }} {{ member()!.lastName }}</h5>
+            <p class="text-muted small">Adhérent depuis le {{ member()!.membershipDate | date:'dd/MM/yyyy' }}</p>
+            <p class="text-muted small">{{ authService.userEmail() }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-4">Modifier mes informations</h5>
+            <form (ngSubmit)="save()">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-control" [value]="authService.userEmail()" readonly>
+                <div class="form-text">L'email ne peut pas être modifié ici.</div>
+              </div>
+              <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Téléphone</label>
+                <input type="tel" id="phoneNumber" class="form-control" [(ngModel)]="phoneNumber" name="phoneNumber">
+              </div>
+              <div class="mb-3">
+                <label for="address" class="form-label">Adresse postale</label>
+                <textarea id="address" class="form-control" [(ngModel)]="address" name="address" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" [disabled]="saving()">
+                @if (saving()) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status"></span>Enregistrement...
+                } @else {
+                  <i class="bi bi-check-circle me-2"></i>Enregistrer
+                }
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -4,29 +4,37 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use App\Repository\AuthorRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: AuthorRepository::class)]
 #[ORM\Table(name: 'author')]
 class Author
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['author:list', 'author:read', 'book:list', 'book:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['author:list', 'author:read', 'book:list', 'book:read'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['author:list', 'author:read', 'book:list', 'book:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['author:read'])]
     private ?\DateTime $birthDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['author:read'])]
     private ?\DateTime $deathDate = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['author:list', 'author:read'])]
     private ?string $nationality = null;
 
     public function getId(): ?int

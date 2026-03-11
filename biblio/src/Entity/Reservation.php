@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use App\Repository\ReservationRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ORM\Table(name: 'reservation', uniqueConstraints: [
     new ORM\UniqueConstraint(name: 'uniq_reservation_book', columns: ['book_id']),
 ], indexes: [
@@ -16,10 +18,12 @@ class Reservation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['reservation:read'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Book::class)]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[Groups(['reservation:read'])]
     private ?Book $book = null;
 
     #[ORM\ManyToOne(targetEntity: Member::class)]
@@ -27,12 +31,16 @@ class Reservation
     private ?Member $member = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    #[Groups(['reservation:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
     }
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['reservation:read'])]
+    private ?\DateTime $createdAt = null;
 
     public function getId(): ?int
     {

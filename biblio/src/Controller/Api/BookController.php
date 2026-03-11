@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Controller\Api;
+
+use App\Entity\Book;
+use App\Repository\BookRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route('/api')]
+class BookController extends AbstractController
+{
+    #[Route('/books', name: 'api_books', methods: ['GET'])]
+    public function index(Request $request, BookRepository $bookRepository): JsonResponse
+    {
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(100, max(1, $request->query->getInt('limit', 20)));
+
+        $books = $bookRepository->findPaginated($page, $limit);
+        $total = $bookRepository->countAll();
+
+        return $this->json([
+            'data' => $books,
+            'meta' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'totalPages' => (int) ceil($total / $limit),
+            ],
+        ], 200, [], ['groups' => 'book:list']);
+    }
+
+    #[Route('/books/{id}', name: 'api_books_show', methods: ['GET'])]
+    public function show(Book $book): JsonResponse
+    {
+        return $this->json($book, 200, [], ['groups' => 'book:read']);
+    }
+
+    #[Route('/books/search', name: 'api_books_search', methods: ['GET'], priority: 10)]
+    public function search(Request $request, BookRepository $bookRepository): JsonResponse
+    {
+        $title = $request->query->get('title');
+        $authorId = $request->query->get('author') !== null ? $request->query->getInt('author') : null;
+        $categoryId = $request->query->get('category') !== null ? $request->query->getInt('category') : null;
+        $language = $request->query->get('language');
+        $yearFrom = $request->query->get('yearFrom') !== null ? $request->query->getInt('yearFrom') : null;
+        $yearTo = $request->query->get('yearTo') !== null ? $request->query->getInt('yearTo') : null;
+
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(100, max(1, $request->query->getInt('limit', 20)));
+
+        $qb = $bookRepository->createSearchQueryBuilder($title, $authorId, $categoryId, $language, $yearFrom, $yearTo);
+
+        $total = (int) (clone $qb)->select('COUNT(DISTINCT b.id)')->getQuery()->getSingleScalarResult();
+
+        $books = $qb
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return $this->json([
+            'data' => $books,
+            'meta' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'totalPages' => (int) ceil($total / $limit),
+            ],
+        ], 200, [], ['groups' => 'book:list']);
+    }
+}

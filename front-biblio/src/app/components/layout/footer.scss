@@ -1,0 +1,22 @@
+.footer-vintage {
+  background-color: #2C1E14;
+  border-top: 3px solid #C4993C;
+  margin-top: auto;
+
+  .footer-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #C4993C;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .footer-quote {
+    color: #A89880;
+    font-style: italic;
+    font-family: 'Lora', Georgia, serif;
+  }
+
+  .footer-copy {
+    color: #8C7B6A;
+  }
+}

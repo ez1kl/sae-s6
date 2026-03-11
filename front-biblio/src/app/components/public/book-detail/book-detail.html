@@ -1,0 +1,69 @@
+<div class="container py-4">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  } @else if (book()) {
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/catalogue">Catalogue</a></li>
+        <li class="breadcrumb-item active">{{ book()!.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">
+          <i class="bi bi-book display-1 text-muted"></i>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <h2 class="detail-title mb-3">{{ book()!.title }}</h2>
+
+        @if (book()!.author) {
+          <div class="mb-3">
+            <strong>Auteur :</strong>
+            <a [routerLink]="['/auteurs', book()!.author!.id]" class="badge bg-primary text-decoration-none ms-1">
+              {{ book()!.author!.firstName }} {{ book()!.author!.lastName }}
+            </a>
+          </div>
+        }
+
+        @if (book()!.categories && book()!.categories!.length > 0) {
+          <div class="mb-3">
+            <strong>Catégorie(s) :</strong>
+            @for (cat of book()!.categories!; track cat.id) {
+              <span class="badge bg-info ms-1">{{ cat.name }}</span>
+            }
+          </div>
+        }
+
+        @if (book()!.language) {
+          <p><strong><i class="bi bi-globe me-2"></i>Langue :</strong> {{ book()!.language }}</p>
+        }
+
+        @if (book()!.releaseYear) {
+          <p><strong><i class="bi bi-calendar me-2"></i>Année de publication :</strong> {{ book()!.releaseYear }}</p>
+        }
+
+        @if (authService.isLoggedIn()) {
+          <button class="btn btn-vintage-reserve" (click)="reserve()">
+            <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
+          </button>
+        }
+
+        @if (reservationMessage()) {
+          <div class="alert mt-3" [class.alert-success]="!reservationError()" [class.alert-danger]="reservationError()">
+            {{ reservationMessage() }}
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>Livre introuvable.
+    </div>
+  }
+</div>
