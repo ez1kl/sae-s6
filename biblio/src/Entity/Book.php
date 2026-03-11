@@ -27,7 +27,7 @@ class Book
     private ?string $language = null;
 
     #[ORM\ManyToOne(targetEntity: Author::class)]
-    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: true, onDelete: 'RESTRICT')]
     private ?Author $author = null;
 
     /**
