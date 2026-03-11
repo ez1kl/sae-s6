@@ -3,7 +3,7 @@
 
   @if (authService.currentUser()) {
     <div class="welcome-banner">
-      Bienvenue, <strong>{{ authService.currentUser()!.prenom }} {{ authService.currentUser()!.nom }}</strong>
+      Bienvenue, <strong>{{ authService.currentUser()!.firstName }} {{ authService.currentUser()!.lastName }}</strong>
     </div>
   }
 
@@ -35,18 +35,20 @@
                 @for (loan of loans(); track loan.id) {
                   <div class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      @if (loan.livre) {
-                        <a [routerLink]="['/livres', loan.livre.id]" class="fw-bold text-decoration-none">
-                          {{ loan.livre.titre }}
+                      @if (loan.book) {
+                        <a [routerLink]="['/livres', loan.book.id]" class="fw-bold text-decoration-none">
+                          {{ loan.book.title }}
                         </a>
                       }
                       <br>
-                      <small class="text-muted">Emprunté le {{ loan.dateEmprunt | date:'dd/MM/yyyy' }}</small>
+                      <small class="text-muted">Emprunté le {{ loan.loanDate | date:'dd/MM/yyyy' }}</small>
+                      <br>
+                      <small class="text-muted">Retour prévu le {{ loan.dueDate | date:'dd/MM/yyyy' }}</small>
                     </div>
-                    @if (loan.enRetard) {
-                      <span class="badge bg-danger">En retard</span>
+                    @if (loan.returnDate) {
+                      <span class="badge bg-success">Rendu</span>
                     } @else {
-                      <span class="badge bg-success">En cours</span>
+                      <span class="badge bg-warning text-dark">En cours</span>
                     }
                   </div>
                 }
@@ -70,13 +72,13 @@
                 @for (reservation of reservations(); track reservation.id) {
                   <div class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                      @if (reservation.livre) {
-                        <a [routerLink]="['/livres', reservation.livre.id]" class="fw-bold text-decoration-none">
-                          {{ reservation.livre.titre }}
+                      @if (reservation.book) {
+                        <a [routerLink]="['/livres', reservation.book.id]" class="fw-bold text-decoration-none">
+                          {{ reservation.book.title }}
                         </a>
                       }
                       <br>
-                      <small class="text-muted">Réservé le {{ reservation.dateReservation | date:'dd/MM/yyyy' }}</small>
+                      <small class="text-muted">Réservé le {{ reservation.createdAt | date:'dd/MM/yyyy' }}</small>
                     </div>
                     <button class="btn btn-outline-danger btn-sm" (click)="cancelReservation(reservation.id)">
                       Annuler

@@ -8,32 +8,37 @@
       <div class="row g-3">
         <div class="col-md-4">
           <label class="form-label">Titre</label>
-          <input type="text" class="form-control" [(ngModel)]="searchTitre" placeholder="Rechercher par titre...">
+          <input type="text" class="form-control" [(ngModel)]="searchTitle" placeholder="Rechercher par titre...">
         </div>
         <div class="col-md-4">
           <label class="form-label">Auteur</label>
-          <input type="text" class="form-control" [(ngModel)]="searchAuteur" placeholder="Nom de l'auteur...">
+          <select class="form-select" [(ngModel)]="searchAuthorId">
+            <option [ngValue]="null">Tous les auteurs</option>
+            @for (author of authors(); track author.id) {
+              <option [ngValue]="author.id">{{ author.firstName }} {{ author.lastName }}</option>
+            }
+          </select>
         </div>
         <div class="col-md-4">
           <label class="form-label">Catégorie</label>
-          <select class="form-select" [(ngModel)]="searchCategorie">
+          <select class="form-select" [(ngModel)]="searchCategory">
             <option [ngValue]="null">Toutes les catégories</option>
             @for (cat of categories(); track cat.id) {
-              <option [ngValue]="cat.id">{{ cat.nom }}</option>
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
             }
           </select>
         </div>
         <div class="col-md-4">
           <label class="form-label">Langue</label>
-          <input type="text" class="form-control" [(ngModel)]="searchLangue" placeholder="ex: Français">
+          <input type="text" class="form-control" [(ngModel)]="searchLanguage" placeholder="ex: fr, en...">
         </div>
         <div class="col-md-3">
-          <label class="form-label">Date min</label>
-          <input type="date" class="form-control" [(ngModel)]="searchDateMin">
+          <label class="form-label">Année min</label>
+          <input type="number" class="form-control" [(ngModel)]="searchYearFrom" placeholder="ex: 1900">
         </div>
         <div class="col-md-3">
-          <label class="form-label">Date max</label>
-          <input type="date" class="form-control" [(ngModel)]="searchDateMax">
+          <label class="form-label">Année max</label>
+          <input type="number" class="form-control" [(ngModel)]="searchYearTo" placeholder="ex: 2025">
         </div>
         <div class="col-md-2 d-flex align-items-end gap-2">
           <button class="btn btn-primary" (click)="search()">
@@ -66,33 +71,20 @@
         @for (book of books(); track book.id) {
           <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm book-card">
-              @if (book.photoCouverture) {
-                <img [src]="book.photoCouverture" class="card-img-top" [alt]="book.titre" style="height: 250px; object-fit: cover;">
-              } @else {
-                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
-                  <i class="bi bi-book display-1 text-muted"></i>
-                </div>
-              }
+              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                <i class="bi bi-book display-1 text-muted"></i>
+              </div>
               <div class="card-body d-flex flex-column">
-                <h6 class="card-title fw-bold">{{ book.titre }}</h6>
-                @if (book.auteurs && book.auteurs.length > 0) {
+                <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                @if (book.author) {
                   <p class="text-muted small mb-1">
-                    @for (auteur of book.auteurs; track auteur.id; let last = $last) {
-                      {{ auteur.prenom }} {{ auteur.nom }}@if (!last) {, }
-                    }
+                    {{ book.author.firstName }} {{ book.author.lastName }}
                   </p>
                 }
-                @if (book.langue) {
-                  <span class="badge bg-secondary mb-2">{{ book.langue }}</span>
+                @if (book.language) {
+                  <span class="badge bg-secondary mb-2">{{ book.language }}</span>
                 }
                 <div class="mt-auto">
-                  @if (book.disponible !== undefined) {
-                    @if (book.disponible) {
-                      <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Disponible</span>
-                    } @else {
-                      <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Indisponible</span>
-                    }
-                  }
                 </div>
               </div>
               <div class="card-footer bg-transparent border-0">

@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.bookService.getBooks(1, 1).subscribe({
-      next: (res) => this.totalBooks.set(res.total)
+      next: (res) => this.totalBooks.set(res.meta.total)
     });
     this.bookService.getAuthors().subscribe({
       next: (authors) => this.totalAuthors.set(authors.length)

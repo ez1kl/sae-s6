@@ -9,31 +9,25 @@
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/catalogue">Catalogue</a></li>
-        <li class="breadcrumb-item active">{{ book()!.titre }}</li>
+        <li class="breadcrumb-item active">{{ book()!.title }}</li>
       </ol>
     </nav>
 
     <div class="row g-4">
       <div class="col-md-4">
-        @if (book()!.photoCouverture) {
-          <img [src]="book()!.photoCouverture" class="img-fluid rounded shadow" [alt]="book()!.titre">
-        } @else {
-          <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">
-            <i class="bi bi-book display-1 text-muted"></i>
-          </div>
-        }
+        <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">
+          <i class="bi bi-book display-1 text-muted"></i>
+        </div>
       </div>
       <div class="col-md-8">
-        <h2 class="detail-title mb-3">{{ book()!.titre }}</h2>
+        <h2 class="detail-title mb-3">{{ book()!.title }}</h2>
 
-        @if (book()!.auteurs && book()!.auteurs!.length > 0) {
+        @if (book()!.author) {
           <div class="mb-3">
-            <strong>Auteur(s) :</strong>
-            @for (auteur of book()!.auteurs!; track auteur.id) {
-              <a [routerLink]="['/auteurs', auteur.id]" class="badge bg-primary text-decoration-none ms-1">
-                {{ auteur.prenom }} {{ auteur.nom }}
-              </a>
-            }
+            <strong>Auteur :</strong>
+            <a [routerLink]="['/auteurs', book()!.author!.id]" class="badge bg-primary text-decoration-none ms-1">
+              {{ book()!.author!.firstName }} {{ book()!.author!.lastName }}
+            </a>
           </div>
         }
 
@@ -41,31 +35,20 @@
           <div class="mb-3">
             <strong>Catégorie(s) :</strong>
             @for (cat of book()!.categories!; track cat.id) {
-              <span class="badge bg-info ms-1">{{ cat.nom }}</span>
+              <span class="badge bg-info ms-1">{{ cat.name }}</span>
             }
           </div>
         }
 
-        @if (book()!.langue) {
-          <p><strong><i class="bi bi-globe me-2"></i>Langue :</strong> {{ book()!.langue }}</p>
+        @if (book()!.language) {
+          <p><strong><i class="bi bi-globe me-2"></i>Langue :</strong> {{ book()!.language }}</p>
         }
 
-        @if (book()!.dateSortie) {
-          <p><strong><i class="bi bi-calendar me-2"></i>Date de sortie :</strong> {{ book()!.dateSortie }}</p>
+        @if (book()!.releaseYear) {
+          <p><strong><i class="bi bi-calendar me-2"></i>Année de publication :</strong> {{ book()!.releaseYear }}</p>
         }
 
-        <div class="mb-3">
-          <strong>Disponibilité :</strong>
-          @if (book()!.disponible !== undefined) {
-            @if (book()!.disponible) {
-              <span class="badge bg-success ms-2"><i class="bi bi-check-circle me-1"></i>Disponible</span>
-            } @else {
-              <span class="badge bg-danger ms-2"><i class="bi bi-x-circle me-1"></i>Indisponible</span>
-            }
-          }
-        </div>
-
-        @if (authService.isLoggedIn() && book()!.disponible) {
+        @if (authService.isLoggedIn()) {
           <button class="btn btn-vintage-reserve" (click)="reserve()">
             <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
           </button>

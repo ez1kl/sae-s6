@@ -18,15 +18,12 @@
       <div class="col-md-4">
         <div class="card shadow-sm">
           <div class="card-body text-center">
-            @if (member()!.photo) {
-              <img [src]="member()!.photo" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;" [alt]="member()!.nom">
-            } @else {
-              <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                {{ member()!.prenom.charAt(0) }}{{ member()!.nom.charAt(0) }}
-              </div>
-            }
-            <h5>{{ member()!.prenom }} {{ member()!.nom }}</h5>
-            <p class="text-muted small">Adhérent depuis le {{ member()!.dateAdhesion }}</p>
+            <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+              {{ member()!.firstName.charAt(0) }}{{ member()!.lastName.charAt(0) }}
+            </div>
+            <h5>{{ member()!.firstName }} {{ member()!.lastName }}</h5>
+            <p class="text-muted small">Adhérent depuis le {{ member()!.membershipDate | date:'dd/MM/yyyy' }}</p>
+            <p class="text-muted small">{{ authService.userEmail() }}</p>
           </div>
         </div>
       </div>
@@ -38,15 +35,16 @@
             <form (ngSubmit)="save()">
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" class="form-control" [(ngModel)]="email" name="email" required>
+                <input type="email" id="email" class="form-control" [value]="authService.userEmail()" readonly>
+                <div class="form-text">L'email ne peut pas être modifié ici.</div>
               </div>
               <div class="mb-3">
-                <label for="numTel" class="form-label">Téléphone</label>
-                <input type="tel" id="numTel" class="form-control" [(ngModel)]="numTel" name="numTel">
+                <label for="phoneNumber" class="form-label">Téléphone</label>
+                <input type="tel" id="phoneNumber" class="form-control" [(ngModel)]="phoneNumber" name="phoneNumber">
               </div>
               <div class="mb-3">
-                <label for="adresse" class="form-label">Adresse postale</label>
-                <textarea id="adresse" class="form-control" [(ngModel)]="adressePostale" name="adressePostale" rows="3"></textarea>
+                <label for="address" class="form-label">Adresse postale</label>
+                <textarea id="address" class="form-control" [(ngModel)]="address" name="address" rows="3"></textarea>
               </div>
               <button type="submit" class="btn btn-primary" [disabled]="saving()">
                 @if (saving()) {

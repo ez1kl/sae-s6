@@ -1,66 +1,59 @@
 export interface Author {
   id: number;
-  nom: string;
-  prenom: string;
-  dateNaissance: string | null;
-  dateDeces: string | null;
-  nationalite: string | null;
-  photo: string | null;
-  description: string | null;
-  livres?: Book[];
+  lastName: string;
+  firstName: string;
+  nationality: string;
+  birthDate?: string | null;
+  deathDate?: string | null;
 }
 
 export interface Book {
   id: number;
-  titre: string;
-  dateSortie: string | null;
-  langue: string;
-  photoCouverture: string | null;
-  auteurs?: Author[];
+  title: string;
+  releaseYear: number;
+  language: string;
+  author?: Author;
   categories?: Category[];
-  disponible?: boolean;
 }
 
 export interface Category {
   id: number;
-  nom: string;
-  description: string | null;
+  name: string;
+  description?: string | null;
 }
 
 export interface Member {
   id: number;
-  nom: string;
-  prenom: string;
-  dateAdhesion: string;
-  dateNaissance: string | null;
-  email: string;
-  adressePostale: string | null;
-  numTel: string | null;
-  photo: string | null;
+  firstName: string;
+  lastName: string;
+  membershipDate: string;
+  birthDate: string | null;
+  phoneNumber: string | null;
+  address: string | null;
 }
 
 export interface Loan {
   id: number;
-  dateEmprunt: string;
-  dateRetour: string | null;
-  livre?: Book;
-  adherent?: Member;
-  enRetard?: boolean;
+  loanDate: string;
+  dueDate: string;
+  returnDate: string | null;
+  book?: Book;
 }
 
 export interface Reservation {
   id: number;
-  dateReservation: string;
-  livre?: Book;
-  adherent?: Member;
+  createdAt: string;
+  book?: Book;
 }
 
 export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface LoginRequest {
@@ -73,12 +66,12 @@ export interface LoginResponse {
 }
 
 export interface SearchCriteria {
-  titre?: string;
-  auteur?: string;
-  categorie?: number;
-  langue?: string;
-  dateMin?: string;
-  dateMax?: string;
+  title?: string;
+  author?: number;
+  category?: number;
+  language?: string;
+  yearFrom?: number;
+  yearTo?: number;
   page?: number;
   limit?: number;
 }

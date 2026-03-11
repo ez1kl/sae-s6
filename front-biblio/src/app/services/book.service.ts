@@ -14,32 +14,32 @@ export class BookService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/livres`, { params });
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/books`, { params });
   }
 
   getBook(id: number): Observable<Book> {
-    return this.http.get<Book>(`${this.apiUrl}/livres/${id}`);
+    return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
   }
 
   searchBooks(criteria: SearchCriteria): Observable<PaginatedResponse<Book>> {
     let params = new HttpParams();
-    if (criteria.titre) params = params.set('titre', criteria.titre);
-    if (criteria.auteur) params = params.set('auteur', criteria.auteur);
-    if (criteria.categorie) params = params.set('categorie', criteria.categorie.toString());
-    if (criteria.langue) params = params.set('langue', criteria.langue);
-    if (criteria.dateMin) params = params.set('dateMin', criteria.dateMin);
-    if (criteria.dateMax) params = params.set('dateMax', criteria.dateMax);
+    if (criteria.title) params = params.set('title', criteria.title);
+    if (criteria.author) params = params.set('author', criteria.author.toString());
+    if (criteria.category) params = params.set('category', criteria.category.toString());
+    if (criteria.language) params = params.set('language', criteria.language);
+    if (criteria.yearFrom) params = params.set('yearFrom', criteria.yearFrom.toString());
+    if (criteria.yearTo) params = params.set('yearTo', criteria.yearTo.toString());
     if (criteria.page) params = params.set('page', criteria.page.toString());
     if (criteria.limit) params = params.set('limit', criteria.limit.toString());
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/livres/recherche`, { params });
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/books/search`, { params });
   }
 
   getAuthors(): Observable<Author[]> {
-    return this.http.get<Author[]>(`${this.apiUrl}/auteurs`);
+    return this.http.get<Author[]>(`${this.apiUrl}/authors`);
   }
 
   getAuthor(id: number): Observable<Author> {
-    return this.http.get<Author>(`${this.apiUrl}/auteurs/${id}`);
+    return this.http.get<Author>(`${this.apiUrl}/authors/${id}`);
   }
 
   getCategories(): Observable<Category[]> {

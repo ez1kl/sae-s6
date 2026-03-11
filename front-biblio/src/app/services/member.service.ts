@@ -11,26 +11,26 @@ export class MemberService {
   constructor(private http: HttpClient) {}
 
   getProfile(): Observable<Member> {
-    return this.http.get<Member>(`${this.apiUrl}/profil`);
+    return this.http.get<Member>(`${this.apiUrl}/me/profile`);
   }
 
   updateProfile(data: Partial<Member>): Observable<Member> {
-    return this.http.put<Member>(`${this.apiUrl}/profil`, data);
+    return this.http.put<Member>(`${this.apiUrl}/me/profile`, data);
   }
 
   getMyLoans(): Observable<Loan[]> {
-    return this.http.get<Loan[]>(`${this.apiUrl}/mes-emprunts`);
+    return this.http.get<Loan[]>(`${this.apiUrl}/me/loans`);
   }
 
   getMyReservations(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(`${this.apiUrl}/mes-reservations`);
+    return this.http.get<Reservation[]>(`${this.apiUrl}/me/reservations`);
   }
 
   reserveBook(bookId: number): Observable<Reservation> {
-    return this.http.post<Reservation>(`${this.apiUrl}/reservations`, { livreId: bookId });
+    return this.http.post<Reservation>(`${this.apiUrl}/me/reservations`, { bookId });
   }
 
   cancelReservation(reservationId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/reservations/${reservationId}`);
+    return this.http.delete<void>(`${this.apiUrl}/me/reservations/${reservationId}`);
   }
 }

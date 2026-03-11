@@ -21,6 +21,7 @@ export class AuthService {
   currentUser = signal<Member | null>(null);
   isLoggedIn = computed(() => !!this.getToken() && !this.isTokenExpired());
   userRoles = computed(() => this.getDecodedToken()?.roles ?? []);
+  userEmail = computed(() => this.getDecodedToken()?.username ?? '');
 
   constructor(private http: HttpClient, private router: Router) {
     if (this.isLoggedIn()) {
@@ -64,7 +65,7 @@ export class AuthService {
   }
 
   private loadProfile(): void {
-    this.http.get<Member>(`${this.apiUrl}/profil`).subscribe({
+    this.http.get<Member>(`${this.apiUrl}/me/profile`).subscribe({
       next: (member) => this.currentUser.set(member),
       error: () => this.logout()
     });

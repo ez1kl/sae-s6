@@ -15,17 +15,13 @@
         @for (author of authors(); track author.id) {
           <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm author-card">
-              @if (author.photo) {
-                <img [src]="author.photo" class="card-img-top" [alt]="author.nom" style="height: 200px; object-fit: cover;">
-              } @else {
-                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                  <i class="bi bi-person display-1 text-muted"></i>
-                </div>
-              }
+              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="bi bi-person display-1 text-muted"></i>
+              </div>
               <div class="card-body">
-                <h6 class="card-title fw-bold">{{ author.prenom }} {{ author.nom }}</h6>
-                @if (author.nationalite) {
-                  <p class="text-muted small mb-0">{{ author.nationalite }}</p>
+                <h6 class="card-title fw-bold">{{ author.firstName }} {{ author.lastName }}</h6>
+                @if (author.nationality) {
+                  <p class="text-muted small mb-0">{{ author.nationality }}</p>
                 }
               </div>
               <div class="card-footer bg-transparent border-0">
