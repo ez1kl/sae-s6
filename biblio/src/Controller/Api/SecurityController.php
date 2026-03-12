@@ -6,21 +6,35 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/api')]
 class SecurityController extends AbstractController
 {
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(): JsonResponse
     {
-        // This method is intercepted by the JWT authenticator.
-        // If we reach here, authentication failed.
+        // Route gérée par le firewall json_login
+        return $this->json(['message' => 'Missing credentials'], 401);
+    }
+
+    #[Route('/user/me', name: 'api_user_me', methods: ['GET'])]
+    public function me(): JsonResponse
+    {
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->json(['error' => 'Identifiants invalides.'], 401);
+            return $this->json(['message' => 'Not authenticated'], 401);
         }
 
-        // This will never be reached when JWT authenticator is active,
-        // but is here as a fallback.
-        return $this->json(['message' => 'Authentifié.']);
+        return $this->json([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'member' => $user->getMember() ? [
+                'id' => $user->getMember()->getId(),
+                'last_name' => $user->getMember()->getLastName(),
+                'first_name' => $user->getMember()->getFirstName(),
+            ] : null,
+            'roles' => $user->getRoles(),
+        ]);
     }
 }

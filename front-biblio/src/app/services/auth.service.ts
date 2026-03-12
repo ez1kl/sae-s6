@@ -65,9 +65,13 @@ export class AuthService {
   }
 
   private loadProfile(): void {
-    this.http.get<Member>(`${this.apiUrl}/me/profile`).subscribe({
+    this.http.get<Member>(`${this.apiUrl}/user/me`).subscribe({
       next: (member) => this.currentUser.set(member),
-      error: () => this.logout()
+      error: (err) => {
+        if (err.status === 401 || err.status === 403) {
+          this.logout();
+        }
+      }
     });
   }
 }
