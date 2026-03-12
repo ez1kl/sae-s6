@@ -32,6 +32,45 @@ class MemberController extends AbstractController
         return $this->json($member, 200, [], ['groups' => 'member:read']);
     }
 
+    #[Route('/profile', name: 'api_me_profile_update', methods: ['PUT'])]
+    public function updateProfile(
+        Request $request,
+        MemberRepository $memberRepository,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+        $member = $memberRepository->findOneBy(['user' => $user]);
+
+        if (!$member) {
+            return $this->json(['error' => 'Profil adhérent introuvable.'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Corps JSON invalide.'], 400);
+        }
+
+        if (array_key_exists('phoneNumber', $data)) {
+            $member->setPhoneNumber($data['phoneNumber']);
+        }
+
+        if (array_key_exists('address', $data)) {
+            $address = $data['address'];
+
+            if ($address === null) {
+                $address = '';
+            }
+
+            $member->setAddress($address);
+        }
+
+        $em->flush();
+
+        return $this->json($member, 200, [], ['groups' => 'member:read']);
+    }
+
     #[Route('/loans', name: 'api_me_loans', methods: ['GET'])]
     public function loans(MemberRepository $memberRepository, LoanRepository $loanRepository): JsonResponse
     {
