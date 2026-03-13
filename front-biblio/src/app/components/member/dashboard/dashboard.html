@@ -48,9 +48,9 @@
                     @if (loan.returnDate) {
                       <span class="badge bg-success">Rendu</span>
                     } @else if (isLoanLate(loan)) {
-                      <span class="badge bg-warning text-dark">En retard</span>
+                      <span class="badge bg-danger text-white">En retard</span>
                     } @else {
-                      <span class="badge bg-warning text-dark">En cours</span>
+                      <span class="badge bg-warning text-white">En cours</span>
                     }
                   </div>
                 }
