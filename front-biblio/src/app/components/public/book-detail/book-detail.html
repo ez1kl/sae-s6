@@ -49,9 +49,17 @@
         }
 
         @if (authService.isLoggedIn()) {
-          <button class="btn btn-vintage-reserve" (click)="reserve()">
-            <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
-          </button>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <button
+              class="btn btn-vintage-reserve"
+              (click)="reserve()"
+              [disabled]="!canReserve()">
+              <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
+            </button>
+            @if (reservable() === false) {
+              <span class="badge bg-secondary">Déjà réservé</span>
+            }
+          </div>
         }
 
         @if (reservationMessage()) {

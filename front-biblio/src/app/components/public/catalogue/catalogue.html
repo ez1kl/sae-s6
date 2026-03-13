@@ -3,7 +3,7 @@
 
   <!-- Barre de recherche -->
   <div class="card search-card mb-4">
-    <div class="card-body">
+    <div class="card-body" (keyup.enter)="search()">
       <h5 class="card-title mb-3"><i class="bi bi-search me-2"></i>Recherche avancée</h5>
       <div class="row g-3">
         <div class="col-md-4">
@@ -20,17 +20,30 @@
           </select>
         </div>
         <div class="col-md-4">
-          <label class="form-label">Catégorie</label>
-          <select class="form-select" [(ngModel)]="searchCategory">
-            <option [ngValue]="null">Toutes les catégories</option>
+          <label class="form-label d-block">Catégories <span class="text-muted small">(max {{ maxCategories }})</span></label>
+          <div class="category-checkboxes border rounded px-2 py-2">
             @for (cat of categories(); track cat.id) {
-              <option [ngValue]="cat.id">{{ cat.name }}</option>
+              <div class="form-check form-check-inline mb-1">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'cat-' + cat.id"
+                  [checked]="isCategorySelected(cat.id)"
+                  [disabled]="categoryDisabled(cat.id)"
+                  (change)="toggleCategory(cat.id, $any($event.target).checked)">
+                <label class="form-check-label small" [for]="'cat-' + cat.id">{{ cat.name }}</label>
+              </div>
             }
-          </select>
+          </div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Langue</label>
-          <input type="text" class="form-control" [(ngModel)]="searchLanguage" placeholder="ex: fr, en...">
+          <select class="form-select" [(ngModel)]="searchLanguage">
+            <option [ngValue]="''">Toutes les langues</option>
+            @for (lang of languageOptions; track lang.code) {
+              <option [ngValue]="lang.code">{{ lang.label }}</option>
+            }
+          </select>
         </div>
         <div class="col-md-3">
           <label class="form-label">Année min</label>

@@ -26,10 +26,10 @@
           <p><strong><i class="bi bi-globe me-2"></i>Nationalité :</strong> {{ author()!.nationality }}</p>
         }
         @if (author()!.birthDate) {
-          <p><strong><i class="bi bi-calendar me-2"></i>Naissance :</strong> {{ author()!.birthDate }}</p>
+          <p><strong><i class="bi bi-calendar me-2"></i>Naissance :</strong> {{ author()!.birthDate | date:'dd/MM/yyyy' }}</p>
         }
         @if (author()!.deathDate) {
-          <p><strong><i class="bi bi-calendar-x me-2"></i>Décès :</strong> {{ author()!.deathDate }}</p>
+          <p><strong><i class="bi bi-calendar-x me-2"></i>Décès :</strong> {{ author()!.deathDate | date:'dd/MM/yyyy' }}</p>
         }
 
         @if (books().length > 0) {

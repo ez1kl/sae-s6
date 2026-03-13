@@ -16,6 +16,10 @@ export interface Book {
   categories?: Category[];
 }
 
+export interface ReservationStatusResponse {
+  reservable: boolean;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -68,7 +72,8 @@ export interface LoginResponse {
 export interface SearchCriteria {
   title?: string;
   author?: number;
-  category?: number;
+  category?: number; // On pourra le supprimer plus tard
+  categories?: number[];
   language?: string;
   yearFrom?: number;
   yearTo?: number;

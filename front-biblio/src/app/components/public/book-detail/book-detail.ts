@@ -20,6 +20,7 @@ export class BookDetailComponent implements OnInit {
 
   book = signal<Book | null>(null);
   loading = signal(true);
+  reservable = signal<boolean | null>(null);
   reservationMessage = signal('');
   reservationError = signal(false);
 
@@ -29,6 +30,10 @@ export class BookDetailComponent implements OnInit {
       next: (book) => {
         this.book.set(book);
         this.loading.set(false);
+        this.bookService.getReservationStatus(id).subscribe({
+          next: (status) => this.reservable.set(status.reservable),
+          error: () => this.reservable.set(null)
+        });
       },
       error: () => this.loading.set(false)
     });
@@ -42,6 +47,7 @@ export class BookDetailComponent implements OnInit {
       next: () => {
         this.reservationMessage.set('Réservation effectuée avec succès !');
         this.reservationError.set(false);
+        this.reservable.set(false);
       },
       error: (err) => {
         const message = err.error?.error || 'Impossible de réserver ce livre.';
@@ -49,5 +55,10 @@ export class BookDetailComponent implements OnInit {
         this.reservationError.set(true);
       }
     });
+  }
+
+  /** Permet de vérifier si le livre est encore réservable */
+  canReserve(): boolean {
+    return this.reservable() === true;
   }
 }

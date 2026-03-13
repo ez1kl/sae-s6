@@ -20,11 +20,28 @@ export class CatalogueComponent implements OnInit {
   totalPages = signal(1);
   loading = signal(false);
   limit = 12;
+  readonly maxCategories = 3;
+
+  // Mapping des codes vers libellé propres (certains ne sont pas utilisés)
+  readonly languageOptions: { code: string; label: string }[] = [
+    { code: 'fr', label: 'Français' },
+    { code: 'en', label: 'Anglais' },
+    // { code: 'de', label: 'Allemand' },
+    { code: 'es', label: 'Espagnol' },
+    // { code: 'it', label: 'Italien' },
+    // { code: 'pt', label: 'Portugais' },
+    // { code: 'nl', label: 'Néerlandais' },
+    // { code: 'pl', label: 'Polonais' },
+    // { code: 'ru', label: 'Russe' },
+    { code: 'ja', label: 'Japonais' },
+    // { code: 'zh', label: 'Chinois' },
+    // { code: 'ar', label: 'Arabe' }
+  ];
 
   // Critères de recherche
   searchTitle = '';
   searchAuthorId: number | null = null;
-  searchCategory: number | null = null;
+  searchCategoryIds: number[] = [];
   searchLanguage = '';
   searchYearFrom: number | null = null;
   searchYearTo: number | null = null;
@@ -57,7 +74,7 @@ export class CatalogueComponent implements OnInit {
   loadBooks(): void {
     this.loading.set(true);
     const hasSearch = this.searchTitle || this.searchAuthorId
-      || this.searchCategory || this.searchLanguage || this.searchYearFrom || this.searchYearTo;
+      || this.searchCategoryIds.length > 0 || this.searchLanguage || this.searchYearFrom || this.searchYearTo;
 
     if (hasSearch) {
       const criteria: SearchCriteria = {
@@ -66,7 +83,9 @@ export class CatalogueComponent implements OnInit {
       };
       if (this.searchTitle) criteria.title = this.searchTitle;
       if (this.searchAuthorId) criteria.author = this.searchAuthorId;
-      if (this.searchCategory) criteria.category = this.searchCategory;
+      if (this.searchCategoryIds.length > 0) {
+        criteria.categories = this.searchCategoryIds;
+      }
       if (this.searchLanguage) criteria.language = this.searchLanguage;
       if (this.searchYearFrom) criteria.yearFrom = this.searchYearFrom;
       if (this.searchYearTo) criteria.yearTo = this.searchYearTo;
@@ -101,7 +120,7 @@ export class CatalogueComponent implements OnInit {
   resetSearch(): void {
     this.searchTitle = '';
     this.searchAuthorId = null;
-    this.searchCategory = null;
+    this.searchCategoryIds = [];
     this.searchLanguage = '';
     this.searchYearFrom = null;
     this.searchYearTo = null;
@@ -112,5 +131,26 @@ export class CatalogueComponent implements OnInit {
   goToPage(page: number): void {
     this.currentPage.set(page);
     this.loadBooks();
+  }
+
+  isCategorySelected(id: number): boolean {
+    return this.searchCategoryIds.includes(id);
+  }
+
+  categoryDisabled(catId: number): boolean {
+    return (
+      this.searchCategoryIds.length >= this.maxCategories &&
+      !this.isCategorySelected(catId)
+    );
+  }
+
+  toggleCategory(id: number, checked: boolean): void {
+    if (checked) {
+      if (this.searchCategoryIds.length < this.maxCategories) {
+        this.searchCategoryIds = [...this.searchCategoryIds, id];
+      }
+    } else {
+      this.searchCategoryIds = this.searchCategoryIds.filter((x) => x !== id);
+    }
   }
 }

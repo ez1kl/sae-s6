@@ -1,5 +1,5 @@
 <div class="container py-4">
-  <h2 class="section-title mb-4">Mon Espace</h2>
+  <h2 class="section-title mb-4">Espace Adhérent</h2>
 
   @if (authService.currentUser()) {
     <div class="welcome-banner">
@@ -47,8 +47,10 @@
                     </div>
                     @if (loan.returnDate) {
                       <span class="badge bg-success">Rendu</span>
+                    } @else if (isLoanLate(loan)) {
+                      <span class="badge bg-danger text-white">En retard</span>
                     } @else {
-                      <span class="badge bg-warning text-dark">En cours</span>
+                      <span class="badge bg-warning text-white">En cours</span>
                     }
                   </div>
                 }

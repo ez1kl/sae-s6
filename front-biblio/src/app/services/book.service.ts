@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Book, Author, Category, PaginatedResponse, SearchCriteria } from '../models/models';
+import { Book, Author, Category, PaginatedResponse, SearchCriteria, ReservationStatusResponse } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
@@ -21,11 +21,22 @@ export class BookService {
     return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
   }
 
+  getReservationStatus(bookId: number): Observable<ReservationStatusResponse> {
+    return this.http.get<ReservationStatusResponse>(
+      `${this.apiUrl}/books/${bookId}/reservation-status`
+    );
+  }
+
   searchBooks(criteria: SearchCriteria): Observable<PaginatedResponse<Book>> {
     let params = new HttpParams();
     if (criteria.title) params = params.set('title', criteria.title);
     if (criteria.author) params = params.set('author', criteria.author.toString());
-    if (criteria.category) params = params.set('category', criteria.category.toString());
+    if (criteria.categories?.length) {
+      params = params.set(
+        'categories',
+        criteria.categories.slice(0, 3).join(',') // On construit un string avec les catégories séparées par une virugle
+      );
+    }
     if (criteria.language) params = params.set('language', criteria.language);
     if (criteria.yearFrom) params = params.set('yearFrom', criteria.yearFrom.toString());
     if (criteria.yearTo) params = params.set('yearTo', criteria.yearTo.toString());

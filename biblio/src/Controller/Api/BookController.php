@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Book;
 use App\Repository\BookRepository;
+use App\Repository\ReservationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,14 @@ class BookController extends AbstractController
         ], 200, [], ['groups' => 'book:list']);
     }
 
+    #[Route('/books/{id}/reservation-status', name: 'api_books_reservation_status', methods: ['GET'])]
+    public function reservationStatus(Book $book, ReservationRepository $reservationRepository): JsonResponse
+    {
+        $existing = $reservationRepository->findOneByBookId($book->getId());
+
+        return $this->json(['reservable' => $existing === null]);
+    }
+
     #[Route('/books/{id}', name: 'api_books_show', methods: ['GET'])]
     public function show(Book $book): JsonResponse
     {
@@ -43,7 +52,22 @@ class BookController extends AbstractController
     {
         $title = $request->query->get('title');
         $authorId = $request->query->get('author') !== null ? $request->query->getInt('author') : null;
-        $categoryId = $request->query->get('category') !== null ? $request->query->getInt('category') : null;
+        $categoryIds = null;
+        $categoriesParam = $request->query->get('categories');
+        if ($categoriesParam !== null && $categoriesParam !== '') {
+            $parsed = [];
+            foreach (explode(',', (string) $categoriesParam) as $part) {
+                $id = (int) trim($part);
+                if ($id > 0) {
+                    $parsed[] = $id;
+                }
+            }
+            $parsed = array_slice(array_unique($parsed), 0, 3);
+            $categoryIds = $parsed !== [] ? $parsed : null;
+        } elseif ($request->query->get('category') !== null) {
+            $id = $request->query->getInt('category');
+            $categoryIds = $id > 0 ? [$id] : null;
+        }
         $language = $request->query->get('language');
         $yearFrom = $request->query->get('yearFrom') !== null ? $request->query->getInt('yearFrom') : null;
         $yearTo = $request->query->get('yearTo') !== null ? $request->query->getInt('yearTo') : null;
@@ -51,15 +75,19 @@ class BookController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $limit = min(100, max(1, $request->query->getInt('limit', 20)));
 
-        $qb = $bookRepository->createSearchQueryBuilder($title, $authorId, $categoryId, $language, $yearFrom, $yearTo);
+        $qb = $bookRepository->createSearchQueryBuilder($title, $authorId, $categoryIds, $language, $yearFrom, $yearTo);
 
         $total = (int) (clone $qb)->select('COUNT(DISTINCT b.id)')->getQuery()->getSingleScalarResult();
 
-        $books = $qb
+        $idsQb = clone $qb;
+        $idsQb->resetDQLPart('select');
+        $idsQb->select('b.id')->distinct(true)
+            ->orderBy('b.title', 'ASC')
             ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($limit);
+        $idRows = $idsQb->getQuery()->getScalarResult();
+        $ids = array_map('intval', array_column($idRows, 'id'));
+        $books = $bookRepository->findByIdsWithAuthorAndCategories($ids);
 
         return $this->json([
             'data' => $books,

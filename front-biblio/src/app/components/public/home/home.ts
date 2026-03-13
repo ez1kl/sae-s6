@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BookService } from '../../../services/book.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,7 @@ import { BookService } from '../../../services/book.service';
   styleUrl: './home.scss'
 })
 export class HomeComponent implements OnInit {
+  protected authService = inject(AuthService);
   totalBooks = signal(0);
   totalAuthors = signal(0);
   totalCategories = signal(0);
