@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BookService } from '../../../services/book.service';
 import { Author, Book } from '../../../models/models';
@@ -6,7 +7,7 @@ import { Author, Book } from '../../../models/models';
 @Component({
   selector: 'app-author-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe],
   templateUrl: './author-detail.html',
   styleUrl: './author-detail.scss'
 })
