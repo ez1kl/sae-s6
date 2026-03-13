@@ -38,7 +38,12 @@
         </div>
         <div class="col-md-4">
           <label class="form-label">Langue</label>
-          <input type="text" class="form-control" [(ngModel)]="searchLanguage" placeholder="ex: fr, en...">
+          <select class="form-select" [(ngModel)]="searchLanguage">
+            <option [ngValue]="''">Toutes les langues</option>
+            @for (lang of languageOptions; track lang.code) {
+              <option [ngValue]="lang.code">{{ lang.label }}</option>
+            }
+          </select>
         </div>
         <div class="col-md-3">
           <label class="form-label">Année min</label>
