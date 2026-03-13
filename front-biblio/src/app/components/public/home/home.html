@@ -5,13 +5,15 @@
       <h1 class="hero-title display-3 mb-3">BiblioThèque</h1>
       <div class="hero-divider"></div>
       <p class="hero-desc mt-3 mb-4">Parcourez notre collection, découvrez de nouveaux auteurs<br>et réservez vos prochaines lectures.</p>
-      <div class="d-flex justify-content-center gap-3">
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
         <a routerLink="/catalogue" class="btn btn-vintage-gold btn-lg">
           Parcourir le catalogue
         </a>
-        <a routerLink="/login" class="btn btn-outline-vintage btn-lg">
-          Se connecter
-        </a>
+        @if (!authService.isLoggedIn()) {
+          <a routerLink="/login" class="btn btn-outline-vintage btn-lg">
+            Se connecter
+          </a>
+        }
       </div>
     </div>
   </div>

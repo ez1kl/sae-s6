@@ -19,9 +19,20 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
 
   currentUser = signal<Member | null>(null);
-  isLoggedIn = computed(() => !!this.getToken() && !this.isTokenExpired());
-  userRoles = computed(() => this.getDecodedToken()?.roles ?? []);
-  userEmail = computed(() => this.getDecodedToken()?.username ?? '');
+  private authEpoch = signal(0);
+
+  isLoggedIn = computed(() => {
+    this.authEpoch();
+    return !!this.getToken() && !this.isTokenExpired();
+  });
+  userRoles = computed(() => {
+    this.authEpoch();
+    return this.getDecodedToken()?.roles ?? [];
+  });
+  userEmail = computed(() => {
+    this.authEpoch();
+    return this.getDecodedToken()?.username ?? '';
+  });
 
   constructor(private http: HttpClient, private router: Router) {
     if (this.isLoggedIn()) {
@@ -33,6 +44,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         localStorage.setItem(this.TOKEN_KEY, response.token);
+        this.authEpoch.update((n) => n + 1);
         this.loadProfile();
       })
     );
@@ -40,6 +52,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+    this.authEpoch.update((n) => n + 1);
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
