@@ -108,6 +108,7 @@ class MemberController extends AbstractController
         Request $request,
         MemberRepository $memberRepository,
         BookRepository $bookRepository,
+        LoanRepository $loanRepository,
         ReservationRepository $reservationRepository,
         EntityManagerInterface $em,
     ): JsonResponse {
@@ -125,9 +126,19 @@ class MemberController extends AbstractController
             return $this->json(['error' => 'Le champ bookId est requis.'], 400);
         }
 
+        $memberReservationCount = $reservationRepository->countByMember($member);
+        if ($memberReservationCount >= 3) {
+            return $this->json(['error' => 'Vous ne pouvez pas reserver plus de 3 livres.'], 409);
+        }
+
         $book = $bookRepository->find($data['bookId']);
         if (!$book) {
             return $this->json(['error' => 'Livre introuvable.'], 404);
+        }
+
+        $activeLoan = $loanRepository->findActiveByBookId($book->getId());
+        if ($activeLoan) {
+            return $this->json(['error' => 'Ce livre est actuellement emprunte et ne peut pas etre reserve.'], 409);
         }
 
         $existing = $reservationRepository->findOneByBookId($book->getId());

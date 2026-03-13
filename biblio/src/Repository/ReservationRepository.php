@@ -40,4 +40,14 @@ class ReservationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function countByMember(Member $member): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->andWhere('r.member = :member')
+            ->setParameter('member', $member)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

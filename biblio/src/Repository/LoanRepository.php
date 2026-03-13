@@ -31,4 +31,14 @@ class LoanRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findActiveByBookId(int $bookId): ?Loan
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.book = :bookId')
+            ->andWhere('l.returnDate IS NULL')
+            ->setParameter('bookId', $bookId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
