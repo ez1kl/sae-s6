@@ -79,11 +79,15 @@ class BookController extends AbstractController
 
         $total = (int) (clone $qb)->select('COUNT(DISTINCT b.id)')->getQuery()->getSingleScalarResult();
 
-        $books = $qb
+        $idsQb = clone $qb;
+        $idsQb->resetDQLPart('select');
+        $idsQb->select('b.id')->distinct(true)
+            ->orderBy('b.title', 'ASC')
             ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($limit);
+        $idRows = $idsQb->getQuery()->getScalarResult();
+        $ids = array_map('intval', array_column($idRows, 'id'));
+        $books = $bookRepository->findByIdsWithAuthorAndCategories($ids);
 
         return $this->json([
             'data' => $books,

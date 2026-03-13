@@ -66,18 +66,45 @@ class BookRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    /**
+     * Pagination par livre : on récupère les IDs des livres et on les passe à la méthode findByIdsWithAuthorAndCategories
+     */
     public function findPaginated(int $page, int $limit): array
     {
-        $qb = $this->createQueryBuilder('b')
+        $idQb = $this->createQueryBuilder('b')
+            ->select('b.id')
+            ->orderBy('b.title', 'ASC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $ids = array_map('intval', array_column($idQb->getQuery()->getScalarResult(), 'id'));
+        if ($ids === []) {
+            return [];
+        }
+
+        return $this->findByIdsWithAuthorAndCategories($ids);
+    }
+
+    /**
+     * @param int[] $ids
+     *
+     * @return Book[]
+     */
+    public function findByIdsWithAuthorAndCategories(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('b')
             ->leftJoin('b.author', 'a')
             ->addSelect('a')
             ->leftJoin('b.categories', 'c')
             ->addSelect('c')
+            ->where('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
             ->orderBy('b.title', 'ASC')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit);
-
-        return $qb->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
     public function countAll(): int
