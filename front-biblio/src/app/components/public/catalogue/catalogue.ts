@@ -26,16 +26,16 @@ export class CatalogueComponent implements OnInit {
   readonly languageOptions: { code: string; label: string }[] = [
     { code: 'fr', label: 'Français' },
     { code: 'en', label: 'Anglais' },
-    { code: 'de', label: 'Allemand' },
+    // { code: 'de', label: 'Allemand' },
     { code: 'es', label: 'Espagnol' },
-    { code: 'it', label: 'Italien' },
-    { code: 'pt', label: 'Portugais' },
-    { code: 'nl', label: 'Néerlandais' },
-    { code: 'pl', label: 'Polonais' },
-    { code: 'ru', label: 'Russe' },
+    // { code: 'it', label: 'Italien' },
+    // { code: 'pt', label: 'Portugais' },
+    // { code: 'nl', label: 'Néerlandais' },
+    // { code: 'pl', label: 'Polonais' },
+    // { code: 'ru', label: 'Russe' },
     { code: 'ja', label: 'Japonais' },
-    { code: 'zh', label: 'Chinois' },
-    { code: 'ar', label: 'Arabe' }
+    // { code: 'zh', label: 'Chinois' },
+    // { code: 'ar', label: 'Arabe' }
   ];
 
   // Critères de recherche
