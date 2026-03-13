@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -11,4 +11,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent {
   authService = inject(AuthService);
+  isMenuCollapsed = signal(true);
+
+  toggleMenu() {
+    this.isMenuCollapsed.set(!this.isMenuCollapsed());
+  }
 }

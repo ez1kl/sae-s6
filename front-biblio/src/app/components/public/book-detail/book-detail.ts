@@ -44,7 +44,7 @@ export class BookDetailComponent implements OnInit {
         this.reservationError.set(false);
       },
       error: (err) => {
-        const message = err.error?.message || 'Impossible de réserver ce livre.';
+        const message = err.error?.error || 'Impossible de réserver ce livre.';
         this.reservationMessage.set(message);
         this.reservationError.set(true);
       }

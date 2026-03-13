@@ -1,12 +1,14 @@
 <nav class="navbar navbar-expand-lg sticky-top navbar-vintage">
+  <div class="overlay" [class.show]="!isMenuCollapsed()" (click)="toggleMenu()"></div>
   <div class="container">
     <a class="navbar-brand" routerLink="/">
       <i class="bi bi-journal-richtext me-2"></i>BiblioThèque
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed()" id="navbarNav">
+      <button class="btn-close btn-close-white d-lg-none mb-4" (click)="toggleMenu()"></button>
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

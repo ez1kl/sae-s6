@@ -31,6 +31,6 @@ export class MemberService {
   }
 
   cancelReservation(reservationId: number): Observable<void> {
-    return of(void 0);
+    return this.http.delete<void>(`${this.apiUrl}/me/reservations/${reservationId}`);
   }
 }
