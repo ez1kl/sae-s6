@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Book;
 use App\Repository\BookRepository;
+use App\Repository\ReservationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +31,14 @@ class BookController extends AbstractController
                 'totalPages' => (int) ceil($total / $limit),
             ],
         ], 200, [], ['groups' => 'book:list']);
+    }
+
+    #[Route('/books/{id}/reservation-status', name: 'api_books_reservation_status', methods: ['GET'])]
+    public function reservationStatus(Book $book, ReservationRepository $reservationRepository): JsonResponse
+    {
+        $existing = $reservationRepository->findOneByBookId($book->getId());
+
+        return $this->json(['reservable' => $existing === null]);
     }
 
     #[Route('/books/{id}', name: 'api_books_show', methods: ['GET'])]

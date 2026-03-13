@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../../services/book.service';
 import { Book, Author, Category, SearchCriteria } from '../../../models/models';
+import { MemberService } from '../../../services/member.service';
 
 @Component({
   selector: 'app-catalogue',

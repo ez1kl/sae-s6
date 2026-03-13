@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Book, Author, Category, PaginatedResponse, SearchCriteria } from '../models/models';
+import { Book, Author, Category, PaginatedResponse, SearchCriteria, ReservationStatusResponse } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
@@ -19,6 +19,12 @@ export class BookService {
 
   getBook(id: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
+  }
+
+  getReservationStatus(bookId: number): Observable<ReservationStatusResponse> {
+    return this.http.get<ReservationStatusResponse>(
+      `${this.apiUrl}/books/${bookId}/reservation-status`
+    );
   }
 
   searchBooks(criteria: SearchCriteria): Observable<PaginatedResponse<Book>> {

@@ -16,6 +16,10 @@ export interface Book {
   categories?: Category[];
 }
 
+export interface ReservationStatusResponse {
+  reservable: boolean;
+}
+
 export interface Category {
   id: number;
   name: string;
