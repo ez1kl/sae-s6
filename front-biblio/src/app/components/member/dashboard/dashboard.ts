@@ -53,4 +53,8 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  isLoanLate(loan: Loan): boolean {
+    return new Date(loan.dueDate) < new Date();
+  }
 }
