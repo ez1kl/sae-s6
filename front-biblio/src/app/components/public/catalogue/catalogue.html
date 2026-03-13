@@ -3,7 +3,7 @@
 
   <!-- Barre de recherche -->
   <div class="card search-card mb-4">
-    <div class="card-body">
+    <div class="card-body" (keyup.enter)="search()">
       <h5 class="card-title mb-3"><i class="bi bi-search me-2"></i>Recherche avancée</h5>
       <div class="row g-3">
         <div class="col-md-4">
