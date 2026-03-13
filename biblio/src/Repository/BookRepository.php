@@ -20,7 +20,7 @@ class BookRepository extends ServiceEntityRepository
     public function createSearchQueryBuilder(
         ?string $title = null,
         ?int $authorId = null,
-        ?int $categoryId = null,
+        ?array $categoryIds = null,
         ?string $language = null,
         ?int $yearFrom = null,
         ?int $yearTo = null,
@@ -41,9 +41,9 @@ class BookRepository extends ServiceEntityRepository
                 ->setParameter('authorId', $authorId);
         }
 
-        if ($categoryId !== null) {
-            $qb->andWhere('c.id = :categoryId')
-                ->setParameter('categoryId', $categoryId);
+        if ($categoryIds !== null && $categoryIds !== []) {
+            $qb->andWhere('c.id IN (:categoryIds)')
+                ->setParameter('categoryIds', array_values($categoryIds));
         }
 
         if ($language !== null && $language !== '') {

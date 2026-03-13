@@ -31,7 +31,12 @@ export class BookService {
     let params = new HttpParams();
     if (criteria.title) params = params.set('title', criteria.title);
     if (criteria.author) params = params.set('author', criteria.author.toString());
-    if (criteria.category) params = params.set('category', criteria.category.toString());
+    if (criteria.categories?.length) {
+      params = params.set(
+        'categories',
+        criteria.categories.slice(0, 3).join(',') // On construit un string avec les catégories séparées par une virugle
+      );
+    }
     if (criteria.language) params = params.set('language', criteria.language);
     if (criteria.yearFrom) params = params.set('yearFrom', criteria.yearFrom.toString());
     if (criteria.yearTo) params = params.set('yearTo', criteria.yearTo.toString());

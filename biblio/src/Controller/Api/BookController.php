@@ -52,7 +52,22 @@ class BookController extends AbstractController
     {
         $title = $request->query->get('title');
         $authorId = $request->query->get('author') !== null ? $request->query->getInt('author') : null;
-        $categoryId = $request->query->get('category') !== null ? $request->query->getInt('category') : null;
+        $categoryIds = null;
+        $categoriesParam = $request->query->get('categories');
+        if ($categoriesParam !== null && $categoriesParam !== '') {
+            $parsed = [];
+            foreach (explode(',', (string) $categoriesParam) as $part) {
+                $id = (int) trim($part);
+                if ($id > 0) {
+                    $parsed[] = $id;
+                }
+            }
+            $parsed = array_slice(array_unique($parsed), 0, 3);
+            $categoryIds = $parsed !== [] ? $parsed : null;
+        } elseif ($request->query->get('category') !== null) {
+            $id = $request->query->getInt('category');
+            $categoryIds = $id > 0 ? [$id] : null;
+        }
         $language = $request->query->get('language');
         $yearFrom = $request->query->get('yearFrom') !== null ? $request->query->getInt('yearFrom') : null;
         $yearTo = $request->query->get('yearTo') !== null ? $request->query->getInt('yearTo') : null;
@@ -60,7 +75,7 @@ class BookController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $limit = min(100, max(1, $request->query->getInt('limit', 20)));
 
-        $qb = $bookRepository->createSearchQueryBuilder($title, $authorId, $categoryId, $language, $yearFrom, $yearTo);
+        $qb = $bookRepository->createSearchQueryBuilder($title, $authorId, $categoryIds, $language, $yearFrom, $yearTo);
 
         $total = (int) (clone $qb)->select('COUNT(DISTINCT b.id)')->getQuery()->getSingleScalarResult();
 

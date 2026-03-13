@@ -20,6 +20,12 @@
   border: 1px solid rgba(107, 58, 42, 0.1);
 }
 
+.category-checkboxes {
+  max-height: 8rem;
+  overflow-y: auto;
+  border-color: rgba(107, 58, 42, 0.15) !important;
+}
+
 .book-card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: 1px solid rgba(107, 58, 42, 0.1);
