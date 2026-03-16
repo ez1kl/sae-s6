@@ -1,9 +1,9 @@
 <div class="container py-4">
   <h2 class="section-title mb-4">Espace Adhérent</h2>
 
-  @if (authService.currentUser()) {
+  @if (member()) {
     <div class="welcome-banner">
-      Bienvenue, <strong>{{ authService.currentUser()!.firstName }} {{ authService.currentUser()!.lastName }}</strong>
+      Bienvenue, {{ member()!.firstName }} {{ member()!.lastName }}
     </div>
   }
 

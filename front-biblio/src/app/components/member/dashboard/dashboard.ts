@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MemberService } from '../../../services/member.service';
 import { AuthService } from '../../../services/auth.service';
-import { Loan, Reservation } from '../../../models/models';
+import { Loan, Member, Reservation } from '../../../models/models';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   authService = inject(AuthService);
   private memberService = inject(MemberService);
 
+  member = signal<Member | null>(null);
   loans = signal<Loan[]>([]);
   reservations = signal<Reservation[]>([]);
   loading = signal(true);
@@ -28,6 +29,12 @@ export class DashboardComponent implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
+    this.memberService.getProfile().subscribe({
+      next: (member) => {
+        this.member.set(member);
+      },
+      error: () => {}
+    });
     this.memberService.getMyLoans().subscribe({
       next: (loans) => this.loans.set(loans)
     });
