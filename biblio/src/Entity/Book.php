@@ -32,6 +32,10 @@ class Book
     #[Groups(['book:list', 'book:read'])]
     private ?string $language = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['book:list', 'book:read'])]
+    private ?string $coverImage = null;
+
     #[ORM\ManyToOne(targetEntity: Author::class)]
     #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: true, onDelete: 'RESTRICT')]
     #[Groups(['book:list', 'book:read'])]
@@ -89,6 +93,18 @@ class Book
     public function setLanguage(string $language): static
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(?string $coverImage): static
+    {
+        $this->coverImage = $coverImage;
 
         return $this;
     }

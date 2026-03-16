@@ -37,6 +37,14 @@ class Author
     #[Groups(['author:list', 'author:read'])]
     private ?string $nationality = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['author:read'])]
+    private ?string $photo = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['author:read'])]
+    private ?string $description = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -98,6 +106,30 @@ class Author
     public function setNationality(string $nationality): static
     {
         $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -47,6 +47,10 @@ class Member
     #[Groups(['member:read'])]
     private ?string $address = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['member:read'])]
+    private ?string $photo = null;
+
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     #[Groups(['member:read'])]
     private bool $suspended = false;
@@ -136,6 +140,18 @@ class Member
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }
