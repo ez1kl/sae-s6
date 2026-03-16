@@ -26,7 +26,13 @@ class MemberController extends AbstractController
         $member = $memberRepository->findOneBy(['user' => $user]);
 
         if (!$member) {
-            return $this->json(['error' => 'Profil adhérent introuvable.'], 404);
+            // Admin/librarian users without a member profile
+            return $this->json([
+                'id' => null,
+                'email' => $user->getUserIdentifier(),
+                'roles' => $user->getRoles(),
+                'isMember' => false,
+            ], 200);
         }
 
         return $this->json($member, 200, [], ['groups' => 'member:read']);

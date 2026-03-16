@@ -181,7 +181,40 @@ class LoanRepository extends ServiceEntityRepository
             ->leftJoin('l.book', 'b')->addSelect('b')
             ->leftJoin('l.member', 'm')->addSelect('m')
             ->andWhere('l.returnDate IS NULL')
-            ->andWhere('b.title LIKE :search OR m.lastName LIKE :search OR m.firstName LIKE :search')
+            ->andWhere('b.title LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('l.dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Loan[]
+     */
+    public function searchActiveLoansByMember(string $search): array
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.book', 'b')->addSelect('b')
+            ->leftJoin('l.member', 'm')->addSelect('m')
+            ->andWhere('l.returnDate IS NULL')
+            ->andWhere('m.lastName LIKE :search OR m.firstName LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('l.dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Loan[]
+     */
+    public function searchActiveLoansByAuthor(string $search): array
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.book', 'b')->addSelect('b')
+            ->leftJoin('l.member', 'm')->addSelect('m')
+            ->leftJoin('b.author', 'a')->addSelect('a')
+            ->andWhere('l.returnDate IS NULL')
+            ->andWhere('a.lastName LIKE :search OR a.firstName LIKE :search')
             ->setParameter('search', '%' . $search . '%')
             ->orderBy('l.dueDate', 'ASC')
             ->getQuery()

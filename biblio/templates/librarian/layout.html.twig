@@ -2,49 +2,235 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Espace Bibliothécaire{% endblock %}</title>
-    <!-- Bootstrap 5 CDN -->
+    <title>{% block title %}Guichet Bibliothécaire{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar-brand { font-weight: bold; }
-        .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        :root {
+            --v-dark:    #2C1E14;
+            --v-primary: #6B3A2A;
+            --v-gold:    #C4993C;
+            --v-bg:      #FAF6F0;
+            --v-light:   #F5F0E8;
+            --v-text:    #3A2E25;
+            --v-muted:   #7A6955;
+            --v-border:  rgba(107, 58, 42, 0.18);
+        }
+        body {
+            background: var(--v-bg);
+            color: var(--v-text);
+            font-family: 'Lora', Georgia, serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+        /* Navbar */
+        .navbar-vintage {
+            background: var(--v-dark);
+            border-bottom: 3px solid var(--v-gold);
+        }
+        .navbar-vintage .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--v-light);
+            letter-spacing: 0.3px;
+        }
+        .navbar-vintage .navbar-brand i { color: var(--v-gold); }
+        .navbar-vintage .navbar-brand:hover { color: var(--v-gold); }
+        .navbar-vintage .nav-link {
+            color: #D4C5B0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        .navbar-vintage .nav-link:hover,
+        .navbar-vintage .nav-link.active { color: var(--v-gold); }
+        .navbar-vintage .nav-link.muted-link { color: #8a7a6a; font-size: 0.82rem; }
+        .navbar-vintage .nav-link.muted-link:hover { color: #D4C5B0; }
+        /* Search bar */
+        .search-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(196,153,60,0.4);
+            color: #D4C5B0;
+            font-size: 0.85rem;
+            border-radius: 0.3rem 0 0 0.3rem;
+            padding: 0.3rem 0.5rem;
+        }
+        .search-select:focus { outline: none; border-color: var(--v-gold); }
+        .search-select option { background: var(--v-dark); color: #D4C5B0; }
+        .search-input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(196,153,60,0.4);
+            border-left: none;
+            color: #F5F0E8;
+            font-size: 0.85rem;
+            border-radius: 0;
+            padding: 0.3rem 0.7rem;
+            min-width: 180px;
+        }
+        .search-input::placeholder { color: #8a7a6a; }
+        .search-input:focus { outline: none; background: rgba(255,255,255,0.12); border-color: var(--v-gold); box-shadow: none; }
+        .search-btn {
+            background: var(--v-gold);
+            border: 1px solid var(--v-gold);
+            color: var(--v-dark);
+            font-size: 0.85rem;
+            border-radius: 0 0.3rem 0.3rem 0;
+            padding: 0.3rem 0.75rem;
+            transition: background 0.15s;
+        }
+        .search-btn:hover { background: #d4a840; }
+        .search-reset {
+            background: none;
+            border: 1px solid rgba(196,153,60,0.3);
+            color: #8a7a6a;
+            font-size: 0.8rem;
+            border-radius: 0.3rem;
+            margin-left: 0.4rem;
+            padding: 0.3rem 0.5rem;
+        }
+        .search-reset:hover { color: #D4C5B0; border-color: rgba(196,153,60,0.6); }
+        /* Cards & content */
+        .card {
+            border: 1px solid var(--v-border);
+            box-shadow: 0 2px 8px rgba(44,30,20,0.07);
+            background: #fff;
+        }
+        .card-stat {
+            border-left: 4px solid var(--v-gold);
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--v-muted);
+            font-family: 'Lora', serif;
+        }
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--v-primary);
+            line-height: 1;
+        }
+        /* Table */
+        .table thead th {
+            background: var(--v-light);
+            color: var(--v-primary);
+            font-family: 'Lora', serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 2px solid var(--v-border);
+        }
+        .table tbody tr:hover { background: rgba(107,58,42,0.03); }
+        /* Badges */
+        .badge-overdue { background: #9B3B3B; color: #fff; }
+        .badge-ok { background: #5B7A5E; color: #fff; }
+        /* Buttons */
+        .btn-vintage-primary {
+            background: var(--v-primary);
+            border-color: var(--v-primary);
+            color: var(--v-light);
+            font-family: 'Lora', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+        }
+        .btn-vintage-primary:hover { background: #4A2518; border-color: #4A2518; color: var(--v-light); }
+        .btn-vintage-success {
+            background: #5B7A5E;
+            border-color: #5B7A5E;
+            color: #fff;
+            font-family: 'Lora', serif;
+        }
+        .btn-vintage-success:hover { background: #3d5940; border-color: #3d5940; color: #fff; }
+        .btn-vintage-back {
+            color: var(--v-muted);
+            font-size: 0.875rem;
+            font-family: 'Lora', serif;
+        }
+        .btn-vintage-back:hover { color: var(--v-primary); }
+        /* Form controls */
+        .form-control-vintage, .form-select-vintage {
+            border: 1px solid #C4B097;
+            background: #fff;
+            color: var(--v-text);
+            font-family: 'Lora', serif;
+        }
+        .form-control-vintage:focus, .form-select-vintage:focus {
+            border-color: var(--v-primary);
+            box-shadow: 0 0 0 0.18rem rgba(107,58,42,0.18);
+        }
+        /* Section header */
+        .section-header {
+            border-bottom: 2px solid var(--v-gold);
+            padding-bottom: 0.4rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-header h1 {
+            font-size: 1.4rem;
+            color: var(--v-dark);
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-vintage mb-4">
+        <div class="container-fluid px-4">
             <a class="navbar-brand" href="{{ path('librarian_dashboard') }}">
-                <i class="fas fa-book-reader me-2"></i>Espace Bibliothécaire
+                <i class="fas fa-book-open me-2"></i>Guichet
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLib">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLib">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarLib">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-3 mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('librarian_dashboard') }}">Guichet</a>
+                        <a class="nav-link{% if app.request.attributes.get('_route') == 'librarian_express_loan' %} active{% endif %}"
+                           href="{{ path('librarian_express_loan') }}">
+                            <i class="fas fa-plus me-1"></i>Nouveau prêt
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin') }}">Retour Administration</a>
+                        <a class="nav-link{% if app.request.attributes.get('_route') == 'librarian_express_return' %} active{% endif %}"
+                           href="{{ path('librarian_express_return') }}">
+                            <i class="fas fa-undo me-1"></i>Retours
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="nav-link muted-link" href="{{ path('admin') }}">
+                            <i class="fas fa-arrow-left me-1"></i>Administration
+                        </a>
                     </li>
                 </ul>
-                <form class="d-flex" action="{{ path('librarian_dashboard') }}" method="GET">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Rechercher par Titre ou Nom" value="{{ searchQuery|default('') }}" aria-label="Search">
-                    <button class="btn btn-outline-light" type="submit">Rechercher</button>
+
+                <form class="d-flex align-items-center ms-auto" action="{{ path('librarian_dashboard') }}" method="GET">
+                    <select name="type" class="search-select">
+                        <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
+                        <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
+                        <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
+                    </select>
+                    <input class="search-input" type="search" name="q"
+                           placeholder="Rechercher…"
+                           value="{{ app.request.query.get('q', '') }}">
+                    <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+                    {% if app.request.query.get('q') %}
+                        <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
+                    {% endif %}
                 </form>
             </div>
         </div>
     </nav>
 
-    <div class="container pb-5">
+    <div class="container-fluid px-4 pb-5">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert"
+                     style="border-left: 4px solid var(--v-gold); font-family: 'Lora', serif; font-size: 0.9rem;">
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
         {% endfor %}

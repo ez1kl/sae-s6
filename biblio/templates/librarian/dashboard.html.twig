@@ -1,61 +1,61 @@
 {% extends 'librarian/layout.html.twig' %}
 
-{% block title %}Guichet - Gestion Prêts & Retours{% endblock %}
+{% block title %}Guichet — Prêts & Retours{% endblock %}
 
 {% block body %}
-    <div class="row align-items-center mb-4">
-        <div class="col">
-            <h1 class="h3"><i class="fas fa-desktop text-primary"></i> Guichet Bibliothécaire</h1>
-        </div>
-        <div class="col-auto">
-            <a href="{{ path('librarian_express_loan') }}" class="btn btn-primary shadow-sm"><i class="fas fa-plus"></i> Nouveau Prêt</a>
-            <a href="{{ path('librarian_express_return') }}" class="btn btn-success shadow-sm"><i class="fas fa-undo"></i> Retours Rapides</a>
-        </div>
-    </div>
-
-    {% if searchQuery is not empty %}
-        <div class="alert alert-info">
-            <i class="fas fa-search"></i> Résultats de la recherche pour "<strong>{{ searchQuery }}</strong>"
-            <a href="{{ path('librarian_dashboard') }}" class="float-end text-decoration-none">Réinitialiser</a>
-        </div>
-    {% endif %}
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white text-center p-3">
-                <h2 class="mb-0">{{ activeLoans|length }}</h2>
-                <p class="mb-0 small text-uppercase fw-bold">Prêts en cours (résultat)</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-danger text-white text-center p-3">
-                <h2 class="mb-0">{{ overdueLoans|length }}</h2>
-                <p class="mb-0 small text-uppercase fw-bold">Retards constatés</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white text-center p-3">
-                <h2 class="mb-0">{{ availableBooks }}</h2>
-                <p class="mb-0 small text-uppercase fw-bold">Livres disponibles (Total)</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-            <h5 class="mb-0"><i class="fas fa-list mt-1 text-secondary"></i> Emprunts {% if searchQuery %}Trouvés{% else %}Actifs{% endif %}</h5>
-            {% if overdueLoans|length > 0 %}
-                <span class="badge bg-danger">Attention : {{ overdueLoans|length }} retard(s)</span>
+    <div class="section-header d-flex align-items-baseline justify-content-between">
+        <h1>
+            {% if app.request.query.get('q') %}
+                Résultats
+                <small class="fw-normal fs-6 ms-2 text-muted">
+                    « {{ app.request.query.get('q') }} »
+                    {% if app.request.query.get('type') == 'author' %}· auteur
+                    {% elseif app.request.query.get('type') == 'member' %}· membre
+                    {% else %}· titre{% endif %}
+                </small>
+            {% else %}
+                Emprunts en cours
             {% endif %}
+        </h1>
+        {% if overdueLoans|length > 0 %}
+            <span class="badge badge-overdue px-3 py-2">
+                <i class="fas fa-exclamation-triangle me-1"></i>{{ overdueLoans|length }} retard(s)
+            </span>
+        {% endif %}
+    </div>
+
+    {# Stats #}
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="card card-stat p-3">
+                <div class="stat-value">{{ activeLoans|length }}</div>
+                <div class="stat-label mt-1">Prêts actifs</div>
+            </div>
         </div>
+        <div class="col-sm-4">
+            <div class="card card-stat p-3" style="border-left-color: #9B3B3B;">
+                <div class="stat-value" style="color:#9B3B3B;">{{ overdueLoans|length }}</div>
+                <div class="stat-label mt-1">En retard</div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card card-stat p-3" style="border-left-color: #5B7A5E;">
+                <div class="stat-value" style="color:#5B7A5E;">{{ availableBooks }}</div>
+                <div class="stat-label mt-1">Livres disponibles</div>
+            </div>
+        </div>
+    </div>
+
+    {# Table #}
+    <div class="card">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
+                <thead>
                     <tr>
                         <th class="ps-4">Livre</th>
                         <th>Membre</th>
-                        <th>Date de prêt</th>
-                        <th>Date de retour prévue</th>
+                        <th>Prêté le</th>
+                        <th>Retour prévu</th>
                         <th class="text-end pe-4">Statut</th>
                     </tr>
                 </thead>
@@ -64,27 +64,28 @@
                         {% set isOverdue = loan.dueDate < date() %}
                         <tr>
                             <td class="ps-4">
-                                <strong class="text-dark">{{ loan.book.title }}</strong>
-                                <div class="text-muted small">
-                                    {% if loan.book.author %}Auteur: {{ loan.book.author.firstName }} {{ loan.book.author.lastName }}{% endif %}
-                                </div>
+                                <span class="fw-semibold" style="color: var(--v-dark);">{{ loan.book.title }}</span>
+                                {% if loan.book.author %}
+                                    <div class="small" style="color: var(--v-muted);">{{ loan.book.author.firstName }} {{ loan.book.author.lastName }}</div>
+                                {% endif %}
                             </td>
-                            <td>{{ loan.member.firstName }} {{ loan.member.lastName }}</td>
-                            <td>{{ loan.loanDate|date('d/m/Y') }}</td>
-                            <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                            <td style="color: var(--v-text);">{{ loan.member.firstName }} {{ loan.member.lastName }}</td>
+                            <td class="small" style="color: var(--v-muted);">{{ loan.loanDate|date('d/m/Y') }}</td>
+                            <td class="small {% if isOverdue %}text-danger fw-semibold{% else %}text-muted{% endif %}">
+                                {{ loan.dueDate|date('d/m/Y') }}
+                            </td>
                             <td class="text-end pe-4">
                                 {% if isOverdue %}
-                                    <span class="badge bg-danger">EN RETARD</span>
+                                    <span class="badge badge-overdue">En retard</span>
                                 {% else %}
-                                    <span class="badge bg-success">Dans les temps</span>
+                                    <span class="badge badge-ok">Dans les temps</span>
                                 {% endif %}
                             </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="fas fa-inbox fa-3x mb-3 text-light"></i><br>
-                                Aucun emprunt ne correspond à votre recherche.
+                            <td colspan="5" class="text-center py-5" style="color: var(--v-muted); font-family: 'Lora', serif; font-style: italic;">
+                                Aucun emprunt à afficher.
                             </td>
                         </tr>
                     {% endfor %}

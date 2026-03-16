@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Entity\Loan;
 use App\Entity\Member;
+use App\Repository\LoanRepository;
 use App\Service\LoanService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,25 +17,31 @@ class LibrarianController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private LoanService $loanService
+        private LoanService $loanService,
+        private LoanRepository $loanRepository,
     ) {}
 
     #[Route('', name: 'dashboard')]
     public function dashboard(Request $request): Response
     {
         $search = $request->query->get('q', '');
-        
+        $type = $request->query->get('type', 'title');
+
         if (!empty($search)) {
-            $activeLoans = $this->em->getRepository(Loan::class)->searchActiveLoans($search);
-            $overdueLoans = []; // Filter this if needed
+            $activeLoans = match ($type) {
+                'author' => $this->loanRepository->searchActiveLoansByAuthor($search),
+                'member' => $this->loanRepository->searchActiveLoansByMember($search),
+                default  => $this->loanRepository->searchActiveLoans($search),
+            };
+            $overdueLoans = [];
         } else {
-            $activeLoans = $this->em->getRepository(Loan::class)->findActiveLoans();
-            $overdueLoans = $this->em->getRepository(Loan::class)->findOverdueLoans();
+            $activeLoans = $this->loanRepository->findActiveLoans();
+            $overdueLoans = $this->loanRepository->findOverdueLoans();
         }
 
         $totalBooks = $this->em->getRepository(Book::class)->count([]);
         $totalMembers = $this->em->getRepository(Member::class)->count([]);
-        $allActiveCount = $this->em->getRepository(Loan::class)->countActiveLoans();
+        $allActiveCount = $this->loanRepository->countActiveLoans();
         $availableBooks = $totalBooks - $allActiveCount;
 
         return $this->render('librarian/dashboard.html.twig', [
@@ -43,7 +49,8 @@ class LibrarianController extends AbstractController
             'overdueLoans' => $overdueLoans,
             'totalMembers' => $totalMembers,
             'availableBooks' => $availableBooks,
-            'searchQuery' => $search
+            'searchQuery' => $search,
+            'searchType' => $type,
         ]);
     }
 
@@ -61,9 +68,14 @@ class LibrarianController extends AbstractController
                 if (!$book || !$member) {
                     $this->addFlash('danger', 'Livre ou membre introuvable.');
                 } else {
-                    $this->loanService->createLoan($member, $book);
-                    $this->addFlash('success', sprintf('Prêt enregistré pour "%s" (Membre: %s)', $book->getTitle(), $member->getLastName()));
-                    return $this->redirectToRoute('librarian_dashboard');
+                    $check = $this->loanService->canLendBookToMember($book, $member);
+                    if (!$check['allowed']) {
+                        $this->addFlash('danger', $check['reason']);
+                    } else {
+                        $this->loanService->registerLoan($book, $member);
+                        $this->addFlash('success', sprintf('Prêt enregistré pour "%s" (Membre: %s)', $book->getTitle(), $member->getLastName()));
+                        return $this->redirectToRoute('librarian_dashboard');
+                    }
                 }
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Erreur : ' . $e->getMessage());
@@ -90,16 +102,21 @@ class LibrarianController extends AbstractController
                 if (!$book) {
                     $this->addFlash('danger', 'Livre introuvable.');
                 } else {
-                    $this->loanService->returnBook($book);
-                    $this->addFlash('success', sprintf('Retour enregistré pour "%s"', $book->getTitle()));
-                    return $this->redirectToRoute('librarian_dashboard');
+                    $loan = $this->loanRepository->findActiveLoanByBook($book);
+                    if (!$loan) {
+                        $this->addFlash('danger', 'Aucun emprunt actif trouvé pour ce livre.');
+                    } else {
+                        $this->loanService->registerReturn($loan);
+                        $this->addFlash('success', sprintf('Retour enregistré pour "%s"', $book->getTitle()));
+                        return $this->redirectToRoute('librarian_dashboard');
+                    }
                 }
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Erreur : ' . $e->getMessage());
             }
         }
 
-        $activeLoans = $this->em->getRepository(Loan::class)->findActiveLoans();
+        $activeLoans = $this->loanRepository->findActiveLoans();
 
         return $this->render('librarian/express_return.html.twig', [
             'loans' => $activeLoans,
