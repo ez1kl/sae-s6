@@ -171,4 +171,20 @@ class LoanRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Loan[]
+     */
+    public function searchActiveLoans(string $search): array
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.book', 'b')->addSelect('b')
+            ->leftJoin('l.member', 'm')->addSelect('m')
+            ->andWhere('l.returnDate IS NULL')
+            ->andWhere('b.title LIKE :search OR m.lastName LIKE :search OR m.firstName LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('l.dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

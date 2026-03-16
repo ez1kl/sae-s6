@@ -2,12 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Category;
@@ -15,12 +9,19 @@ use App\Entity\Loan;
 use App\Entity\Member;
 use App\Entity\Reservation;
 use App\Entity\User;
-
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Component\HttpFoundation\Response;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private EntityManagerInterface $em) {}
+    public function __construct(
+        private EntityManagerInterface $em
+    ) {}
 
     public function index(): Response
     {
@@ -50,8 +51,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        
         yield MenuItem::section('Guichet Rapide', 'fas fa-desktop');
-        yield MenuItem::linkToRoute('Espace Bibliothécaire', 'fas fa-id-card', 'admin_librarian_dashboard');
+        yield MenuItem::linkToUrl('Espace Bibliothécaire', 'fas fa-id-card', '/librarian');
         
         yield MenuItem::section('Gestion Catalogue', 'fas fa-layer-group');
         yield MenuItem::linkToRoute('Auteurs', 'fas fa-user-edit', 'admin_author_index');

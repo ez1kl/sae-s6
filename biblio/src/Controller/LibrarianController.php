@@ -1,44 +1,53 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
-use App\Entity\Loan;
 use App\Entity\Book;
+use App\Entity\Loan;
 use App\Entity\Member;
 use App\Service\LoanService;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-#[AdminDashboard(routePath: '/admin/librarian', routeName: 'admin_librarian_dashboard')]
-class LibrarianDashboardController extends AbstractDashboardController
+#[Route('/librarian', name: 'librarian_')]
+class LibrarianController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
         private LoanService $loanService
     ) {}
 
-    public function index(): Response
+    #[Route('', name: 'dashboard')]
+    public function dashboard(Request $request): Response
     {
-        $activeLoans = $this->em->getRepository(Loan::class)->findActiveLoans();
-        $overdueLoans = $this->em->getRepository(Loan::class)->findOverdueLoans();
+        $search = $request->query->get('q', '');
+        
+        if (!empty($search)) {
+            $activeLoans = $this->em->getRepository(Loan::class)->searchActiveLoans($search);
+            $overdueLoans = []; // Filter this if needed
+        } else {
+            $activeLoans = $this->em->getRepository(Loan::class)->findActiveLoans();
+            $overdueLoans = $this->em->getRepository(Loan::class)->findOverdueLoans();
+        }
+
         $totalBooks = $this->em->getRepository(Book::class)->count([]);
         $totalMembers = $this->em->getRepository(Member::class)->count([]);
-        $activeLoansCount = count($activeLoans);
-        $availableBooks = $totalBooks - $activeLoansCount;
+        $allActiveCount = $this->em->getRepository(Loan::class)->countActiveLoans();
+        $availableBooks = $totalBooks - $allActiveCount;
 
-        return $this->render('Admin/librarian_dashboard.html.twig', [
+        return $this->render('librarian/dashboard.html.twig', [
             'activeLoans' => $activeLoans,
             'overdueLoans' => $overdueLoans,
             'totalMembers' => $totalMembers,
             'availableBooks' => $availableBooks,
+            'searchQuery' => $search
         ]);
     }
 
-    #[Route('/admin/librarian/express-loan', name: 'admin_librarian_express_loan', methods: ['GET', 'POST'])]
+    #[Route('/loan', name: 'express_loan')]
     public function expressLoan(Request $request): Response
     {
         if ($request->isMethod('POST')) {
@@ -54,7 +63,7 @@ class LibrarianDashboardController extends AbstractDashboardController
                 } else {
                     $this->loanService->createLoan($member, $book);
                     $this->addFlash('success', sprintf('Prêt enregistré pour "%s" (Membre: %s)', $book->getTitle(), $member->getLastName()));
-                    return $this->redirectToRoute('admin_librarian_dashboard');
+                    return $this->redirectToRoute('librarian_dashboard');
                 }
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Erreur : ' . $e->getMessage());
@@ -64,13 +73,13 @@ class LibrarianDashboardController extends AbstractDashboardController
         $allBooks = $this->em->getRepository(Book::class)->findAll();
         $members = $this->em->getRepository(Member::class)->findAll();
 
-        return $this->render('Admin/express_loan.html.twig', [
+        return $this->render('librarian/express_loan.html.twig', [
             'books' => $allBooks,
             'members' => $members,
         ]);
     }
 
-    #[Route('/admin/librarian/express-return', name: 'admin_librarian_express_return', methods: ['GET', 'POST'])]
+    #[Route('/return', name: 'express_return')]
     public function expressReturn(Request $request): Response
     {
         if ($request->isMethod('POST')) {
@@ -83,7 +92,7 @@ class LibrarianDashboardController extends AbstractDashboardController
                 } else {
                     $this->loanService->returnBook($book);
                     $this->addFlash('success', sprintf('Retour enregistré pour "%s"', $book->getTitle()));
-                    return $this->redirectToRoute('admin_librarian_dashboard');
+                    return $this->redirectToRoute('librarian_dashboard');
                 }
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Erreur : ' . $e->getMessage());
@@ -92,7 +101,7 @@ class LibrarianDashboardController extends AbstractDashboardController
 
         $activeLoans = $this->em->getRepository(Loan::class)->findActiveLoans();
 
-        return $this->render('Admin/express_return.html.twig', [
+        return $this->render('librarian/express_return.html.twig', [
             'loans' => $activeLoans,
         ]);
     }
