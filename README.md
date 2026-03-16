@@ -206,7 +206,7 @@ docker compose up -d        # base de données
 Dans un premier terminal (back, depuis `biblio`) :
 
 ```bash
-php -S 127.0.0.1:8000 -t public
+symfony server:start
 ```
 
 Dans un second terminal (front, depuis `front-biblio`) :
