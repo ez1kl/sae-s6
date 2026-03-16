@@ -16,28 +16,72 @@ class MemberRepository extends ServiceEntityRepository
         parent::__construct($registry, Member::class);
     }
 
-//    /**
-//     * @return Member[] Returns an array of Member objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Member[]
+     */
+    public function searchByName(string $query): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.user', 'u')->addSelect('u')
+            ->andWhere('m.lastName LIKE :q OR m.firstName LIKE :q')
+            ->setParameter('q', '%' . $query . '%')
+            ->orderBy('m.lastName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Member
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Member[]
+     */
+    public function findFiltered(?string $search = null, ?string $status = null, int $page = 1, int $limit = 20): array
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->leftJoin('m.user', 'u')->addSelect('u');
+
+        if ($search !== null && $search !== '') {
+            $qb->andWhere('m.lastName LIKE :search OR m.firstName LIKE :search OR u.email LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        if ($status === 'suspended') {
+            $qb->andWhere('m.suspended = true');
+        } elseif ($status === 'active') {
+            $qb->andWhere('m.suspended = false');
+        }
+
+        $qb->orderBy('m.lastName', 'ASC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countFiltered(?string $search = null, ?string $status = null): int
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->leftJoin('m.user', 'u');
+
+        if ($search !== null && $search !== '') {
+            $qb->andWhere('m.lastName LIKE :search OR m.firstName LIKE :search OR u.email LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        if ($status === 'suspended') {
+            $qb->andWhere('m.suspended = true');
+        } elseif ($status === 'active') {
+            $qb->andWhere('m.suspended = false');
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countActive(): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->andWhere('m.suspended = false')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

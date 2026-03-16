@@ -120,6 +120,10 @@ class MemberController extends AbstractController
             return $this->json(['error' => 'Profil adhérent introuvable.'], 404);
         }
 
+        if ($member->isSuspended()) {
+            return $this->json(['error' => 'Votre compte est suspendu. Impossible de réserver.'], 403);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['bookId'])) {

@@ -1,0 +1,37 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Retour Rapide - Guichet Rapide{% endblock %}
+
+{% block content_header %}
+    <h1 class="title"><i class="fas fa-undo"></i> Enregistrer un Retour (Rapide)</h1>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card p-4">
+                <form method="post" action="{{ path('admin_librarian_express_return') }}">
+                    <div class="form-group mb-4">
+                        <label for="book_id" class="form-label control-label font-weight-bold">Livre à retourner :</label>
+                        <select id="book_id" name="book_id" class="form-select form-control select2" required>
+                            <option value="">-- Sélectionner un livre à retourner --</option>
+                            {% for loan in loans %}
+                                <option value="{{ loan.book.id }}">
+                                    {{ loan.book.title }} (Prêté à: {{ loan.member.firstName }} {{ loan.member.lastName }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="text-info small mt-2">
+                            <i class="fas fa-info-circle"></i> Cette action clôturera automatiquement le prêt actif correspondant.
+                        </div>
+                    </div>
+
+                    <div class="form-actions mt-5 d-flex justify-content-between">
+                        <a href="{{ path('admin_librarian_dashboard') }}" class="btn btn-link text-muted"><i class="fas fa-arrow-left"></i> Retour au guichet</a>
+                        <button type="submit" class="btn btn-success btn-lg px-4"><i class="fas fa-check"></i> Valider le retour</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

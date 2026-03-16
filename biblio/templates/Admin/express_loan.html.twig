@@ -1,0 +1,42 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Nouveau Prêt - Guichet Rapide{% endblock %}
+
+{% block content_header %}
+    <h1 class="title"><i class="fas fa-plus-circle"></i> Nouveau Prêt (Express)</h1>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card p-4">
+                <form method="post" action="{{ path('admin_librarian_express_loan') }}">
+                    <div class="form-group mb-4">
+                        <label for="book_id" class="form-label control-label font-weight-bold">Livre à emprunter :</label>
+                        <select id="book_id" name="book_id" class="form-select form-control select2" required>
+                            <option value="">-- Sélectionner un livre --</option>
+                            {% for book in books %}
+                                <option value="{{ book.id }}">{{ book.title }} {% if book.author %}({{ book.author.lastName }}){% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="member_id" class="form-label control-label font-weight-bold">Membre bénéficiaire :</label>
+                        <select id="member_id" name="member_id" class="form-select form-control select2" required>
+                            <option value="">-- Sélectionner un membre --</option>
+                            {% for member in members %}
+                                <option value="{{ member.id }}">{{ member.firstName }} {{ member.lastName }} (ID: {{ member.id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-actions mt-5 d-flex justify-content-between">
+                        <a href="{{ path('admin_librarian_dashboard') }}" class="btn btn-link text-muted"><i class="fas fa-arrow-left"></i> Retour au guichet</a>
+                        <button type="submit" class="btn btn-primary btn-lg px-4"><i class="fas fa-check"></i> Valider le prêt</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

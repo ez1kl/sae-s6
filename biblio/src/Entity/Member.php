@@ -47,6 +47,10 @@ class Member
     #[Groups(['member:read'])]
     private ?string $address = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[Groups(['member:read'])]
+    private bool $suspended = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -132,6 +136,18 @@ class Member
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended;
+    }
+
+    public function setSuspended(bool $suspended): static
+    {
+        $this->suspended = $suspended;
 
         return $this;
     }

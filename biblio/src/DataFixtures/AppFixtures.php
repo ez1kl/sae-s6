@@ -107,7 +107,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setEmail($faker->unique()->safeEmail());
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles(['ROLE_MEMBRE']);
             $user->setPassword($this->passwordHasher->hashPassword($user, 'user'));
             $manager->persist($user);
 
@@ -119,16 +119,27 @@ class AppFixtures extends Fixture
             $member->setMembershipDate($faker->dateTimeBetween('-3 years', 'now'));
             $member->setPhoneNumber($faker->phoneNumber());
             $member->setAddress($faker->address());
+            // Suspendre 2 adhérents pour tester
+            if ($i >= 8) {
+                $member->setSuspended(true);
+            }
             $manager->persist($member);
             $members[] = $member;
         }
 
-        // Administrateur
-        $user = new User();
-        $user->setEmail("admin@admin.fr");
-        $user->setRoles(['ROLE_RESPONSABLE']);
-        $user->setPassword($this->passwordHasher->hashPassword($user, 'admin'));
-        $manager->persist($user);
+        // Administrateur (ROLE_RESPONSABLE)
+        $adminUser = new User();
+        $adminUser->setEmail('admin@admin.fr');
+        $adminUser->setRoles(['ROLE_RESPONSABLE']);
+        $adminUser->setPassword($this->passwordHasher->hashPassword($adminUser, 'admin'));
+        $manager->persist($adminUser);
+
+        // Bibliothécaire (ROLE_BIBLIOTHECAIRE)
+        $libUser = new User();
+        $libUser->setEmail('biblio@biblio.fr');
+        $libUser->setRoles(['ROLE_BIBLIOTHECAIRE']);
+        $libUser->setPassword($this->passwordHasher->hashPassword($libUser, 'biblio'));
+        $manager->persist($libUser);
 
         // --- 15 Emprunts variés ---
         // Mix: emprunts rendus, en cours, en retard

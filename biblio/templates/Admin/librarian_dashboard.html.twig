@@ -1,0 +1,87 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Guichet - Gestion Prêts & Retours{% endblock %}
+
+{% block content_header %}
+    <div class="row w-100 align-items-center">
+        <div class="col">
+            <h1 class="title"><i class="fas fa-desktop"></i> Guichet Bibliothécaire</h1>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('admin_librarian_express_loan') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nouveau Prêt</a>
+            <a href="{{ path('admin_librarian_express_return') }}" class="btn btn-success"><i class="fas fa-undo"></i> Retours Rapides</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white text-center p-3">
+                <h2 class="mb-0">{{ activeLoans|length }}</h2>
+                <p class="mb-0 small uppercase font-weight-bold">Prêts en cours</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white text-center p-3">
+                <h2 class="mb-0">{{ overdueLoans|length }}</h2>
+                <p class="mb-0 small uppercase font-weight-bold">Retards constatés</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white text-center p-3">
+                <h2 class="mb-0">{{ availableBooks }}</h2>
+                <p class="mb-0 small uppercase font-weight-bold">Livres disponibles</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center bg-transparent">
+            <h5 class="mb-0"><i class="fas fa-list mt-1"></i> Emprunts Actifs</h5>
+            {% if overdueLoans|length > 0 %}
+                <span class="badge bg-danger">Attention : {{ overdueLoans|length }} retard(s)</span>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Livre</th>
+                        <th>Membre</th>
+                        <th>Date de prêt</th>
+                        <th>Date de retour prévue</th>
+                        <th class="text-end">Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in activeLoans %}
+                        {% set isOverdue = loan.dueDate < date() %}
+                        <tr>
+                            <td>
+                                <strong>{{ loan.book.title }}</strong>
+                                <div class="text-muted small">
+                                    {% if loan.book.author %}Auteur: {{ loan.book.author.firstName }} {{ loan.book.author.lastName }}{% endif %}
+                                </div>
+                            </td>
+                            <td>{{ loan.member.firstName }} {{ loan.member.lastName }}</td>
+                            <td>{{ loan.loanDate|date('d/m/Y') }}</td>
+                            <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                            <td class="text-end">
+                                {% if isOverdue %}
+                                    <span class="badge bg-danger">EN RETARD</span>
+                                {% else %}
+                                    <span class="badge bg-success">Dans les temps</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Aucun emprunt en cours.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

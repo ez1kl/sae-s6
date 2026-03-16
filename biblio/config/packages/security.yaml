@@ -1,8 +1,4 @@
 security:
-    role_hierarchy:
-        ROLE_RESPONSABLE: ROLE_BIBLIOTHECAIRE
-        ROLE_BIBLIOTHECAIRE: ROLE_MEMBRE
-        ROLE_MEMBRE: ROLE_USER
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
 
@@ -44,12 +40,19 @@ security:
                 path: /
                 always_remember_me: true
 
+    role_hierarchy:
+        ROLE_RESPONSABLE: [ROLE_BIBLIOTHECAIRE, ROLE_MEMBRE, ROLE_USER]
+        ROLE_BIBLIOTHECAIRE: [ROLE_MEMBRE, ROLE_USER]
+        ROLE_MEMBRE: [ROLE_USER]
+
     access_control:
         - { path: ^/admin, roles: ROLE_RESPONSABLE }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/books, roles: PUBLIC_ACCESS }
         - { path: ^/api/authors, roles: PUBLIC_ACCESS }
         - { path: ^/api/categories, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin, roles: ROLE_RESPONSABLE }
+        - { path: ^/api/librarian, roles: ROLE_BIBLIOTHECAIRE }
         - { path: ^/api/user/me, roles: ROLE_USER }
         - { path: ^/api/me, roles: ROLE_USER }
 

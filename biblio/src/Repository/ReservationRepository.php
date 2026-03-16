@@ -50,4 +50,18 @@ class ReservationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @return Reservation[]
+     */
+    public function findByMemberId(int $memberId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.book', 'b')->addSelect('b')
+            ->andWhere('r.member = :memberId')
+            ->setParameter('memberId', $memberId)
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
