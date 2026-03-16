@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../../services/book.service';
 import { Book, Author, Category, SearchCriteria } from '../../../models/models';
+import { SearchFiltersStorageService } from '../../../services/search-filters-storage.service';
+import { SearchFiltersState } from '../../../models/search-filters.model';
 
 @Component({
   selector: 'app-catalogue',
@@ -51,12 +53,41 @@ export class CatalogueComponent implements OnInit {
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private searchFiltersStorage: SearchFiltersStorageService
+  ) {}
 
   ngOnInit(): void {
+    this.restoreFilters();
     this.loadCategories();
     this.loadAuthors();
     this.loadBooks();
+  }
+
+  private buildFiltersState(): SearchFiltersState {
+    return {
+      searchTitle: this.searchTitle,
+      searchAuthorId: this.searchAuthorId,
+      searchCategoryIds: this.searchCategoryIds,
+      searchLanguage: this.searchLanguage,
+      searchYearFrom: this.searchYearFrom,
+      searchYearTo: this.searchYearTo
+    };
+  }
+
+  private restoreFilters(): void {
+    const saved = this.searchFiltersStorage.load();
+    if (!saved) {
+      return;
+    }
+
+    this.searchTitle = saved.searchTitle;
+    this.searchAuthorId = saved.searchAuthorId;
+    this.searchCategoryIds = saved.searchCategoryIds ?? [];
+    this.searchLanguage = saved.searchLanguage;
+    this.searchYearFrom = saved.searchYearFrom;
+    this.searchYearTo = saved.searchYearTo;
   }
 
   loadCategories(): void {
@@ -89,6 +120,9 @@ export class CatalogueComponent implements OnInit {
       if (this.searchLanguage) criteria.language = this.searchLanguage;
       if (this.searchYearFrom) criteria.yearFrom = this.searchYearFrom;
       if (this.searchYearTo) criteria.yearTo = this.searchYearTo;
+
+      // Sauvegarder les filtres utilisés pour la recherche
+      this.searchFiltersStorage.save(this.buildFiltersState());
 
       this.bookService.searchBooks(criteria).subscribe({
         next: (res) => {
@@ -125,6 +159,7 @@ export class CatalogueComponent implements OnInit {
     this.searchYearFrom = null;
     this.searchYearTo = null;
     this.currentPage.set(1);
+    this.searchFiltersStorage.clear();
     this.loadBooks();
   }
 
