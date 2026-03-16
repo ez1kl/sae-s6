@@ -1,0 +1,205 @@
+{% extends 'librarian/layout.html.twig' %}
+
+{% block title %}Membres — Guichet{% endblock %}
+
+{% block body %}
+    <div class="section-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <h1><i class="fas fa-users me-2" style="color: var(--v-gold);"></i>Membres</h1>
+        <span class="badge text-bg-light border" style="border-color: var(--v-border) !important; color: var(--v-primary);">
+            {{ totalMembers }} membre(s)
+        </span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card p-3 p-md-4 mb-3">
+                <form method="get" action="{{ path('librarian_members') }}" class="row g-2 align-items-center">
+                    <div class="col-md-9">
+                        <label for="member-search" class="form-label small fw-semibold mb-1" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                            Rechercher un membre
+                        </label>
+                        <input
+                            id="member-search"
+                            type="search"
+                            name="q"
+                            class="form-control form-control-vintage"
+                            placeholder="Nom ou prénom"
+                            value="{{ searchQuery }}"
+                            autocomplete="off"
+                            list="member-suggestions"
+                        >
+                        <datalist id="member-suggestions"></datalist>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2 align-self-end">
+                        <button type="submit" class="btn btn-vintage-primary w-100">
+                            <i class="fas fa-search me-1"></i>Filtrer
+                        </button>
+                        {% if searchQuery %}
+                            <a href="{{ path('librarian_members') }}" class="btn btn-outline-secondary">×</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Membre</th>
+                                <th>Réservations</th>
+                                <th>Emprunts</th>
+                                <th class="pe-4 text-end">État</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in memberRows %}
+                                {% set member = row.member %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <a href="{{ path('librarian_member_detail', {id: member.id}) }}" class="fw-semibold text-decoration-none" style="color: var(--v-dark);">
+                                            {{ member.firstName }} {{ member.lastName }}
+                                        </a>
+                                        <div class="small" style="color: var(--v-muted);">{{ member.user.email }}</div>
+                                    </td>
+                                    <td>
+                                        {% set reservationClass = row.reservationCount >= reservationLimit ? 'text-bg-warning' : 'text-bg-light' %}
+                                        <span class="badge {{ reservationClass }} border" style="border-color: var(--v-border) !important; color: var(--v-text);">
+                                            {{ row.reservationCount }}/{{ reservationLimit }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-light border me-1" style="border-color: var(--v-border) !important; color: var(--v-text);">
+                                            {{ row.activeLoanCount }} en cours
+                                        </span>
+                                        <span class="badge {% if row.overdueLoanCount > 0 %}badge-overdue{% else %}text-bg-secondary{% endif %}">
+                                            {{ row.overdueLoanCount }} retard
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        {% if member.suspended %}
+                                            <span class="badge badge-overdue">Réservations suspendues</span>
+                                        {% else %}
+                                            <span class="badge badge-ok">Actif</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5" style="color: var(--v-muted); font-style: italic;">
+                                        Aucun membre trouvé.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if totalPages > 1 %}
+                    <div class="p-3 border-top" style="border-color: var(--v-border) !important;">
+                        <nav aria-label="Pagination membres">
+                            <ul class="pagination pagination-sm mb-0 justify-content-end">
+                                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ path('librarian_members', {page: page - 1, q: searchQuery}) }}">Précédent</a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">Page {{ page }}/{{ totalPages }}</span>
+                                </li>
+                                <li class="page-item {% if page >= totalPages %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ path('librarian_members', {page: page + 1, q: searchQuery}) }}">Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card p-3 p-md-4">
+                <h2 class="h5 mb-3" style="color: var(--v-dark);">Inscrire un membre</h2>
+                <form method="post" action="{{ path('librarian_member_create') }}" class="row g-3">
+                    <input type="hidden" name="_token" value="{{ csrf_token('create_member') }}">
+                    <div class="col-md-6">
+                        <label for="first_name" class="form-label small fw-semibold" style="color: var(--v-muted);">Prénom</label>
+                        <input id="first_name" name="first_name" type="text" class="form-control form-control-vintage" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="last_name" class="form-label small fw-semibold" style="color: var(--v-muted);">Nom</label>
+                        <input id="last_name" name="last_name" type="text" class="form-control form-control-vintage" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="email" class="form-label small fw-semibold" style="color: var(--v-muted);">Email</label>
+                        <input id="email" name="email" type="email" class="form-control form-control-vintage" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="birth_date" class="form-label small fw-semibold" style="color: var(--v-muted);">Date de naissance</label>
+                        <input id="birth_date" name="birth_date" type="date" class="form-control form-control-vintage" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="membership_date" class="form-label small fw-semibold" style="color: var(--v-muted);">Date d'adhésion</label>
+                        <input id="membership_date" name="membership_date" type="date" class="form-control form-control-vintage" value="{{ 'now'|date('Y-m-d') }}">
+                    </div>
+                    <div class="col-12">
+                        <label for="phone_number" class="form-label small fw-semibold" style="color: var(--v-muted);">Téléphone</label>
+                        <input id="phone_number" name="phone_number" type="text" class="form-control form-control-vintage">
+                    </div>
+                    <div class="col-12">
+                        <label for="address" class="form-label small fw-semibold" style="color: var(--v-muted);">Adresse</label>
+                        <textarea id="address" name="address" rows="2" class="form-control form-control-vintage"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-vintage-primary w-100">
+                            <i class="fas fa-user-plus me-2"></i>Inscrire le membre
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const input = document.getElementById('member-search');
+            const datalist = document.getElementById('member-suggestions');
+            if (!input || !datalist) {
+                return;
+            }
+
+            let timeoutId = null;
+
+            const updateSuggestions = async (value) => {
+                if (!value || value.length < 2) {
+                    datalist.innerHTML = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('{{ path('librarian_members_suggest') }}?q=' + encodeURIComponent(value), {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    const payload = await response.json();
+                    datalist.innerHTML = '';
+
+                    (payload.suggestions || []).forEach((item) => {
+                        const option = document.createElement('option');
+                        option.value = item.fullName;
+                        datalist.appendChild(option);
+                    });
+                } catch (e) {
+                    datalist.innerHTML = '';
+                }
+            };
+
+            input.addEventListener('input', (event) => {
+                window.clearTimeout(timeoutId);
+                timeoutId = window.setTimeout(() => updateSuggestions(event.target.value.trim()), 180);
+            });
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'librarian/layout.html.twig' %}
+
+{% block title %}Fiche membre — {{ member.firstName }} {{ member.lastName }}{% endblock %}
+
+{% block body %}
+    <div class="section-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <h1>
+            <i class="fas fa-id-card me-2" style="color: var(--v-gold);"></i>
+            {{ member.firstName }} {{ member.lastName }}
+        </h1>
+        <a href="{{ path('librarian_members') }}" class="btn-vintage-back text-decoration-none">
+            <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card card-stat p-3">
+                <div class="stat-value">{{ reservations|length }}/{{ reservationLimit }}</div>
+                <div class="stat-label mt-1">Réservations</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-stat p-3" style="border-left-color: #5B7A5E;">
+                <div class="stat-value" style="color:#5B7A5E;">{{ activeLoans|length }}</div>
+                <div class="stat-label mt-1">Emprunts en cours</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-stat p-3" style="border-left-color: #9B3B3B;">
+                <div class="stat-value" style="color:#9B3B3B;">{{ overdueCount }}</div>
+                <div class="stat-label mt-1">Retards</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card p-4">
+                <h2 class="h5 mb-3" style="color: var(--v-dark);">Informations</h2>
+
+                <div class="small mb-2" style="color: var(--v-muted);">Email</div>
+                <div class="mb-3">{{ member.user.email }}</div>
+
+                <div class="small mb-2" style="color: var(--v-muted);">Date de naissance</div>
+                <div class="mb-3">{{ member.birthDate|date('d/m/Y') }}</div>
+
+                <div class="small mb-2" style="color: var(--v-muted);">Date d'adhésion</div>
+                <div class="mb-3">{{ member.membershipDate|date('d/m/Y') }}</div>
+
+                <div class="small mb-2" style="color: var(--v-muted);">Téléphone</div>
+                <div class="mb-3">{{ member.phoneNumber ?: 'Non renseigné' }}</div>
+
+                <div class="small mb-2" style="color: var(--v-muted);">Adresse</div>
+                <div class="mb-3">{{ member.address ?: 'Non renseignée' }}</div>
+
+                <hr style="border-color: var(--v-border);">
+
+                <div class="d-flex align-items-center justify-content-between">
+                    {% if member.suspended %}
+                        <span class="badge badge-overdue">Réservations suspendues</span>
+                    {% else %}
+                        <span class="badge badge-ok">Réservations autorisées</span>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('librarian_member_suspend', {id: member.id}) }}" onsubmit="return confirm('Confirmer le changement de statut de réservation pour ce membre ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('suspend_member_' ~ member.id) }}">
+                        <button type="submit" class="btn btn-sm {% if member.suspended %}btn-vintage-success{% else %}btn-vintage-primary{% endif %}">
+                            {% if member.suspended %}Réactiver{% else %}Suspendre{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header" style="background: var(--v-light); color: var(--v-primary); font-weight: 600;">
+                    Réservations
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Livre</th>
+                                <th class="pe-4 text-end">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    <td class="ps-4">{{ reservation.book.title }}</td>
+                                    <td class="pe-4 text-end small" style="color: var(--v-muted);">{{ reservation.createdAt|date('d/m/Y H:i') }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center py-4" style="color: var(--v-muted); font-style: italic;">
+                                        Aucune réservation active.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header" style="background: var(--v-light); color: var(--v-primary); font-weight: 600;">
+                    Emprunts en cours
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Livre</th>
+                                <th>Prêté le</th>
+                                <th>Retour prévu</th>
+                                <th class="pe-4 text-end">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for loan in activeLoans %}
+                                {% set isOverdue = loan.dueDate < date() %}
+                                <tr>
+                                    <td class="ps-4">{{ loan.book.title }}</td>
+                                    <td class="small" style="color: var(--v-muted);">{{ loan.loanDate|date('d/m/Y') }}</td>
+                                    <td class="small {% if isOverdue %}text-danger fw-semibold{% else %}text-muted{% endif %}">{{ loan.dueDate|date('d/m/Y') }}</td>
+                                    <td class="pe-4 text-end">
+                                        {% if isOverdue %}
+                                            <span class="badge badge-overdue">En retard</span>
+                                        {% else %}
+                                            <span class="badge badge-ok">Dans les temps</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4" style="color: var(--v-muted); font-style: italic;">
+                                        Aucun emprunt en cours.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="background: var(--v-light); color: var(--v-primary); font-weight: 600;">
+                    Historique des emprunts
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Livre</th>
+                                <th>Prêté le</th>
+                                <th class="pe-4 text-end">Retourné le</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for loan in loanHistory|slice(0, 12) %}
+                                <tr>
+                                    <td class="ps-4">{{ loan.book.title }}</td>
+                                    <td class="small" style="color: var(--v-muted);">{{ loan.loanDate|date('d/m/Y') }}</td>
+                                    <td class="pe-4 text-end small" style="color: var(--v-muted);">{{ loan.returnDate ? loan.returnDate|date('d/m/Y') : '—' }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-4" style="color: var(--v-muted); font-style: italic;">
+                                        Aucun historique disponible.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

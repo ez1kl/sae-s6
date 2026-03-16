@@ -199,6 +199,12 @@
                             <i class="fas fa-undo me-1"></i>Retours
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if app.request.attributes.get('_route') starts with 'librarian_member' or app.request.attributes.get('_route') == 'librarian_members' %} active{% endif %}"
+                           href="{{ path('librarian_members') }}">
+                            <i class="fas fa-users me-1"></i>Membres
+                        </a>
+                    </li>
                     <li class="nav-item ms-2">
                         <a class="nav-link muted-link" href="{{ path('admin') }}">
                             <i class="fas fa-arrow-left me-1"></i>Administration
@@ -206,20 +212,22 @@
                     </li>
                 </ul>
 
-                <form class="d-flex align-items-center ms-auto" action="{{ path('librarian_dashboard') }}" method="GET">
-                    <select name="type" class="search-select">
-                        <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
-                        <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
-                        <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
-                    </select>
-                    <input class="search-input" type="search" name="q"
-                           placeholder="Rechercher…"
-                           value="{{ app.request.query.get('q', '') }}">
-                    <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
-                    {% if app.request.query.get('q') %}
-                        <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
-                    {% endif %}
-                </form>
+                {% if app.request.attributes.get('_route') == 'librarian_dashboard' %}
+                    <form class="d-flex align-items-center ms-auto" action="{{ path('librarian_dashboard') }}" method="GET">
+                        <select name="type" class="search-select">
+                            <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
+                            <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
+                            <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
+                        </select>
+                        <input class="search-input" type="search" name="q"
+                               placeholder="Rechercher…"
+                               value="{{ app.request.query.get('q', '') }}">
+                        <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+                        {% if app.request.query.get('q') %}
+                            <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
+                        {% endif %}
+                    </form>
+                {% endif %}
             </div>
         </div>
     </nav>
