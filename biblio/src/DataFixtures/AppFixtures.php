@@ -93,7 +93,8 @@ class AppFixtures extends Fixture
             $book = new Book();
             $book->setTitle($title);
             $book->setReleaseYear($year);
-            $book->setLanguage($lang);
+            $book->setLanguage($lang);            
+            $book->setCoverImage('https://picsum.photos/' . $faker->numberBetween(200, 400)); // Image de couverture aléatoire (Picsum)
             $book->setAuthor($authors[$authorIdx]);
             foreach ($catIdxs as $ci) {
                 $book->addCategory($categories[$ci]);
