@@ -76,6 +76,7 @@ class LibrarianController extends AbstractController
         if ($request->isMethod('POST')) {
             $bookId = $request->request->get('book_id');
             $memberId = $request->request->get('member_id');
+            $force = $request->request->getBoolean('force', false);
 
             try {
                 $book = $this->em->getRepository(Book::class)->find($bookId);
@@ -85,9 +86,20 @@ class LibrarianController extends AbstractController
                     $this->addFlash('danger', 'Livre ou membre introuvable.');
                 } else {
                     $check = $this->loanService->canLendBookToMember($book, $member);
+
                     if (!$check['allowed']) {
                         $this->addFlash('danger', $check['reason']);
                     } else {
+                        if (($check['warning'] ?? null) !== null && !$force) {
+                            return $this->render('librarian/express_loan.html.twig', [
+                                'books' => $this->em->getRepository(Book::class)->findAll(),
+                                'members' => $this->em->getRepository(Member::class)->findAll(),
+                                'reservationWarning' => (string) $check['warning'],
+                                'pendingBook' => $book,
+                                'pendingMemberId' => $member->getId(),
+                            ]);
+                        }
+
                         $this->loanService->registerLoan($book, $member);
                         $this->addFlash('success', sprintf('Prêt enregistré pour "%s" (Membre: %s)', $book->getTitle(), $member->getLastName()));
                         return $this->redirectToRoute('librarian_dashboard');
