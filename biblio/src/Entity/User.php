@@ -5,12 +5,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\Member;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'app_user', uniqueConstraints: [
     new ORM\UniqueConstraint(name: 'uniq_app_user_email', columns: ['email']),
 ])]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,6 +22,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
+    #[Assert\Length(max: 180)]
     private ?string $email = null;
 
     #[ORM\Column(type: 'json')]
@@ -100,9 +106,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         if ($this->member) {
-            return $this->member->getLastName() . ' ' . $this->member->getFirstName() . ' (' . $this->email . ')';
+            return ($this->member->getLastName() ?? '/') . ' ' . ($this->member->getFirstName() ?? '/') . ' (' . $this->email . ')';
         }
-        return $this->email;
+
+        return (string) $this->email;
     }
 }
-

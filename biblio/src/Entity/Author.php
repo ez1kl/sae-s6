@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\AuthorRepository;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
@@ -19,14 +20,19 @@ class Author
 
     #[ORM\Column(length: 100)]
     #[Groups(['author:list', 'author:read', 'book:list', 'book:read'])]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(max: 100, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['author:list', 'author:read', 'book:list', 'book:read'])]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
+    #[Assert\Length(max: 100, maxMessage: 'Le prénom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $firstName = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['author:read'])]
+    #[Assert\NotNull(message: 'La date de naissance est obligatoire.')]
     private ?\DateTime $birthDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -35,6 +41,8 @@ class Author
 
     #[ORM\Column(length: 50)]
     #[Groups(['author:list', 'author:read'])]
+    #[Assert\NotBlank(message: 'La nationalité est obligatoire.')]
+    #[Assert\Length(max: 50, maxMessage: 'La nationalité ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $nationality = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -139,4 +147,3 @@ class Author
         return ($this->lastName ?? '/') . ' ' . ($this->firstName ?? '/');
     }
 }
-

@@ -137,8 +137,8 @@ class MemberController extends AbstractController
         }
 
         $memberReservationCount = $reservationRepository->countByMember($member);
-        if ($memberReservationCount >= 5) {
-            return $this->json(['error' => 'Vous ne pouvez pas reserver plus de 5 livres.'], 409);
+        if ($memberReservationCount >= 3) {
+            return $this->json(['error' => 'Vous avez atteint la limite de 3 réservations simultanées.'], 409);
         }
 
         $book = $bookRepository->find($data['bookId']);

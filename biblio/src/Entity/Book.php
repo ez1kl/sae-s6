@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\BookRepository;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -22,14 +23,20 @@ class Book
 
     #[ORM\Column(length: 255)]
     #[Groups(['book:list', 'book:read', 'loan:read', 'reservation:read'])]
+    #[Assert\NotBlank(message: 'Le titre est obligatoire.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $title = null;
 
     #[ORM\Column]
     #[Groups(['book:list', 'book:read'])]
+    #[Assert\NotNull(message: "L'année de publication est obligatoire.")]
+    #[Assert\Range(min: 1000, max: 2100, notInRangeMessage: "L'année doit être comprise entre {{ min }} et {{ max }}.")]
     private ?int $releaseYear = null;
 
     #[ORM\Column(length: 10)]
     #[Groups(['book:list', 'book:read'])]
+    #[Assert\NotBlank(message: 'La langue est obligatoire.')]
+    #[Assert\Length(max: 10)]
     private ?string $language = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -150,4 +157,3 @@ class Book
         return $this->title ?? '/';
     }
 }
-

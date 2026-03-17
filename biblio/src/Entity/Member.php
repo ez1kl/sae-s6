@@ -6,6 +6,7 @@ use App\Repository\MemberRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: 'member', uniqueConstraints: [
@@ -25,22 +26,29 @@ class Member
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['member:read'])]
+    #[Assert\NotNull(message: "La date d'adhésion est obligatoire.")]
     private ?\DateTime $membershipDate = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['member:read'])]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(max: 100, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['member:read'])]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
+    #[Assert\Length(max: 100, maxMessage: 'Le prénom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $firstName = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['member:read'])]
+    #[Assert\NotNull(message: 'La date de naissance est obligatoire.')]
     private ?\DateTime $birthDate = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     #[Groups(['member:read'])]
+    #[Assert\Length(max: 20, maxMessage: 'Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -51,21 +51,23 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        
+
         yield MenuItem::section('Guichet Rapide', 'fas fa-desktop');
         yield MenuItem::linkToUrl('Espace Bibliothécaire', 'fas fa-id-card', '/librarian');
-        
-        yield MenuItem::section('Gestion Catalogue', 'fas fa-layer-group');
-        yield MenuItem::linkToRoute('Auteurs', 'fas fa-user-edit', 'admin_author_index');
-        yield MenuItem::linkToRoute('Livres', 'fas fa-book', 'admin_book_index');
-        yield MenuItem::linkToRoute('Catégories', 'fas fa-tags', 'admin_category_index');
 
-        yield MenuItem::section('Membres & Prêts', 'fas fa-users');
-        yield MenuItem::linkToRoute('Membres', 'fas fa-address-book', 'admin_member_index');
-        yield MenuItem::linkToRoute('Emprunts', 'fas fa-hand-holding', 'admin_loan_index');
-        yield MenuItem::linkToRoute('Réservations', 'fas fa-bookmark', 'admin_reservation_index');
-        
-        yield MenuItem::section('Utilisateurs Authentification', 'fas fa-shield-alt');
-        yield MenuItem::linkToRoute('Profils Système', 'fas fa-user-shield', 'admin_user_index');
+        if ($this->isGranted('ROLE_RESPONSABLE')) {
+            yield MenuItem::section('Gestion Catalogue', 'fas fa-layer-group');
+            yield MenuItem::linkToRoute('Auteurs', 'fas fa-user-edit', 'admin_author_index');
+            yield MenuItem::linkToRoute('Livres', 'fas fa-book', 'admin_book_index');
+            yield MenuItem::linkToRoute('Catégories', 'fas fa-tags', 'admin_category_index');
+
+            yield MenuItem::section('Membres & Prêts', 'fas fa-users');
+            yield MenuItem::linkToRoute('Membres', 'fas fa-address-book', 'admin_member_index');
+            yield MenuItem::linkToRoute('Emprunts', 'fas fa-hand-holding', 'admin_loan_index');
+            yield MenuItem::linkToRoute('Réservations', 'fas fa-bookmark', 'admin_reservation_index');
+
+            yield MenuItem::section('Utilisateurs Authentification', 'fas fa-shield-alt');
+            yield MenuItem::linkToRoute('Profils Système', 'fas fa-user-shield', 'admin_user_index');
+        }
     }
 }
