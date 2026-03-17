@@ -96,6 +96,8 @@ class MemberController extends AbstractController
     #[Route('/reservations', name: 'api_me_reservations', methods: ['GET'])]
     public function reservations(MemberRepository $memberRepository, ReservationRepository $reservationRepository): JsonResponse
     {
+        $reservationRepository->deleteExpired();
+
         /** @var User $user */
         $user = $this->getUser();
         $member = $memberRepository->findOneBy(['user' => $user]);
@@ -118,6 +120,8 @@ class MemberController extends AbstractController
         ReservationRepository $reservationRepository,
         EntityManagerInterface $em,
     ): JsonResponse {
+        $reservationRepository->deleteExpired();
+
         /** @var User $user */
         $user = $this->getUser();
         $member = $memberRepository->findOneBy(['user' => $user]);
@@ -174,6 +178,8 @@ class MemberController extends AbstractController
         ReservationRepository $reservationRepository,
         EntityManagerInterface $em,
     ): JsonResponse {
+        $reservationRepository->deleteExpired();
+
         /** @var User $user */
         $user = $this->getUser();
         $member = $memberRepository->findOneBy(['user' => $user]);
