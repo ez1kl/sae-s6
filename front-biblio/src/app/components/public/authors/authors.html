@@ -1,6 +1,16 @@
 <div class="container py-4">
   <h2 class="mb-4"><i class="bi bi-people me-2"></i>Auteurs</h2>
 
+  <!-- Barre de recherche -->
+  <div class="mb-4">
+    <input
+      type="text"
+      class="form-control"
+      [value]="searchQuery()"
+      (input)="searchQuery.set($any($event.target).value)"
+      placeholder="Rechercher un auteur par nom ou prénom...">
+  </div>
+
   @if (loading()) {
     <div class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -8,11 +18,11 @@
       </div>
     </div>
   } @else {
-    @if (authors().length === 0) {
+    @if (filteredAuthors().length === 0) {
       <div class="alert alert-info">Aucun auteur trouvé.</div>
     } @else {
       <div class="row g-4">
-        @for (author of authors(); track author.id) {
+        @for (author of filteredAuthors(); track author.id) {
           <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm author-card">
               <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">

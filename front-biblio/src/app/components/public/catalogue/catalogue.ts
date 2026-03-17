@@ -24,33 +24,34 @@ export class CatalogueComponent implements OnInit {
   limit = 12;
   readonly maxCategories = 3;
 
-  // Mapping des codes vers libellé propres (certains ne sont pas utilisés)
   readonly languageOptions: { code: string; label: string }[] = [
     { code: 'fr', label: 'Français' },
     { code: 'en', label: 'Anglais' },
-    // { code: 'de', label: 'Allemand' },
     { code: 'es', label: 'Espagnol' },
-    // { code: 'it', label: 'Italien' },
-    // { code: 'pt', label: 'Portugais' },
-    // { code: 'nl', label: 'Néerlandais' },
-    // { code: 'pl', label: 'Polonais' },
-    // { code: 'ru', label: 'Russe' },
     { code: 'ja', label: 'Japonais' },
-    // { code: 'zh', label: 'Chinois' },
-    // { code: 'ar', label: 'Arabe' }
   ];
 
-  // Critères de recherche
+  // Critères de recherche (signals pour la réactivité)
   searchTitle = '';
-  searchAuthorId: number | null = null;
+  searchAuthorText = signal('');
   searchCategoryIds: number[] = [];
   searchLanguage = '';
-  searchYearFrom: number | null = null;
-  searchYearTo: number | null = null;
+  searchYearFromDate = '';
+  searchYearToDate = '';
 
   pages = computed(() => {
     const total = this.totalPages();
     return Array.from({ length: total }, (_, i) => i + 1);
+  });
+
+  showAuthorDropdown = signal(false);
+
+  filteredAuthors = computed(() => {
+    const q = this.searchAuthorText().toLowerCase().trim();
+    if (!q) return this.authors();
+    return this.authors().filter(a =>
+      a.firstName.toLowerCase().includes(q) || a.lastName.toLowerCase().includes(q)
+    );
   });
 
   constructor(
@@ -65,29 +66,55 @@ export class CatalogueComponent implements OnInit {
     this.loadBooks();
   }
 
+  selectAuthor(author: Author | null): void {
+    if (author) {
+      this.searchAuthorText.set(author.firstName + ' ' + author.lastName);
+    } else {
+      this.searchAuthorText.set('');
+    }
+    this.showAuthorDropdown.set(false);
+  }
+
+  onAuthorBlur(): void {
+    setTimeout(() => this.showAuthorDropdown.set(false), 150);
+  }
+
+  private getAuthorIdFromText(): number | null {
+    const q = this.searchAuthorText().trim().toLowerCase();
+    if (!q) return null;
+    const match = this.authors().find(a =>
+      `${a.firstName} ${a.lastName}`.toLowerCase() === q ||
+      `${a.lastName} ${a.firstName}`.toLowerCase() === q
+    );
+    return match ? match.id : null;
+  }
+
+  private getYearFromDate(dateStr: string): number | null {
+    if (!dateStr) return null;
+    const year = parseInt(dateStr.substring(0, 4), 10);
+    return isNaN(year) ? null : year;
+  }
+
   private buildFiltersState(): SearchFiltersState {
     return {
       searchTitle: this.searchTitle,
-      searchAuthorId: this.searchAuthorId,
+      searchAuthorText: this.searchAuthorText(),
       searchCategoryIds: this.searchCategoryIds,
       searchLanguage: this.searchLanguage,
-      searchYearFrom: this.searchYearFrom,
-      searchYearTo: this.searchYearTo
+      searchYearFromDate: this.searchYearFromDate,
+      searchYearToDate: this.searchYearToDate
     };
   }
 
   private restoreFilters(): void {
     const saved = this.searchFiltersStorage.load();
-    if (!saved) {
-      return;
-    }
-
+    if (!saved) return;
     this.searchTitle = saved.searchTitle;
-    this.searchAuthorId = saved.searchAuthorId;
+    this.searchAuthorText.set(saved.searchAuthorText ?? '');
     this.searchCategoryIds = saved.searchCategoryIds ?? [];
     this.searchLanguage = saved.searchLanguage;
-    this.searchYearFrom = saved.searchYearFrom;
-    this.searchYearTo = saved.searchYearTo;
+    this.searchYearFromDate = saved.searchYearFromDate ?? '';
+    this.searchYearToDate = saved.searchYearToDate ?? '';
   }
 
   loadCategories(): void {
@@ -104,8 +131,11 @@ export class CatalogueComponent implements OnInit {
 
   loadBooks(): void {
     this.loading.set(true);
-    const hasSearch = this.searchTitle || this.searchAuthorId
-      || this.searchCategoryIds.length > 0 || this.searchLanguage || this.searchYearFrom || this.searchYearTo;
+    const yearFrom = this.getYearFromDate(this.searchYearFromDate);
+    const yearTo = this.getYearFromDate(this.searchYearToDate);
+    const authorId = this.getAuthorIdFromText();
+    const hasSearch = this.searchTitle || authorId
+      || this.searchCategoryIds.length > 0 || this.searchLanguage || yearFrom || yearTo;
 
     if (hasSearch) {
       const criteria: SearchCriteria = {
@@ -113,15 +143,12 @@ export class CatalogueComponent implements OnInit {
         limit: this.limit
       };
       if (this.searchTitle) criteria.title = this.searchTitle;
-      if (this.searchAuthorId) criteria.author = this.searchAuthorId;
-      if (this.searchCategoryIds.length > 0) {
-        criteria.categories = this.searchCategoryIds;
-      }
+      if (authorId) criteria.author = authorId;
+      if (this.searchCategoryIds.length > 0) criteria.categories = this.searchCategoryIds;
       if (this.searchLanguage) criteria.language = this.searchLanguage;
-      if (this.searchYearFrom) criteria.yearFrom = this.searchYearFrom;
-      if (this.searchYearTo) criteria.yearTo = this.searchYearTo;
+      if (yearFrom) criteria.yearFrom = yearFrom;
+      if (yearTo) criteria.yearTo = yearTo;
 
-      // Sauvegarder les filtres utilisés pour la recherche
       this.searchFiltersStorage.save(this.buildFiltersState());
 
       this.bookService.searchBooks(criteria).subscribe({
@@ -153,11 +180,11 @@ export class CatalogueComponent implements OnInit {
 
   resetSearch(): void {
     this.searchTitle = '';
-    this.searchAuthorId = null;
+    this.searchAuthorText.set('');
     this.searchCategoryIds = [];
     this.searchLanguage = '';
-    this.searchYearFrom = null;
-    this.searchYearTo = null;
+    this.searchYearFromDate = '';
+    this.searchYearToDate = '';
     this.currentPage.set(1);
     this.searchFiltersStorage.clear();
     this.loadBooks();

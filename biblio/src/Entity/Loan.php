@@ -112,5 +112,12 @@ class Loan
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        $title = $this->book?->getTitle() ?? '/';
+        $date = $this->loanDate?->format('d/m/Y') ?? '/';
+        return sprintf('%s (%s)', $title, $date);
+    }
 }
 

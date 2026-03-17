@@ -12,12 +12,36 @@
         </div>
         <div class="col-md-4">
           <label class="form-label">Auteur</label>
-          <select class="form-select" [(ngModel)]="searchAuthorId">
-            <option [ngValue]="null">Tous les auteurs</option>
-            @for (author of authors(); track author.id) {
-              <option [ngValue]="author.id">{{ author.firstName }} {{ author.lastName }}</option>
+          <div class="position-relative">
+            <input
+              type="text"
+              class="form-control"
+              [value]="searchAuthorText()"
+              (input)="searchAuthorText.set($any($event.target).value)"
+              (focus)="showAuthorDropdown.set(true)"
+              (blur)="onAuthorBlur()"
+              placeholder="Tous les auteurs">
+            @if (showAuthorDropdown()) {
+              <div class="author-dropdown border rounded bg-white shadow-sm"
+                   style="position:absolute; z-index:100; width:100%; max-height:220px; overflow-y:auto; top:100%; left:0;">
+                <div class="author-dropdown-item px-3 py-2 text-muted"
+                     style="cursor:pointer; font-style:italic;"
+                     (mousedown)="selectAuthor(null)">
+                  Tous les auteurs
+                </div>
+                @for (author of filteredAuthors(); track author.id) {
+                  <div class="author-dropdown-item px-3 py-2"
+                       style="cursor:pointer;"
+                       (mousedown)="selectAuthor(author)">
+                    {{ author.firstName }} {{ author.lastName }}
+                  </div>
+                }
+                @if (filteredAuthors().length === 0) {
+                  <div class="px-3 py-2 text-muted small">Aucun résultat</div>
+                }
+              </div>
             }
-          </select>
+          </div>
         </div>
         <div class="col-md-4">
           <label class="form-label d-block">Catégories <span class="text-muted small">(max {{ maxCategories }})</span></label>
@@ -46,12 +70,12 @@
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Année min</label>
-          <input type="number" class="form-control" [(ngModel)]="searchYearFrom" placeholder="ex: 1900">
+          <label class="form-label">Date de début</label>
+          <input type="date" class="form-control" [(ngModel)]="searchYearFromDate">
         </div>
         <div class="col-md-3">
-          <label class="form-label">Année max</label>
-          <input type="number" class="form-control" [(ngModel)]="searchYearTo" placeholder="ex: 2025">
+          <label class="form-label">Date de fin</label>
+          <input type="date" class="form-control" [(ngModel)]="searchYearToDate">
         </div>
         <div class="col-md-2 d-flex align-items-end gap-2">
           <button class="btn btn-primary" (click)="search()">

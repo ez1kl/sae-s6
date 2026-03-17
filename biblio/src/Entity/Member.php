@@ -170,6 +170,6 @@ class Member
 
     public function __toString(): string
     {
-        return $this->lastName . ' ' . $this->firstName;
+        return ($this->lastName ?? '/') . ' ' . ($this->firstName ?? '/');
     }
 }

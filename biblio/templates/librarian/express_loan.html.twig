@@ -12,17 +12,21 @@
             <div class="card p-4">
                 <form method="post" action="{{ path('librarian_express_loan') }}">
                     <div class="mb-4">
-                        <label for="book_id" class="form-label small fw-semibold" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Lora', serif;">
+                        <label for="book-search-input" class="form-label small fw-semibold" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Lora', serif;">
                             Livre à emprunter
                         </label>
-                        <select id="book_id" name="book_id" class="form-select form-select-vintage" required>
-                            <option value="">— Sélectionner un livre —</option>
-                            {% for book in books %}
-                                <option value="{{ book.id }}">
-                                    {{ book.title }}{% if book.author %} — {{ book.author.lastName }}{% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
+                        <div class="position-relative">
+                            <input
+                                type="text"
+                                id="book-search-input"
+                                class="form-control form-select-vintage"
+                                placeholder="Tapez le titre d'un livre..."
+                                autocomplete="off"
+                                required>
+                            <input type="hidden" id="book_id" name="book_id">
+                            <div id="book-search-dropdown" style="display:none; position:absolute; z-index:200; background:#fff; border:1px solid var(--v-border, #ccc); border-top:none; width:100%; max-height:220px; overflow-y:auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -51,4 +55,61 @@
             </div>
         </div>
     </div>
+
+    <script>
+    (function () {
+        const input = document.getElementById('book-search-input');
+        const hidden = document.getElementById('book_id');
+        const dropdown = document.getElementById('book-search-dropdown');
+        let debounceTimer;
+
+        function renderDropdown(items) {
+            dropdown.innerHTML = '';
+            if (items.length === 0) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            items.forEach(function (book) {
+                const label = book.title + (book.author ? ' — ' + book.author.lastName : '');
+                const item = document.createElement('div');
+                item.style.cssText = 'padding:10px 14px; cursor:pointer; font-size:0.9rem; border-bottom:1px solid #f0ebe0;';
+                item.textContent = label;
+                item.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    input.value = label;
+                    hidden.value = book.id;
+                    dropdown.style.display = 'none';
+                });
+                item.addEventListener('mouseover', function () { item.style.background = '#f5f0e8'; });
+                item.addEventListener('mouseout', function () { item.style.background = 'transparent'; });
+                dropdown.appendChild(item);
+            });
+            dropdown.style.display = 'block';
+        }
+
+        function fetchBooks(q) {
+            const url = q.length > 0
+                ? '/api/books/search?title=' + encodeURIComponent(q) + '&limit=50'
+                : '/api/books?limit=50';
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) { renderDropdown(data.data || []); })
+                .catch(function () { dropdown.style.display = 'none'; });
+        }
+
+        input.addEventListener('input', function () {
+            hidden.value = '';
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () { fetchBooks(input.value.trim()); }, 200);
+        });
+
+        input.addEventListener('focus', function () {
+            fetchBooks(input.value.trim());
+        });
+
+        input.addEventListener('blur', function () {
+            setTimeout(function () { dropdown.style.display = 'none'; }, 200);
+        });
+    })();
+    </script>
 {% endblock %}
