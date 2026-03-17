@@ -146,6 +146,18 @@
             font-family: 'Lora', serif;
         }
         .btn-vintage-success:hover { background: #3d5940; border-color: #3d5940; color: #fff; }
+        .btn-vintage-logout {
+            background: transparent;
+            border: 1px solid rgba(196,153,60,0.6);
+            color: #D4C5B0;
+            font-family: 'Lora', serif;
+            font-size: 0.85rem;
+        }
+        .btn-vintage-logout:hover {
+            border-color: var(--v-gold);
+            color: var(--v-gold);
+            background: rgba(196,153,60,0.08);
+        }
         .btn-vintage-back {
             color: var(--v-muted);
             font-size: 0.875rem;
@@ -212,22 +224,30 @@
                     </li>
                 </ul>
 
-                {% if app.request.attributes.get('_route') == 'librarian_dashboard' %}
-                    <form class="d-flex align-items-center ms-auto" action="{{ path('librarian_dashboard') }}" method="GET">
-                        <select name="type" class="search-select">
-                            <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
-                            <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
-                            <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
-                        </select>
-                        <input class="search-input" type="search" name="q"
-                               placeholder="Rechercher…"
-                               value="{{ app.request.query.get('q', '') }}">
-                        <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
-                        {% if app.request.query.get('q') %}
-                            <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
-                        {% endif %}
-                    </form>
-                {% endif %}
+                <div class="d-flex align-items-center ms-auto gap-2">
+                    {% if app.request.attributes.get('_route') == 'librarian_dashboard' %}
+                        <form class="d-flex align-items-center" action="{{ path('librarian_dashboard') }}" method="GET">
+                            <select name="type" class="search-select">
+                                <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
+                                <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
+                                <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
+                            </select>
+                            <input class="search-input" type="search" name="q"
+                                   placeholder="Rechercher…"
+                                   value="{{ app.request.query.get('q', '') }}">
+                            <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+                            {% if app.request.query.get('q') %}
+                                <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <a class="btn btn-sm btn-vintage-logout" href="{{ path('app_logout') }}">
+                            <i class="fas fa-right-from-bracket me-1"></i>Déconnexion
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>

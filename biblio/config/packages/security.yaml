@@ -47,6 +47,7 @@ security:
 
     access_control:
         - { path: ^/admin, roles: ROLE_BIBLIOTHECAIRE }
+        - { path: ^/librarian, roles: ROLE_BIBLIOTHECAIRE }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/books, roles: PUBLIC_ACCESS }
         - { path: ^/api/authors, roles: PUBLIC_ACCESS }
