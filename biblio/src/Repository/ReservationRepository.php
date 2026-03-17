@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Domain\LibraryRules;
 use App\Entity\Reservation;
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,9 +18,9 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
-    private function expiryDate(): \DateTime
+    private function expiryDate(): \DateTimeInterface
     {
-        return new \DateTime('-7 days');
+        return LibraryRules::reservationExpiryDate();
     }
 
     /**
@@ -40,8 +41,6 @@ class ReservationRepository extends ServiceEntityRepository
      */
     public function findByMember(Member $member): array
     {
-        $this->deleteExpired();
-
         return $this->createQueryBuilder('r')
             ->leftJoin('r.book', 'b')
             ->addSelect('b')
@@ -56,8 +55,6 @@ class ReservationRepository extends ServiceEntityRepository
 
     public function findOneByBookId(int $bookId): ?Reservation
     {
-        $this->deleteExpired();
-
         return $this->createQueryBuilder('r')
             ->andWhere('r.book = :bookId')
             ->andWhere('r.createdAt >= :expiry')

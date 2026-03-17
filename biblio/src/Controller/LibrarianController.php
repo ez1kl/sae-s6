@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Domain\LibraryRules;
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Member;
@@ -22,7 +23,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class LibrarianController extends AbstractController
 {
     private const MEMBER_PAGE_SIZE = 10;
-    private const MEMBER_RESERVATION_LIMIT = 5;
+    private const MEMBER_RESERVATION_LIMIT = LibraryRules::MAX_ACTIVE_RESERVATIONS;
 
     public function __construct(
         private EntityManagerInterface $em,
