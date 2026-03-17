@@ -1,28 +1,225 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion Back office{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --v-dark: #2C1E14;
+            --v-primary: #6B3A2A;
+            --v-gold: #C4993C;
+            --v-bg: #FAF6F0;
+            --v-light: #F5F0E8;
+            --v-text: #3A2E25;
+            --v-muted: #7A6955;
+            --v-border: rgba(107, 58, 42, 0.2);
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--v-text);
+            font-family: 'Lora', Georgia, serif;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(196, 153, 60, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(107, 58, 42, 0.16), transparent 42%),
+                linear-gradient(140deg, #f9f3ea 0%, #f5efe5 45%, #efe4d4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem;
+        }
+
+        .login-shell {
+            width: min(940px, 100%);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--v-border);
+            border-radius: 1.05rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 14px 36px rgba(44, 30, 20, 0.18);
+        }
+
+        .login-brand {
+            background: linear-gradient(155deg, var(--v-dark) 0%, #3f2a1f 60%, #6B3A2A 100%);
+            color: #efe4d4;
+            padding: 2.4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-brand .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.72rem;
+            color: #cfb98e;
+            margin-bottom: 0.75rem;
+        }
+
+        .login-brand h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.55rem, 3vw, 2.2rem);
+            margin: 0;
+            color: #f8f1e6;
+        }
+
+        .login-brand p {
+            margin: 1rem 0 0;
+            color: #d7c6ae;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 28ch;
+        }
+
+        .login-panel {
+            padding: 2.4rem 2rem;
+            background: linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--v-dark);
+            font-size: 1.8rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .form-subtitle {
+            color: var(--v-muted);
+            margin-bottom: 1.3rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--v-primary);
+            font-weight: 600;
+        }
+
+        .form-control {
+            border: 1px solid #d4c1a9;
+            color: var(--v-text);
+            min-height: 2.85rem;
+            font-size: 0.96rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--v-primary);
+            box-shadow: 0 0 0 0.18rem rgba(107, 58, 42, 0.2);
+        }
+
+        .btn-vintage-login {
+            width: 100%;
+            min-height: 2.9rem;
+            border: none;
+            border-radius: 0.55rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.03em;
+            color: var(--v-light);
+            background: linear-gradient(120deg, var(--v-primary), #4e2b1f);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-vintage-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(107, 58, 42, 0.22);
+            color: var(--v-light);
+        }
+
+        .alert {
+            border-radius: 0.55rem;
+            font-size: 0.88rem;
+            border-left: 4px solid var(--v-gold);
+        }
+
+        .logged-message {
+            font-size: 0.88rem;
+            color: var(--v-muted);
+            margin-bottom: 1rem;
+        }
+
+        .logged-message a {
+            color: var(--v-primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .logged-message a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 840px) {
+            .login-shell {
+                grid-template-columns: 1fr;
+                max-width: 520px;
+            }
+
+            .login-brand {
+                padding: 1.8rem 1.5rem;
+            }
+
+            .login-panel {
+                padding: 1.8rem 1.5rem;
+            }
+
+            .login-brand p {
+                max-width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="login-shell">
+    <section class="login-brand">
+        <span class="eyebrow"><i class="fas fa-book-open me-1"></i>Bibliothèque</span>
+        <h1>Back office</h1>
+        <p>Gérez la bibliothèque : emprunts, retours, suivi des membres...</p>
+    </section>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
-        </div>
-    {% endif %}
+    <section class="login-panel">
+        {% if app.user %}
+            <h2 class="form-title">Connecté</h2>
+        {% else %}
+            <h2 class="form-title">Connexion</h2>
+        {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        {% if app.user %}
+            <div class="logged-message mb-3">
+                En tant que <strong>{{ app.user.userIdentifier }}</strong>
+            </div>
+            <a class="btn-vintage-login d-inline-flex align-items-center justify-content-center text-decoration-none" href="{{ path('app_logout') }}">
+                <i class="fas fa-right-from-bracket me-1"></i>Se deconnecter
+            </a>
+        {% else %}
+            <form method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Email</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+                <button class="btn-vintage-login" type="submit">
+                    <i class="fas fa-right-to-bracket me-1"></i>Se connecter
+                </button>
+            </form>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}
