@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Domain\LibraryRules;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -41,7 +42,7 @@ class Loan
     {
         $now = new \DateTime();
         $this->loanDate = $now;
-        $this->dueDate = (clone $now)->modify('+15 days');
+        $this->dueDate = (clone $now)->modify('+' . LibraryRules::LOAN_DURATION_DAYS . ' days');
     }
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]

@@ -37,6 +37,8 @@ class BookController extends AbstractController
     #[Route('/books/{id}/reservation-status', name: 'api_books_reservation_status', methods: ['GET'])]
     public function reservationStatus(Book $book, ReservationRepository $reservationRepository, LoanRepository $loanRepository): JsonResponse
     {
+        $reservationRepository->deleteExpired();
+
         $existing = $reservationRepository->findOneByBookId($book->getId());
         if ($existing) {
             return $this->json(['reservable' => false, 'reason' => 'reserved']);

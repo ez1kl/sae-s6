@@ -2,13 +2,13 @@
 
 namespace App\Service;
 
+use App\Domain\LibraryRules;
 use App\Entity\Book;
 use App\Entity\Loan;
 use App\Entity\Member;
 use App\Repository\LoanRepository;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class LoanService
 {
@@ -16,8 +16,6 @@ class LoanService
         private LoanRepository $loanRepository,
         private ReservationRepository $reservationRepository,
         private EntityManagerInterface $em,
-        #[Autowire('%app.max_loan_quota%')]
-        private int $maxLoanQuota,
     ) {}
 
     public function isBookAvailable(Book $book): bool
@@ -32,8 +30,9 @@ class LoanService
         }
 
         $activeCount = $this->loanRepository->countActiveByMember($member);
-        if ($activeCount >= $this->maxLoanQuota) {
-            return ['allowed' => false, 'reason' => "Quota maximum atteint ({$this->maxLoanQuota} emprunts)."];
+        if ($activeCount >= LibraryRules::MAX_ACTIVE_LOANS) {
+            $max = LibraryRules::MAX_ACTIVE_LOANS;
+            return ['allowed' => false, 'reason' => "Quota maximum atteint ({$max} emprunts)."];
         }
 
         return ['allowed' => true, 'reason' => null];
@@ -88,6 +87,6 @@ class LoanService
 
     public function getMaxLoanQuota(): int
     {
-        return $this->maxLoanQuota;
+        return LibraryRules::MAX_ACTIVE_LOANS;
     }
 }
