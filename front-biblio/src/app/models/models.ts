@@ -19,6 +19,7 @@ export interface Book {
 
 export interface ReservationStatusResponse {
   reservable: boolean;
+  reason?: 'reserved' | 'loaned';
 }
 
 export interface Category {
