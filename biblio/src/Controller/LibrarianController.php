@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Member;
 use App\Entity\User;
@@ -52,13 +53,16 @@ class LibrarianController extends AbstractController
 
         $totalBooks = $this->em->getRepository(Book::class)->count([]);
         $totalMembers = $this->em->getRepository(Member::class)->count([]);
+        $totalAuthors = $this->em->getRepository(Author::class)->count([]);
         $allActiveCount = $this->loanRepository->countActiveLoans();
         $availableBooks = $totalBooks - $allActiveCount;
 
         return $this->render('librarian/dashboard.html.twig', [
             'activeLoans' => $activeLoans,
             'overdueLoans' => $overdueLoans,
+            'totalBooks' => $totalBooks,
             'totalMembers' => $totalMembers,
+            'totalAuthors' => $totalAuthors,
             'availableBooks' => $availableBooks,
             'searchQuery' => $search,
             'searchType' => $type,

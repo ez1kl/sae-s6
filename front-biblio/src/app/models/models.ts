@@ -12,6 +12,7 @@ export interface Book {
   title: string;
   releaseYear: number;
   language: string;
+  coverImage?: string | null;
   author?: Author;
   categories?: Category[];
 }

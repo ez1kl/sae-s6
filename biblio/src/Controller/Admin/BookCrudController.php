@@ -26,6 +26,7 @@ class BookCrudController extends AbstractCrudController
             TextField::new('language'),
             AssociationField::new('author'),
             AssociationField::new('categories'),
+            TextField::new('coverImage'),
         ];
     }
 }
