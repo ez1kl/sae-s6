@@ -1,5 +1,7 @@
 ## SAE Biblio – Guide d’installation et de lancement
 
+**Groupe 3B** : Yassine Badaoui, Ugo Pia, Melvin Bouyssou
+
 Ce dépôt contient :
 
 - un **back-end Symfony / API Platform** dans `biblio`
