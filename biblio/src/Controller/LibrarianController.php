@@ -185,10 +185,29 @@ class LibrarianController extends AbstractController
             }
         }
 
-        $activeLoans = $this->loanRepository->findActiveLoans();
+        return $this->render('librarian/express_return.html.twig');
+    }
 
-        return $this->render('librarian/express_return.html.twig', [
-            'loans' => $activeLoans,
+    #[Route('/return/books/suggest', name: 'return_book_suggest', methods: ['GET'])]
+    public function returnBookSuggestions(Request $request, BookRepository $bookRepository): JsonResponse
+    {
+        $query = trim((string) $request->query->get('q', ''));
+        $includeNonBorrowed = mb_strlen($query) >= 3;
+
+        $books = $bookRepository->findReturnSuggestions($query, $includeNonBorrowed, 30);
+
+        $suggestions = array_map(static function (array $book): array {
+            return [
+                'id' => $book['id'],
+                'title' => $book['title'],
+                'borrowed' => $book['borrowed'],
+                'memberName' => $book['memberName'],
+                'reason' => $book['borrowed'] ? null : 'non emprunté',
+            ];
+        }, $books);
+
+        return $this->json([
+            'suggestions' => $suggestions,
         ]);
     }
 

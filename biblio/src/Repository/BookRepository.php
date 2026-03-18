@@ -152,4 +152,43 @@ class BookRepository extends ServiceEntityRepository
             ];
         }, $rows);
     }
+
+    /**
+     * @return array<int, array{id: int, title: string, borrowed: bool, memberName: ?string}>
+     */
+    public function findReturnSuggestions(string $query, bool $includeNonBorrowed = false, int $limit = 30): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->select('b.id AS id, b.title AS title, activeLoan.id AS activeLoanId, borrower.firstName AS borrowerFirstName, borrower.lastName AS borrowerLastName')
+            ->leftJoin(Loan::class, 'activeLoan', 'WITH', 'activeLoan.book = b AND activeLoan.returnDate IS NULL')
+            ->leftJoin('activeLoan.member', 'borrower');
+
+        if ($query !== '') {
+            $qb->andWhere('b.title LIKE :query OR borrower.firstName LIKE :query OR borrower.lastName LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        if (!$includeNonBorrowed) {
+            $qb->andWhere('activeLoan.id IS NOT NULL');
+        }
+
+        $rows = $qb
+            ->orderBy('CASE WHEN activeLoan.id IS NULL THEN 1 ELSE 0 END', 'ASC')
+            ->addOrderBy('b.title', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(static function (array $row): array {
+            $memberName = trim((string) ($row['borrowerFirstName'] ?? '') . ' ' . (string) ($row['borrowerLastName'] ?? ''));
+            $borrowed = ($row['activeLoanId'] ?? null) !== null;
+
+            return [
+                'id' => (int) $row['id'],
+                'title' => (string) $row['title'],
+                'borrowed' => $borrowed,
+                'memberName' => $borrowed ? $memberName : null,
+            ];
+        }, $rows);
+    }
 }

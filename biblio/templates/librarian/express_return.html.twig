@@ -49,71 +49,126 @@
 
     <script>
     (function () {
-        {# Données des emprunts actifs passées côté serveur pour la recherche client #}
-        const activeLoans = [
-            {% for loan in loans %}
-            {
-                bookId: {{ loan.book.id }},
-                bookTitle: {{ loan.book.title|json_encode }},
-                memberName: {{ (loan.member.firstName ~ ' ' ~ loan.member.lastName)|json_encode }},
-                overdue: {{ loan.dueDate < date() ? 'true' : 'false' }}
-            },
-            {% endfor %}
-        ];
-
+        const form = document.querySelector('form');
         const input = document.getElementById('book-search-input');
         const hidden = document.getElementById('book_id');
         const dropdown = document.getElementById('book-search-dropdown');
+        let debounceTimer;
+
+        function clearSuggestions() {
+            dropdown.innerHTML = '';
+            dropdown.style.display = 'none';
+        }
+
+        function buildLabel(item) {
+            return item.memberName ? item.title + ' - ' + item.memberName : item.title;
+        }
 
         function renderDropdown(items) {
             dropdown.innerHTML = '';
+
             if (items.length === 0) {
                 const empty = document.createElement('div');
                 empty.style.cssText = 'padding:10px 14px; color:#999; font-size:0.9rem;';
-                empty.textContent = 'Aucun emprunt actif trouvé.';
+                empty.textContent = 'Aucun livre trouvé.';
                 dropdown.appendChild(empty);
                 dropdown.style.display = 'block';
                 return;
             }
-            items.forEach(function (loan) {
-                const label = loan.bookTitle + ' · ' + loan.memberName + (loan.overdue ? ' ⚠ retard' : '');
+
+            items.forEach(function (itemData) {
                 const item = document.createElement('div');
-                item.style.cssText = 'padding:10px 14px; cursor:pointer; font-size:0.9rem; border-bottom:1px solid #f0ebe0;';
-                item.textContent = label;
-                item.addEventListener('mousedown', function (e) {
-                    e.preventDefault();
-                    input.value = loan.bookTitle;
-                    hidden.value = loan.bookId;
-                    dropdown.style.display = 'none';
-                });
-                item.addEventListener('mouseover', function () { item.style.background = '#f5f0e8'; });
-                item.addEventListener('mouseout', function () { item.style.background = 'transparent'; });
+                const disabled = !itemData.borrowed;
+                const baseStyle = 'padding:10px 14px; font-size:0.9rem; border-bottom:1px solid #f0ebe0;';
+
+                item.style.cssText = disabled
+                    ? baseStyle + 'color:#8a8a8a; background:#faf7f1; cursor:not-allowed;'
+                    : baseStyle + 'cursor:pointer;';
+
+                const label = buildLabel(itemData);
+
+                if (disabled) {
+                    const strike = document.createElement('span');
+                    strike.style.textDecoration = 'line-through';
+                    strike.textContent = label;
+                    item.appendChild(strike);
+
+                    const reason = document.createElement('span');
+                    reason.style.marginLeft = '8px';
+                    reason.textContent = itemData.reason || 'non emprunté';
+                    item.appendChild(reason);
+                } else {
+                    item.textContent = label;
+
+                    item.addEventListener('mousedown', function (e) {
+                        e.preventDefault();
+                        input.value = label;
+                        hidden.value = String(itemData.id);
+                        input.setCustomValidity('');
+                        dropdown.style.display = 'none';
+                    });
+
+                    item.addEventListener('mouseover', function () {
+                        item.style.background = '#f5f0e8';
+                    });
+
+                    item.addEventListener('mouseout', function () {
+                        item.style.background = 'transparent';
+                    });
+                }
+
                 dropdown.appendChild(item);
             });
+
             dropdown.style.display = 'block';
         }
 
-        function filterAndRender() {
-            const q = input.value.trim().toLowerCase();
-            const filtered = q.length === 0
-                ? activeLoans
-                : activeLoans.filter(function (l) {
-                    return l.bookTitle.toLowerCase().includes(q) || l.memberName.toLowerCase().includes(q);
+        function fetchSuggestions(query) {
+            const url = '{{ path('librarian_return_book_suggest') }}?q=' + encodeURIComponent(query);
+
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+
+                    return response.json();
+                })
+                .then(function (payload) {
+                    renderDropdown(payload.suggestions || []);
+                })
+                .catch(function () {
+                    clearSuggestions();
                 });
-            renderDropdown(filtered);
         }
 
         input.addEventListener('input', function () {
             hidden.value = '';
-            filterAndRender();
+            input.setCustomValidity('Veuillez sélectionner un livre dans la liste.');
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                fetchSuggestions(input.value.trim());
+            }, 200);
         });
 
         input.addEventListener('focus', function () {
-            filterAndRender();
+            fetchSuggestions(input.value.trim());
         });
 
         input.addEventListener('blur', function () {
             setTimeout(function () { dropdown.style.display = 'none'; }, 200);
+        });
+
+        form.addEventListener('submit', function (event) {
+            if (!hidden.value) {
+                input.setCustomValidity('Veuillez sélectionner un livre dans la liste.');
+                input.reportValidity();
+                event.preventDefault();
+            }
         });
     })();
     </script>
