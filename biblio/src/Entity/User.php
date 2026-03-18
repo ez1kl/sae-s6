@@ -33,6 +33,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    /**
+     * Mot de passe en clair pour les formulaires, hasher en db
+     */
+    private ?string $plainPassword = null;
+
     #[ORM\OneToOne(targetEntity: Member::class, mappedBy: 'user')]
     private ?Member $member = null;
 
@@ -78,6 +83,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }

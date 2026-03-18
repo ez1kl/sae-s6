@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserCrudController extends AbstractCrudController
 {
@@ -29,7 +31,34 @@ class UserCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('email'),
-            TextField::new('password', 'Mot de passe')->onlyOnForms(),
+            TextField::new('plainPassword', 'Mot de passe')
+                ->onlyWhenCreating()
+                ->setFormType(RepeatedType::class)
+                ->setFormTypeOption('type', PasswordType::class)
+                ->setFormTypeOption('required', true)
+                ->setFormTypeOption('invalid_message', 'Les mots de passe doivent correspondre.')
+                ->setFormTypeOption('first_options', [
+                    'label' => 'Mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ])
+                ->setFormTypeOption('second_options', [
+                    'label' => 'Confirmer le mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ]),
+            TextField::new('plainPassword', 'Mot de passe')
+                ->onlyWhenUpdating()
+                ->setFormType(RepeatedType::class)
+                ->setFormTypeOption('type', PasswordType::class)
+                ->setFormTypeOption('required', false)
+                ->setFormTypeOption('invalid_message', 'Les mots de passe doivent correspondre.')
+                ->setFormTypeOption('first_options', [
+                    'label' => 'Nouveau mot de passe (laisser vide pour conserver)',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ])
+                ->setFormTypeOption('second_options', [
+                    'label' => 'Confirmer le nouveau mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ]),
             ChoiceField::new('roles')
                 ->setChoices([
                     'Membre' => 'ROLE_MEMBRE',
@@ -45,9 +74,13 @@ class UserCrudController extends AbstractCrudController
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if ($entityInstance instanceof User) {
-            $entityInstance->setPassword(
-                $this->passwordHasher->hashPassword($entityInstance, $entityInstance->getPassword())
-            );
+            $plainPassword = $entityInstance->getPlainPassword();
+            if (is_string($plainPassword) && trim($plainPassword) !== '') {
+                $entityInstance->setPassword(
+                    $this->passwordHasher->hashPassword($entityInstance, trim($plainPassword))
+                );
+            }
+            $entityInstance->setPlainPassword(null);
         }
         parent::persistEntity($entityManager, $entityInstance);
     }
@@ -55,9 +88,13 @@ class UserCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if ($entityInstance instanceof User) {
-            $entityInstance->setPassword(
-                $this->passwordHasher->hashPassword($entityInstance, $entityInstance->getPassword())
-            );
+            $plainPassword = $entityInstance->getPlainPassword();
+            if (is_string($plainPassword) && trim($plainPassword) !== '') {
+                $entityInstance->setPassword(
+                    $this->passwordHasher->hashPassword($entityInstance, trim($plainPassword))
+                );
+            }
+            $entityInstance->setPlainPassword(null);
         }
         parent::updateEntity($entityManager, $entityInstance);
     }
