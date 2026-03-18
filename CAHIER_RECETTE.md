@@ -11,6 +11,6 @@
 | 9 | Liste des emprunteurs | Bibliothecaire connecte | Ouvrir /librarian et consulter les prets a jour/en retard | Les emprunteurs sont visibles avec distinction des retards | Bibliothecaire |
 | 10 | Dashboard responsable (stats) | Responsable connecte | Ouvrir /admin | Les compteurs globaux sont affiches (livres, membres, emprunts, reservations) | Responsable |
 | 11 | CRUD responsable | Responsable connecte | Creer, modifier puis supprimer un livre (ou categorie) via EasyAdmin | Les operations CRUD sont prises en compte sans erreur | Responsable |
-| 12 | Gestion des acces | Responsable connecte + utilisateur existant | Modifier le role d un utilisateur et forcer une reconnexion | Le nouveau role est enregistre et applique | Responsable |
+| 12 | Gestion des acces | Responsable connecte + utilisateur existant | Modifier le role d un utilisateur | Le nouveau role est enregistre et applique | Responsable |
 | 13 | API publique | API disponible | Appeler GET /api/books?page=1&limit=5 sans token | Reponse 200 avec data et meta de pagination | API client |
 | 14 | API protegee profil adherent | Token JWT valide d un adherent | POST /api/login puis GET /api/me/profile avec Authorization Bearer | Reponse 200 avec donnees du profil adherent | API client |

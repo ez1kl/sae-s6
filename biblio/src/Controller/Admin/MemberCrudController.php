@@ -40,6 +40,7 @@ class MemberCrudController extends AbstractCrudController
             DateField::new('birthDate')->setLabel('Date de naissance'),
             TextField::new('phoneNumber')->setLabel('Téléphone'),
             TextField::new('address')->setLabel('Adresse'),
+            TextField::new('photo')->setLabel('Photo'),
             BooleanField::new('suspended')->setLabel('Suspendu'),
         ];
     }

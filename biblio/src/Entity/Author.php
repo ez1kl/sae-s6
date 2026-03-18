@@ -137,7 +137,7 @@ class Author
 
     public function setDescription(?string $description): static
     {
-        $this->description = $description;
+        $this->description = $description !== null ? trim(strip_tags($description)) : null;
 
         return $this;
     }

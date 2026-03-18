@@ -32,7 +32,8 @@ class ReservationCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('book')->setLabel('Livre'),
             AssociationField::new('member')->setLabel('Membre'),
-            DateTimeField::new('createdAt')->setLabel('Date de réservation')->hideOnForm(),
+            DateTimeField::new('createdAt')->setLabel('Date de réservation')
+                ->setFormTypeOption('disabled', true),
         ];
     }
 }

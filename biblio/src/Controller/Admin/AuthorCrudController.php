@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class AuthorCrudController extends AbstractCrudController
@@ -35,6 +36,8 @@ class AuthorCrudController extends AbstractCrudController
             TextField::new('nationality')->setLabel('Nationalité'),
             DateField::new('birthDate')->setLabel('Date de naissance'),
             DateField::new('deathDate')->setLabel('Date de décès'),
+            TextField::new('photo')->setLabel('Photo'),
+            TextareaField::new('description')->setLabel('Description'),
         ];
     }
 }

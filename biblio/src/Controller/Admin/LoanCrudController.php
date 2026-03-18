@@ -35,7 +35,7 @@ class LoanCrudController extends AbstractCrudController
             DateTimeField::new('loanDate')->setLabel('Date de prêt')
                 ->setFormTypeOption('data', new \DateTime()),
             DateTimeField::new('dueDate')->setLabel('Date de retour prévue')
-                ->hideOnForm(),
+                ->setFormTypeOption('disabled', true),
             DateTimeField::new('returnDate')->setLabel('Date de retour effectif'),
         ];
     }
