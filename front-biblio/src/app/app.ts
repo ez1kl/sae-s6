@@ -10,5 +10,5 @@ import { FooterComponent } from './components/layout/footer';
   styleUrl: './app.scss'
 })
 export class App {
-  protected title = 'BiblioThèque';
+  protected title = 'Bibliothèque de Blagnac';
 }

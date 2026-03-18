@@ -2,7 +2,7 @@
   <div class="hero-overlay">
     <div class="container py-5 text-center">
       <p class="hero-subtitle mb-2">Bienvenue à la</p>
-      <h1 class="hero-title display-3 mb-3">BiblioThèque</h1>
+      <h1 class="hero-title display-3 mb-3">Bibliothèque de Blagnac</h1>
       <div class="hero-divider"></div>
       <p class="hero-desc mt-3 mb-4">Parcourez notre collection, découvrez de nouveaux auteurs<br>et réservez vos prochaines lectures.</p>
       <div class="d-flex justify-content-center gap-3 flex-wrap">
@@ -54,31 +54,37 @@
 
   <div class="row g-4">
     <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <div class="card-body text-center py-4">
-          <div class="feature-icon"><i class="bi bi-search"></i></div>
-          <h5>Recherche avancée</h5>
-          <p class="small">Trouvez des livres par titre, auteur, catégorie, langue ou période.</p>
+      <a class="text-decoration-none d-block h-100" routerLink="/catalogue" aria-label="Aller au catalogue depuis Recherche avancée">
+        <div class="card feature-card h-100">
+          <div class="card-body text-center py-4">
+            <div class="feature-icon"><i class="bi bi-search"></i></div>
+            <h5>Recherche avancée</h5>
+            <p class="small">Trouvez des livres par titre, auteur, catégorie, langue ou période.</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
     <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <div class="card-body text-center py-4">
-          <div class="feature-icon"><i class="bi bi-bookmark-check"></i></div>
-          <h5>Réservation en ligne</h5>
-          <p class="small">Réservez vos prochaines lectures depuis votre espace personnel.</p>
+      <a class="text-decoration-none d-block h-100" routerLink="/catalogue" aria-label="Aller au catalogue depuis Réservation en ligne">
+        <div class="card feature-card h-100">
+          <div class="card-body text-center py-4">
+            <div class="feature-icon"><i class="bi bi-bookmark-check"></i></div>
+            <h5>Réservation en ligne</h5>
+            <p class="small">Réservez vos prochaines lectures depuis votre espace personnel.</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
     <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <div class="card-body text-center py-4">
-          <div class="feature-icon"><i class="bi bi-person-vcard"></i></div>
-          <h5>Espace adhérent</h5>
-          <p class="small">Suivez vos emprunts, réservations et gérez votre compte.</p>
+      <a class="text-decoration-none d-block h-100" routerLink="/mon-espace" aria-label="Aller à l'espace adhérent">
+        <div class="card feature-card h-100">
+          <div class="card-body text-center py-4">
+            <div class="feature-icon"><i class="bi bi-person-vcard"></i></div>
+            <h5>Espace adhérent</h5>
+            <p class="small">Suivez vos emprunts, réservations et gérez votre compte.</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </div>
