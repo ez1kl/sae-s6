@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BookService } from '../../../services/book.service';
 import { MemberService } from '../../../services/member.service';
 import { AuthService } from '../../../services/auth.service';
@@ -14,6 +14,7 @@ import { Book } from '../../../models/models';
 })
 export class BookDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private bookService = inject(BookService);
   private memberService = inject(MemberService);
   authService = inject(AuthService);
@@ -49,6 +50,11 @@ export class BookDetailComponent implements OnInit {
   reserve(): void {
     const book = this.book();
     if (!book) return;
+
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
     this.memberService.reserveBook(book.id).subscribe({
       next: () => {

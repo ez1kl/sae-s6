@@ -41,11 +41,20 @@ class BookController extends AbstractController
 
         $existing = $reservationRepository->findOneByBookId($book->getId());
         if ($existing) {
+            if (!$this->getUser()) {
+                return $this->json(['reservable' => false]);
+            }
+
             return $this->json(['reservable' => false, 'reason' => 'reserved']);
         }
 
         $activeLoan = $loanRepository->findActiveByBookId($book->getId());
         if ($activeLoan) {
+            // En accès public, on ne révèle pas la raison (seulement si authentifié).
+            if (!$this->getUser()) {
+                return $this->json(['reservable' => false]);
+            }
+
             return $this->json(['reservable' => false, 'reason' => 'loaned']);
         }
 
