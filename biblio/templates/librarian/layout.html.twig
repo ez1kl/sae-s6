@@ -51,27 +51,36 @@
         .navbar-vintage .nav-link.muted-link:hover { color: #D4C5B0; }
         /* Search bar */
         .search-select {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(196,153,60,0.4);
-            color: #D4C5B0;
+            background: #fff;
+            border: 1px solid rgba(107, 58, 42, 0.25);
+            color: var(--v-text);
             font-size: 0.85rem;
             border-radius: 0.3rem 0 0 0.3rem;
             padding: 0.3rem 0.5rem;
         }
-        .search-select:focus { outline: none; border-color: var(--v-gold); }
-        .search-select option { background: var(--v-dark); color: #D4C5B0; }
+        .search-select:focus {
+            outline: none;
+            border-color: var(--v-primary);
+            box-shadow: 0 0 0 0.18rem rgba(107,58,42,0.12);
+        }
+        .search-select option { background: #fff; color: var(--v-text); }
         .search-input {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(196,153,60,0.4);
+            background: #fff;
+            border: 1px solid rgba(107, 58, 42, 0.25);
             border-left: none;
-            color: #F5F0E8;
+            color: var(--v-text);
             font-size: 0.85rem;
             border-radius: 0;
             padding: 0.3rem 0.7rem;
             min-width: 180px;
         }
-        .search-input::placeholder { color: #8a7a6a; }
-        .search-input:focus { outline: none; background: rgba(255,255,255,0.12); border-color: var(--v-gold); box-shadow: none; }
+        .search-input::placeholder { color: var(--v-muted); }
+        .search-input:focus {
+            outline: none;
+            background: #fff;
+            border-color: var(--v-primary);
+            box-shadow: 0 0 0 0.18rem rgba(107,58,42,0.12);
+        }
         .search-btn {
             background: var(--v-gold);
             border: 1px solid var(--v-gold);
@@ -225,23 +234,6 @@
                 </ul>
 
                 <div class="d-flex align-items-center ms-auto gap-2">
-                    {% if app.request.attributes.get('_route') == 'librarian_dashboard' %}
-                        <form class="d-flex align-items-center" action="{{ path('librarian_dashboard') }}" method="GET">
-                            <select name="type" class="search-select">
-                                <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
-                                <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
-                                <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
-                            </select>
-                            <input class="search-input" type="search" name="q"
-                                   placeholder="Rechercher…"
-                                   value="{{ app.request.query.get('q', '') }}">
-                            <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
-                            {% if app.request.query.get('q') %}
-                                <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
-                            {% endif %}
-                        </form>
-                    {% endif %}
-
                     {% if app.user %}
                         <a class="btn btn-sm btn-vintage-logout" href="{{ path('app_logout') }}">
                             <i class="fas fa-right-from-bracket me-1"></i>Déconnexion

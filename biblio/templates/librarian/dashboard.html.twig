@@ -3,71 +3,74 @@
 {% block title %}Guichet — Prêts & Retours{% endblock %}
 
 {% block body %}
-    <div class="section-header d-flex align-items-baseline justify-content-between">
-        <h1>
-            {% if app.request.query.get('q') %}
-                Résultats
-                <small class="fw-normal fs-6 ms-2 text-muted">
-                    « {{ app.request.query.get('q') }} »
-                    {% if app.request.query.get('type') == 'author' %}· auteur
-                    {% elseif app.request.query.get('type') == 'member' %}· membre
-                    {% else %}· titre{% endif %}
-                </small>
-            {% else %}
-                Emprunts en cours
-            {% endif %}
-        </h1>
-        {% if overdueLoans|length > 0 %}
-            <span class="badge badge-overdue px-3 py-2">
-                <i class="fas fa-exclamation-triangle me-1"></i>{{ overdueLoans|length }} retard(s)
-            </span>
-        {% endif %}
-    </div>
+    {# Stats (uniquement responsables) #}
+    {% if canSeeStats %}
+        <div class="d-flex align-items-baseline justify-content-between mb-2">
+            <h2 class="mb-0" style="font-size: 1.05rem; color: var(--v-dark);">Statistiques</h2>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <div class="card card-stat p-3">
+                    <div class="stat-value">{{ activeLoans|length }}</div>
+                    <div class="stat-label mt-1">Prêts actifs</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card card-stat p-3" style="border-left-color: #9B3B3B;">
+                    <div class="stat-value" style="color:#9B3B3B;">{{ overdueLoans|length }}</div>
+                    <div class="stat-label mt-1">En retard</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card card-stat p-3" style="border-left-color: #5B7A5E;">
+                    <div class="stat-value" style="color:#5B7A5E;">{{ availableBooks }}</div>
+                    <div class="stat-label mt-1">Livres disponibles</div>
+                </div>
+            </div>
+        </div>
 
-    {# Stats #}
-    <div class="row g-3 mb-4">
-        <div class="col-sm-4">
-            <div class="card card-stat p-3">
-                <div class="stat-value">{{ activeLoans|length }}</div>
-                <div class="stat-label mt-1">Prêts actifs</div>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <div class="card card-stat p-3">
+                    <div class="stat-value">{{ totalBooks }}</div>
+                    <div class="stat-label mt-1">Livres (total)</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card card-stat p-3">
+                    <div class="stat-value">{{ totalMembers }}</div>
+                    <div class="stat-label mt-1">Adhérents (total)</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card card-stat p-3">
+                    <div class="stat-value">{{ totalAuthors }}</div>
+                    <div class="stat-label mt-1">Auteurs (total)</div>
+                </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="card card-stat p-3" style="border-left-color: #9B3B3B;">
-                <div class="stat-value" style="color:#9B3B3B;">{{ overdueLoans|length }}</div>
-                <div class="stat-label mt-1">En retard</div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card card-stat p-3" style="border-left-color: #5B7A5E;">
-                <div class="stat-value" style="color:#5B7A5E;">{{ availableBooks }}</div>
-                <div class="stat-label mt-1">Livres disponibles</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-sm-4">
-            <div class="card card-stat p-3">
-                <div class="stat-value">{{ totalBooks }}</div>
-                <div class="stat-label mt-1">Livres (total)</div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card card-stat p-3">
-                <div class="stat-value">{{ totalMembers }}</div>
-                <div class="stat-label mt-1">Adhérents (total)</div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card card-stat p-3">
-                <div class="stat-value">{{ totalAuthors }}</div>
-                <div class="stat-label mt-1">Auteurs (total)</div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 
     {# Table #}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div class="fw-semibold" style="color: var(--v-dark); font-family: 'Playfair Display', Georgia, serif;">
+            Emprunts
+        </div>
+        <form class="d-flex align-items-center" action="{{ path('librarian_dashboard') }}" method="GET">
+            <select name="type" class="search-select">
+                <option value="title" {% if app.request.query.get('type', 'title') == 'title' %}selected{% endif %}>Titre</option>
+                <option value="member" {% if app.request.query.get('type') == 'member' %}selected{% endif %}>Membre</option>
+                <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Auteur</option>
+            </select>
+            <input class="search-input" type="search" name="q"
+                   placeholder="Rechercher…"
+                   value="{{ app.request.query.get('q', '') }}">
+            <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+            {% if app.request.query.get('q') %}
+                <a href="{{ path('librarian_dashboard') }}" class="search-reset"><i class="fas fa-times"></i></a>
+            {% endif %}
+        </form>
+    </div>
     <div class="card">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">

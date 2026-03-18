@@ -53,15 +53,24 @@ class LibrarianController extends AbstractController
             $overdueLoans = $this->loanRepository->findOverdueLoans();
         }
 
-        $totalBooks = $this->em->getRepository(Book::class)->count([]);
-        $totalMembers = $this->em->getRepository(Member::class)->count([]);
-        $totalAuthors = $this->em->getRepository(Author::class)->count([]);
-        $allActiveCount = $this->loanRepository->countActiveLoans();
-        $availableBooks = $totalBooks - $allActiveCount;
+        $canSeeStats = $this->isGranted('ROLE_RESPONSABLE');
+        $totalBooks = null;
+        $totalMembers = null;
+        $totalAuthors = null;
+        $availableBooks = null;
+
+        if ($canSeeStats) {
+            $totalBooks = $this->em->getRepository(Book::class)->count([]);
+            $totalMembers = $this->em->getRepository(Member::class)->count([]);
+            $totalAuthors = $this->em->getRepository(Author::class)->count([]);
+            $allActiveCount = $this->loanRepository->countActiveLoans();
+            $availableBooks = $totalBooks - $allActiveCount;
+        }
 
         return $this->render('librarian/dashboard.html.twig', [
             'activeLoans' => $activeLoans,
             'overdueLoans' => $overdueLoans,
+            'canSeeStats' => $canSeeStats,
             'totalBooks' => $totalBooks,
             'totalMembers' => $totalMembers,
             'totalAuthors' => $totalAuthors,
