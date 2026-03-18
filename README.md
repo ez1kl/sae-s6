@@ -6,6 +6,8 @@ Ce dépôt contient :
 - un **front-end Angular** dans `front-biblio`
 - une **base de données MariaDB** (via `docker-compose.yml`)
 
+Pour aller plus loin, la documentation du projet est disponible dans `docs/` (spécification et endpoints dans `docs/API.md`, cahier de recette dans `docs/CAHIER_RECETTE.md`, documentation technique dans `docs/doc_technique_sae_biblio.pdf`, et scripts/dump SQL dans `docs/dump_sae_db.sql`).
+
 ---
 
 ## 1. Prérequis
