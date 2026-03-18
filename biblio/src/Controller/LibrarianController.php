@@ -7,6 +7,7 @@ use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Member;
 use App\Entity\User;
+use App\Repository\BookRepository;
 use App\Repository\LoanRepository;
 use App\Repository\MemberRepository;
 use App\Repository\ReservationRepository;
@@ -92,11 +93,9 @@ class LibrarianController extends AbstractController
                     } else {
                         if (($check['warning'] ?? null) !== null && !$force) {
                             return $this->render('librarian/express_loan.html.twig', [
-                                'books' => $this->em->getRepository(Book::class)->findAll(),
-                                'members' => $this->em->getRepository(Member::class)->findAll(),
                                 'reservationWarning' => (string) $check['warning'],
                                 'pendingBook' => $book,
-                                'pendingMemberId' => $member->getId(),
+                                'pendingMember' => $member,
                             ]);
                         }
 
@@ -110,12 +109,54 @@ class LibrarianController extends AbstractController
             }
         }
 
-        $allBooks = $this->em->getRepository(Book::class)->findAll();
-        $members = $this->em->getRepository(Member::class)->findAll();
+        return $this->render('librarian/express_loan.html.twig');
+    }
 
-        return $this->render('librarian/express_loan.html.twig', [
-            'books' => $allBooks,
-            'members' => $members,
+    #[Route('/loan/books/suggest', name: 'loan_book_suggest', methods: ['GET'])]
+    public function loanBookSuggestions(Request $request, BookRepository $bookRepository): JsonResponse
+    {
+        $query = trim((string) $request->query->get('q', ''));
+        $books = $bookRepository->findLoanSuggestions($query, 30);
+
+        $suggestions = array_map(static function (array $book): array {
+            return [
+                'id' => $book['id'],
+                'title' => $book['title'],
+                'author' => $book['author'],
+                'available' => $book['available'],
+                'reason' => $book['available'] ? null : 'non disponible',
+            ];
+        }, $books);
+
+        return $this->json([
+            'suggestions' => $suggestions,
+        ]);
+    }
+
+    #[Route('/loan/members/suggest', name: 'loan_member_suggest', methods: ['GET'])]
+    public function loanMemberSuggestions(Request $request): JsonResponse
+    {
+        $query = trim((string) $request->query->get('q', ''));
+
+        if (mb_strlen($query) < 3) {
+            return $this->json(['suggestions' => []]);
+        }
+
+        $members = $this->memberRepository->findLoanSuggestions($query, 12);
+
+        $suggestions = array_map(function (Member $member): array {
+            $check = $this->loanService->canMemberBorrow($member);
+
+            return [
+                'id' => $member->getId(),
+                'fullName' => trim((string) $member->getFirstName() . ' ' . (string) $member->getLastName()),
+                'canBorrow' => $check['allowed'],
+                'reason' => $check['allowed'] ? null : $this->normalizeMemberBorrowReason((string) $check['reason']),
+            ];
+        }, $members);
+
+        return $this->json([
+            'suggestions' => $suggestions,
         ]);
     }
 
@@ -331,5 +372,18 @@ class LibrarianController extends AbstractController
         $this->addFlash('success', $message);
 
         return $this->redirectToRoute('librarian_member_detail', ['id' => $member->getId()]);
+    }
+
+    private function normalizeMemberBorrowReason(string $reason): string
+    {
+        if (str_starts_with($reason, 'Quota maximum atteint')) {
+            return 'maximum d\'emprunts atteint';
+        }
+
+        if ($reason === 'L\'adhérent est suspendu.') {
+            return 'membre suspendu';
+        }
+
+        return trim(mb_strtolower($reason), " .\t\n\r\0\x0B");
     }
 }

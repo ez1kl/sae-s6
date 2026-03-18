@@ -27,7 +27,7 @@
                                 type="text"
                                 id="book-search-input"
                                 class="form-control form-select-vintage"
-                                placeholder="Tapez le titre d'un livre..."
+                                placeholder="Titre..."
                                 autocomplete="off"
                                 required>
                             <input type="hidden" id="book_id" name="book_id">
@@ -40,17 +40,21 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="member_id" class="form-label small fw-semibold" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Lora', serif;">
+                        <label for="member-search-input" class="form-label small fw-semibold" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Lora', serif;">
                             Membre bénéficiaire
                         </label>
-                        <select id="member_id" name="member_id" class="form-select form-select-vintage" required>
-                            <option value="">— Sélectionner un membre —</option>
-                            {% for member in members %}
-                                <option value="{{ member.id }}" {% if pendingMemberId is defined and pendingMemberId == member.id %}selected{% endif %}>
-                                    {{ member.firstName }} {{ member.lastName }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                        <div class="position-relative">
+                            <input
+                                type="text"
+                                id="member-search-input"
+                                class="form-control form-select-vintage"
+                                placeholder="Nom, prénom..."
+                                autocomplete="off"
+                                required>
+                            <input type="hidden" id="member_id" name="member_id">
+                            <div id="member-search-dropdown" style="display:none; position:absolute; z-index:200; background:#fff; border:1px solid var(--v-border, #ccc); border-top:none; width:100%; max-height:220px; overflow-y:auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            </div>
+                        </div>
                     </div>
 
                     <hr style="border-color: var(--v-border);">
@@ -70,63 +74,228 @@
 
     <script>
     (function () {
-        const input = document.getElementById('book-search-input');
-        const hidden = document.getElementById('book_id');
-        const dropdown = document.getElementById('book-search-dropdown');
-        let debounceTimer;
+        const form = document.querySelector('form');
+        const bookInput = document.getElementById('book-search-input');
+        const bookHidden = document.getElementById('book_id');
+        const bookDropdown = document.getElementById('book-search-dropdown');
+        const memberInput = document.getElementById('member-search-input');
+        const memberHidden = document.getElementById('member_id');
+        const memberDropdown = document.getElementById('member-search-dropdown');
+        let bookDebounceTimer;
+        let memberDebounceTimer;
 
-        function renderDropdown(items) {
+        function clearSuggestions(dropdown) {
             dropdown.innerHTML = '';
-            if (items.length === 0) {
+            dropdown.style.display = 'none';
+        }
+
+        function buildLabel(primary, suffix) {
+            if (!suffix) {
+                return primary;
+            }
+            return primary + ' - ' + suffix;
+        }
+
+        function renderSuggestions(dropdown, items, options) {
+            dropdown.innerHTML = '';
+
+            if (!items || items.length === 0) {
                 dropdown.style.display = 'none';
                 return;
             }
-            items.forEach(function (book) {
-                const label = book.title + (book.author ? ' — ' + book.author.lastName : '');
+
+            items.forEach(function (itemData) {
                 const item = document.createElement('div');
-                item.style.cssText = 'padding:10px 14px; cursor:pointer; font-size:0.9rem; border-bottom:1px solid #f0ebe0;';
-                item.textContent = label;
-                item.addEventListener('mousedown', function (e) {
-                    e.preventDefault();
-                    input.value = label;
-                    hidden.value = book.id;
-                    dropdown.style.display = 'none';
-                });
-                item.addEventListener('mouseover', function () { item.style.background = '#f5f0e8'; });
-                item.addEventListener('mouseout', function () { item.style.background = 'transparent'; });
+                const disabled = !!options.isDisabled(itemData);
+                const baseStyle = 'padding:10px 14px; font-size:0.9rem; border-bottom:1px solid #f0ebe0;';
+                item.style.cssText = disabled
+                    ? baseStyle + 'color:#8a8a8a; background:#faf7f1; cursor:not-allowed;'
+                    : baseStyle + 'cursor:pointer;';
+
+                const label = options.getLabel(itemData);
+                const reason = options.getReason(itemData);
+
+                if (disabled) {
+                    const strike = document.createElement('span');
+                    strike.style.textDecoration = 'line-through';
+                    strike.textContent = label;
+                    item.appendChild(strike);
+
+                    if (reason) {
+                        const suffix = document.createElement('span');
+                        suffix.style.marginLeft = '8px';
+                        suffix.textContent = reason;
+                        item.appendChild(suffix);
+                    }
+                } else {
+                    item.textContent = label;
+                }
+
+                if (!disabled) {
+                    item.addEventListener('mousedown', function (e) {
+                        e.preventDefault();
+                        options.onSelect(itemData, label);
+                        dropdown.style.display = 'none';
+                    });
+
+                    item.addEventListener('mouseover', function () {
+                        item.style.background = '#f5f0e8';
+                    });
+
+                    item.addEventListener('mouseout', function () {
+                        item.style.background = 'transparent';
+                    });
+                }
+
                 dropdown.appendChild(item);
             });
+
             dropdown.style.display = 'block';
         }
 
-        function fetchBooks(q) {
-            const url = q.length > 0
-                ? '/api/books/search?title=' + encodeURIComponent(q) + '&limit=50'
-                : '/api/books?limit=50';
-            fetch(url)
-                .then(function (r) { return r.json(); })
-                .then(function (data) { renderDropdown(data.data || []); })
-                .catch(function () { dropdown.style.display = 'none'; });
+        function fetchJson(url, onSuccess, onError) {
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(onSuccess)
+                .catch(onError);
         }
 
-        input.addEventListener('input', function () {
-            hidden.value = '';
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function () { fetchBooks(input.value.trim()); }, 200);
+        function fetchBooks(query) {
+            const url = '{{ path('librarian_loan_book_suggest') }}?q=' + encodeURIComponent(query);
+            fetchJson(
+                url,
+                function (payload) {
+                    renderSuggestions(bookDropdown, payload.suggestions || [], {
+                        getLabel: function (item) {
+                            return buildLabel(item.title, item.author || '');
+                        },
+                        getReason: function (item) {
+                            return item.reason || '';
+                        },
+                        isDisabled: function (item) {
+                            return !item.available;
+                        },
+                        onSelect: function (item, label) {
+                            bookInput.value = label;
+                            bookHidden.value = String(item.id);
+                            bookInput.setCustomValidity('');
+                        }
+                    });
+                },
+                function () {
+                    clearSuggestions(bookDropdown);
+                }
+            );
+        }
+
+        function fetchMembers(query) {
+            if (query.length < 3) {
+                clearSuggestions(memberDropdown);
+                return;
+            }
+
+            const url = '{{ path('librarian_loan_member_suggest') }}?q=' + encodeURIComponent(query);
+            fetchJson(
+                url,
+                function (payload) {
+                    renderSuggestions(memberDropdown, payload.suggestions || [], {
+                        getLabel: function (item) {
+                            return item.fullName;
+                        },
+                        getReason: function (item) {
+                            return item.reason || '';
+                        },
+                        isDisabled: function (item) {
+                            return !item.canBorrow;
+                        },
+                        onSelect: function (item, label) {
+                            memberInput.value = label;
+                            memberHidden.value = String(item.id);
+                            memberInput.setCustomValidity('');
+                        }
+                    });
+                },
+                function () {
+                    clearSuggestions(memberDropdown);
+                }
+            );
+        }
+
+        bookInput.addEventListener('input', function () {
+            bookHidden.value = '';
+            bookInput.setCustomValidity('Veuillez sélectionner un livre dans la liste.');
+            clearTimeout(bookDebounceTimer);
+            bookDebounceTimer = setTimeout(function () {
+                fetchBooks(bookInput.value.trim());
+            }, 200);
         });
 
-        input.addEventListener('focus', function () {
-            fetchBooks(input.value.trim());
+        bookInput.addEventListener('focus', function () {
+            fetchBooks(bookInput.value.trim());
         });
 
-        input.addEventListener('blur', function () {
-            setTimeout(function () { dropdown.style.display = 'none'; }, 200);
+        bookInput.addEventListener('blur', function () {
+            setTimeout(function () {
+                clearSuggestions(bookDropdown);
+            }, 200);
+        });
+
+        memberInput.addEventListener('input', function () {
+            memberHidden.value = '';
+            memberInput.setCustomValidity('Veuillez sélectionner un membre dans la liste.');
+            clearTimeout(memberDebounceTimer);
+            memberDebounceTimer = setTimeout(function () {
+                fetchMembers(memberInput.value.trim());
+            }, 200);
+        });
+
+        memberInput.addEventListener('focus', function () {
+            const query = memberInput.value.trim();
+            if (query.length >= 3) {
+                fetchMembers(query);
+            }
+        });
+
+        memberInput.addEventListener('blur', function () {
+            setTimeout(function () {
+                clearSuggestions(memberDropdown);
+            }, 200);
+        });
+
+        form.addEventListener('submit', function (event) {
+            if (!bookHidden.value) {
+                bookInput.setCustomValidity('Veuillez sélectionner un livre dans la liste.');
+                bookInput.reportValidity();
+                event.preventDefault();
+                return;
+            }
+
+            if (!memberHidden.value) {
+                memberInput.setCustomValidity('Veuillez sélectionner un membre dans la liste.');
+                memberInput.reportValidity();
+                event.preventDefault();
+            }
         });
 
         {% if pendingBook is defined and pendingBook %}
-        // Pré-remplissage lors d'une demande de confirmation
-        input.value = {{ (pendingBook.title ~ (pendingBook.author ? ' — ' ~ pendingBook.author.lastName : ''))|json_encode|raw }};
-        hidden.value = {{ pendingBook.id|json_encode|raw }};
+        bookInput.value = {{ (pendingBook.title ~ (pendingBook.author ? ' - ' ~ pendingBook.author.lastName : ''))|json_encode|raw }};
+        bookHidden.value = {{ pendingBook.id|json_encode|raw }};
+        bookInput.setCustomValidity('');
+        {% endif %}
+
+        {% if pendingMember is defined and pendingMember %}
+        memberInput.value = {{ ((pendingMember.firstName ?? '') ~ ' ' ~ (pendingMember.lastName ?? ''))|trim|json_encode|raw }};
+        memberHidden.value = {{ pendingMember.id|json_encode|raw }};
+        memberInput.setCustomValidity('');
         {% endif %}
     })();
     </script>

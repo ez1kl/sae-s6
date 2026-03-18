@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Entity\Loan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -113,5 +114,42 @@ class BookRepository extends ServiceEntityRepository
             ->select('COUNT(b.id)')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @return array<int, array{id: int, title: string, author: string, available: bool}>
+     */
+    public function findLoanSuggestions(string $query, int $limit = 20): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->select('b.id AS id, b.title AS title, a.firstName AS authorFirstName, a.lastName AS authorLastName, activeLoan.id AS activeLoanId')
+            ->leftJoin('b.author', 'a')
+            ->leftJoin(Loan::class, 'activeLoan', 'WITH', 'activeLoan.book = b AND activeLoan.returnDate IS NULL');
+
+        if ($query !== '') {
+            $qb->andWhere('b.title LIKE :query')
+                ->setParameter('query', '%' . $query . '%')
+                ->orderBy('CASE WHEN activeLoan.id IS NULL THEN 0 ELSE 1 END', 'ASC')
+                ->addOrderBy('b.title', 'ASC');
+        } else {
+            $qb->andWhere('activeLoan.id IS NULL')
+                ->orderBy('b.title', 'ASC');
+        }
+
+        $rows = $qb
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(static function (array $row): array {
+            $author = trim((string) ($row['authorFirstName'] ?? '') . ' ' . (string) ($row['authorLastName'] ?? ''));
+
+            return [
+                'id' => (int) $row['id'],
+                'title' => (string) $row['title'],
+                'author' => $author,
+                'available' => ($row['activeLoanId'] ?? null) === null,
+            ];
+        }, $rows);
     }
 }

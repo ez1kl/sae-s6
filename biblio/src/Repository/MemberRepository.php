@@ -158,4 +158,20 @@ class MemberRepository extends ServiceEntityRepository
             'fullName' => trim(($member['firstName'] ?? '') . ' ' . ($member['lastName'] ?? '')),
         ], $members);
     }
+
+    /**
+     * @return Member[]
+     */
+    public function findLoanSuggestions(string $query, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.user', 'u')->addSelect('u')
+            ->andWhere('m.lastName LIKE :q OR m.firstName LIKE :q')
+            ->setParameter('q', '%' . $query . '%')
+            ->orderBy('m.lastName', 'ASC')
+            ->addOrderBy('m.firstName', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }
