@@ -30,6 +30,20 @@
   background-color: #f5f0e8;
 }
 
+.book-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.language-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  background-color: #ede8e0;
+  color: #6b3a2a;
+  border: 1px solid rgba(107, 58, 42, 0.2);
+}
+
 .book-card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: 1px solid rgba(107, 58, 42, 0.1);

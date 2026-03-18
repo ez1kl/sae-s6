@@ -28,20 +28,22 @@ class AppFixtures extends Fixture
         // --- 5 Auteurs ---
         $authors = [];
         $authorData = [
-            ['Hugo', 'Victor', '1802-02-26', '1885-05-22', 'Française'],
-            ['Camus', 'Albert', '1913-11-07', '1960-01-04', 'Française'],
-            ['Austen', 'Jane', '1775-12-16', '1817-07-18', 'Britannique'],
-            ['García Márquez', 'Gabriel', '1927-03-06', '2014-04-17', 'Colombienne'],
-            ['Murakami', 'Haruki', '1949-01-12', null, 'Japonaise'],
+            ['Hugo', 'Victor', '1802-02-26', '1885-05-22', 'Française', 'Figure majeure du romantisme français, Victor Hugo a marqué la littérature avec des romans sociaux et une poésie engagée.'],
+            ['Camus', 'Albert', '1913-11-07', '1960-01-04', 'Française', 'Écrivain et philosophe de l\'absurde, Albert Camus explore la condition humaine, la révolte et la quête de sens.'],
+            ['Austen', 'Jane', '1775-12-16', '1817-07-18', 'Britannique', 'Romancière anglaise incontournable, Jane Austen observe avec finesse les mœurs, les classes sociales et les relations amoureuses.'],
+            ['García Márquez', 'Gabriel', '1927-03-06', '2014-04-17', 'Colombienne', 'Auteur emblématique du réalisme magique, Gabriel García Márquez mêle histoire, mémoire et imaginaire dans ses récits.'],
+            ['Murakami', 'Haruki', '1949-01-12', null, 'Japonaise', 'Romancier contemporain japonais, Haruki Murakami construit des univers oniriques où solitude, musique et mystère se rencontrent.'],
         ];
 
-        foreach ($authorData as [$lastName, $firstName, $birth, $death, $nationality]) {
+        foreach ($authorData as [$lastName, $firstName, $birth, $death, $nationality, $description]) {
             $author = new Author();
             $author->setLastName($lastName);
             $author->setFirstName($firstName);
             $author->setBirthDate(new \DateTime($birth));
             $author->setDeathDate($death ? new \DateTime($death) : null);
             $author->setNationality($nationality);
+            $author->setDescription($description);
+            $author->setPhoto('https://picsum.photos/seed/author-' . $faker->unique()->numberBetween(1, 10000) . '/400/400');
             $manager->persist($author);
             $authors[] = $author;
         }
@@ -120,6 +122,7 @@ class AppFixtures extends Fixture
             $member->setMembershipDate($faker->dateTimeBetween('-3 years', 'now'));
             $member->setPhoneNumber($faker->phoneNumber());
             $member->setAddress($faker->address());
+            $member->setPhoto('https://picsum.photos/seed/member-' . $faker->unique()->numberBetween(1, 10000) . '/400/400');
             // Suspendre 2 adhérents pour tester
             if ($i >= 8) {
                 $member->setSuspended(true);

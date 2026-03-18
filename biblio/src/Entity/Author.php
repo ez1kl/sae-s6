@@ -46,7 +46,7 @@ class Author
     private ?string $nationality = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['author:read'])]
+    #[Groups(['author:list', 'author:read'])]
     private ?string $photo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

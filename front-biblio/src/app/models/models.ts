@@ -5,6 +5,8 @@ export interface Author {
   nationality: string;
   birthDate?: string | null;
   deathDate?: string | null;
+  photo?: string | null;
+  description?: string | null;
 }
 
 export interface Book {
@@ -36,6 +38,7 @@ export interface Member {
   birthDate: string | null;
   phoneNumber: string | null;
   address: string | null;
+  photo?: string | null;
   email?: string;
   suspended?: boolean;
 }

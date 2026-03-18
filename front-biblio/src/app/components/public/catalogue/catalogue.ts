@@ -215,4 +215,10 @@ export class CatalogueComponent implements OnInit {
       this.searchCategoryIds = this.searchCategoryIds.filter((x) => x !== id);
     }
   }
+
+  getLanguageLabel(code?: string | null): string {
+    if (!code) return '';
+    const option = this.languageOptions.find((lang) => lang.code === code);
+    return option?.label ?? code.toUpperCase();
+  }
 }

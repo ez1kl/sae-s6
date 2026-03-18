@@ -47,15 +47,16 @@
           <label class="form-label d-block">Catégories <span class="text-muted small">(max {{ maxCategories }})</span></label>
           <div class="category-checkboxes border rounded px-2 py-2">
             @for (cat of categories(); track cat.id) {
-              <div class="form-check form-check-inline mb-1">
+              <div class="form-check form-check-inline mb-1" [attr.title]="cat.description || ''">
                 <input
                   class="form-check-input"
                   type="checkbox"
                   [id]="'cat-' + cat.id"
                   [checked]="isCategorySelected(cat.id)"
                   [disabled]="categoryDisabled(cat.id)"
+                  [attr.title]="cat.description || ''"
                   (change)="toggleCategory(cat.id, $any($event.target).checked)">
-                <label class="form-check-label small" [for]="'cat-' + cat.id">{{ cat.name }}</label>
+                <label class="form-check-label small" [for]="'cat-' + cat.id" [attr.title]="cat.description || ''">{{ cat.name }}</label>
               </div>
             }
           </div>
@@ -70,11 +71,11 @@
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Date de début</label>
+          <label class="form-label">Publié après le</label>
           <input type="date" class="form-control" [(ngModel)]="searchYearFromDate">
         </div>
         <div class="col-md-3">
-          <label class="form-label">Date de fin</label>
+          <label class="form-label">Publié avant le</label>
           <input type="date" class="form-control" [(ngModel)]="searchYearToDate">
         </div>
         <div class="col-md-2 d-flex align-items-end gap-2">
@@ -107,37 +108,35 @@
       <div class="row g-4">
         @for (book of books(); track book.id) {
           <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 shadow-sm book-card">
-              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
-                @if (book.coverImage) {
-                  <img
-                    [src]="book.coverImage"
-                    [alt]="'Couverture - ' + book.title"
-                    class="w-100 h-100"
-                    style="object-fit: cover;">
-                } @else {
-                  <i class="bi bi-book display-1 text-muted"></i>
-                }
-              </div>
-              <div class="card-body d-flex flex-column">
-                <h6 class="card-title fw-bold">{{ book.title }}</h6>
-                @if (book.author) {
-                  <p class="text-muted small mb-1">
-                    {{ book.author.firstName }} {{ book.author.lastName }}
-                  </p>
-                }
-                @if (book.language) {
-                  <span class="badge bg-secondary mb-2">{{ book.language }}</span>
-                }
-                <div class="mt-auto">
+            <a [routerLink]="['/livres', book.id]" class="book-card-link" [attr.aria-label]="'Voir le détail de ' + book.title">
+              <div class="card h-100 shadow-sm book-card">
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                  @if (book.coverImage) {
+                    <img
+                      [src]="book.coverImage"
+                      [alt]="'Couverture - ' + book.title"
+                      class="w-100 h-100"
+                      style="object-fit: cover;">
+                  } @else {
+                    <i class="bi bi-book display-1 text-muted"></i>
+                  }
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                  @if (book.author) {
+                    <p class="text-muted small mb-1">
+                      {{ book.author.firstName }} {{ book.author.lastName }}
+                    </p>
+                  }
+                  @if (book.language) {
+                    <span class="badge language-badge mb-2 align-self-start">
+                      <i class="bi bi-translate me-1" aria-hidden="true"></i>{{ getLanguageLabel(book.language) }}
+                    </span>
+                  }
+                  <div class="mt-auto"></div>
                 </div>
               </div>
-              <div class="card-footer bg-transparent border-0">
-                <a [routerLink]="['/livres', book.id]" class="btn btn-outline-primary btn-sm w-100">
-                  Voir détails
-                </a>
-              </div>
-            </div>
+            </a>
           </div>
         }
       </div>
