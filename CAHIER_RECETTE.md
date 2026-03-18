@@ -14,3 +14,20 @@
 | 12 | Gestion des acces | Responsable connecte + utilisateur existant | Modifier le role d un utilisateur | Le nouveau role est enregistre et applique | Responsable |
 | 13 | API publique | API disponible | Appeler GET /api/books?page=1&limit=5 sans token | Reponse 200 avec data et meta de pagination | API client |
 | 14 | API protegee profil adherent | Token JWT valide d un adherent | POST /api/login puis GET /api/me/profile avec Authorization Bearer | Reponse 200 avec donnees du profil adherent | API client |
+
+Pour 13 et 14 voila les commandes curl utiles :
+### 13 :
+```
+curl -k "https://localhost:8000/api/books?page=1&limit=5"
+```
+### 14 :
+```
+curl -k -X POST "https://localhost:8000/api/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@admin.fr","password":"admin"}'
+```
+```
+curl -k "https://localhost:8000/api/me/profile" \
+  -H "Authorization: Bearer JWT" \
+  -H "Accept: application/json"
+```
