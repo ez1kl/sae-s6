@@ -226,11 +226,13 @@
                             <i class="fas fa-users me-1"></i>Membres
                         </a>
                     </li>
+                    {% if is_granted('ROLE_RESPONSABLE') %}
                     <li class="nav-item ms-2">
                         <a class="nav-link muted-link" href="{{ path('admin') }}">
                             <i class="fas fa-arrow-left me-1"></i>Administration
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
 
                 <div class="d-flex align-items-center ms-auto gap-2">
