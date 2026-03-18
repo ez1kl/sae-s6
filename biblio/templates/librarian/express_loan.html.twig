@@ -198,11 +198,6 @@
         }
 
         function fetchMembers(query) {
-            if (query.length < 3) {
-                clearSuggestions(memberDropdown);
-                return;
-            }
-
             const url = '{{ path('librarian_loan_member_suggest') }}?q=' + encodeURIComponent(query);
             fetchJson(
                 url,
@@ -259,10 +254,7 @@
         });
 
         memberInput.addEventListener('focus', function () {
-            const query = memberInput.value.trim();
-            if (query.length >= 3) {
-                fetchMembers(query);
-            }
+            fetchMembers(memberInput.value.trim());
         });
 
         memberInput.addEventListener('blur', function () {

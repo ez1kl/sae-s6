@@ -147,10 +147,6 @@ class LibrarianController extends AbstractController
     {
         $query = trim((string) $request->query->get('q', ''));
 
-        if (mb_strlen($query) < 3) {
-            return $this->json(['suggestions' => []]);
-        }
-
         $members = $this->memberRepository->findLoanSuggestions($query, 12);
 
         $suggestions = array_map(function (Member $member): array {
