@@ -8,9 +8,11 @@
             <i class="fas fa-id-card me-2" style="color: var(--v-gold);"></i>
             {{ member.firstName }} {{ member.lastName }}
         </h1>
-        <a href="{{ path('librarian_members') }}" class="btn-vintage-back text-decoration-none">
-            <i class="fas fa-arrow-left me-1"></i>Retour à la liste
-        </a>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="{{ path('librarian_members') }}" class="btn-vintage-back text-decoration-none">
+                <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+            </a>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
@@ -105,8 +107,11 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header" style="background: var(--v-light); color: var(--v-primary); font-weight: 600;">
-                    Emprunts en cours
+                <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: var(--v-light); color: var(--v-primary); font-weight: 600;">
+                    <span>Emprunts en cours</span>
+                    <a href="{{ path('librarian_express_loan', { member_id: member.id, redirect_to_member: 1 }) }}" class="btn btn-sm btn-vintage-primary text-decoration-none">
+                        <i class="fas fa-plus-circle me-1"></i>Emprunter
+                    </a>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -115,6 +120,7 @@
                                 <th class="ps-4">Livre</th>
                                 <th>Prêté le</th>
                                 <th>Retour prévu</th>
+                                <th>Action</th>
                                 <th class="pe-4 text-end">Statut</th>
                             </tr>
                         </thead>
@@ -125,6 +131,14 @@
                                     <td class="ps-4">{{ loan.book.title }}</td>
                                     <td class="small" style="color: var(--v-muted);">{{ loan.loanDate|date('d/m/Y') }}</td>
                                     <td class="small {% if isOverdue %}text-danger fw-semibold{% else %}text-muted{% endif %}">{{ loan.dueDate|date('d/m/Y') }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('librarian_express_return') }}" class="m-0">
+                                            <input type="hidden" name="book_id" value="{{ loan.book.id }}">
+                                            <button type="submit" class="btn btn-sm btn-vintage-success" onclick="return confirm('Enregistrer le retour pour ce livre ?');">
+                                                <i class="fas fa-undo me-1"></i>Retour
+                                            </button>
+                                        </form>
+                                    </td>
                                     <td class="pe-4 text-end">
                                         {% if isOverdue %}
                                             <span class="badge badge-overdue">En retard</span>
@@ -135,7 +149,7 @@
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="4" class="text-center py-4" style="color: var(--v-muted); font-style: italic;">
+                                    <td colspan="5" class="text-center py-4" style="color: var(--v-muted); font-style: italic;">
                                         Aucun emprunt en cours.
                                     </td>
                                 </tr>

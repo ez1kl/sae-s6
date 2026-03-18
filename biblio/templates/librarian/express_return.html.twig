@@ -170,6 +170,12 @@
                 event.preventDefault();
             }
         });
+
+        {% if pendingBook is defined and pendingBook and pendingLoan is defined and pendingLoan %}
+        input.value = {{ (pendingBook.title ~ ' - ' ~ pendingLoan.member.firstName ~ ' ' ~ pendingLoan.member.lastName)|trim|json_encode|raw }};
+        hidden.value = {{ pendingBook.id|json_encode|raw }};
+        input.setCustomValidity('');
+        {% endif %}
     })();
     </script>
 {% endblock %}

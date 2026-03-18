@@ -83,10 +83,19 @@ class LibrarianController extends AbstractController
     #[Route('/loan', name: 'express_loan')]
     public function expressLoan(Request $request): Response
     {
+        $prefillMember = null;
+        $prefillMemberId = $request->query->getInt('member_id');
+        if ($prefillMemberId > 0) {
+            $prefillMember = $this->memberRepository->find($prefillMemberId);
+        }
+
+        $redirectToMember = $request->query->getBoolean('redirect_to_member', false);
+
         if ($request->isMethod('POST')) {
             $bookId = $request->request->get('book_id');
             $memberId = $request->request->get('member_id');
             $force = $request->request->getBoolean('force', false);
+            $redirectToMember = $redirectToMember || $request->request->getBoolean('redirect_to_member', false);
 
             try {
                 $book = $this->em->getRepository(Book::class)->find($bookId);
@@ -105,11 +114,16 @@ class LibrarianController extends AbstractController
                                 'reservationWarning' => (string) $check['warning'],
                                 'pendingBook' => $book,
                                 'pendingMember' => $member,
+                                'redirectToMember' => $redirectToMember,
                             ]);
                         }
 
                         $this->loanService->registerLoan($book, $member);
                         $this->addFlash('success', sprintf('Prêt enregistré pour "%s" (Membre: %s)', $book->getTitle(), $member->getLastName()));
+                        if ($redirectToMember) {
+                            return $this->redirectToRoute('librarian_member_detail', ['id' => $member->getId()]);
+                        }
+
                         return $this->redirectToRoute('librarian_dashboard');
                     }
                 }
@@ -118,7 +132,10 @@ class LibrarianController extends AbstractController
             }
         }
 
-        return $this->render('librarian/express_loan.html.twig');
+        return $this->render('librarian/express_loan.html.twig', [
+            'pendingMember' => $prefillMember,
+            'redirectToMember' => $redirectToMember,
+        ]);
     }
 
     #[Route('/loan/books/suggest', name: 'loan_book_suggest', methods: ['GET'])]
@@ -168,6 +185,16 @@ class LibrarianController extends AbstractController
     #[Route('/return', name: 'express_return')]
     public function expressReturn(Request $request): Response
     {
+        $prefillBook = null;
+        $prefillLoan = null;
+        $prefillBookId = $request->query->getInt('book_id');
+        if ($prefillBookId > 0) {
+            $prefillBook = $this->em->getRepository(Book::class)->find($prefillBookId);
+            if ($prefillBook) {
+                $prefillLoan = $this->loanRepository->findActiveLoanByBook($prefillBook);
+            }
+        }
+
         if ($request->isMethod('POST')) {
             $bookId = $request->request->get('book_id');
 
@@ -190,7 +217,10 @@ class LibrarianController extends AbstractController
             }
         }
 
-        return $this->render('librarian/express_return.html.twig');
+        return $this->render('librarian/express_return.html.twig', [
+            'pendingBook' => $prefillBook,
+            'pendingLoan' => $prefillLoan,
+        ]);
     }
 
     #[Route('/return/books/suggest', name: 'return_book_suggest', methods: ['GET'])]

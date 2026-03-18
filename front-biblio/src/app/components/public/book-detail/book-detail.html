@@ -16,7 +16,16 @@
     <div class="row g-4">
       <div class="col-md-4">
         <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">
-          <i class="bi bi-book display-1 text-muted"></i>
+          @if (book()!.coverImage && !coverImageBroken()) {
+            <img
+              [src]="book()!.coverImage"
+              [alt]="'Couverture - ' + book()!.title"
+              class="w-100 h-100 rounded"
+              style="object-fit: cover;"
+              (error)="onCoverImageError()">
+          } @else {
+            <i class="bi bi-book display-1 text-muted"></i>
+          }
         </div>
       </div>
       <div class="col-md-8">
@@ -49,12 +58,14 @@
         }
 
         <div class="d-flex flex-wrap align-items-center gap-2">
-          <button
-            class="btn btn-vintage-reserve"
-            (click)="reserve()"
-            [disabled]="!canReserve()">
-            <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
-          </button>
+          @if (authService.isLoggedIn()) {
+            <button
+              class="btn btn-vintage-reserve"
+              (click)="reserve()"
+              [disabled]="!canReserve()">
+              <i class="bi bi-bookmark-plus me-2"></i>Réserver ce livre
+            </button>
+          }
 
           @if (reservable() === false) {
             @if (reservationBlockReason() === 'loaned') {
@@ -64,6 +75,8 @@
             } @else {
               <span class="badge bg-secondary">Non réservable</span>
             }
+          } @else if (reservable() === true) {
+            <span class="badge bg-success">Disponible</span>
           }
 
           @if (!authService.isLoggedIn()) {

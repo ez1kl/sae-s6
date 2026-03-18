@@ -18,6 +18,9 @@
                     </div>
                 {% endif %}
                 <form method="post" action="{{ path('librarian_express_loan') }}">
+                    {% if redirectToMember is defined and redirectToMember %}
+                        <input type="hidden" name="redirect_to_member" value="1">
+                    {% endif %}
                     <div class="mb-4">
                         <label for="book-search-input" class="form-label small fw-semibold" style="color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Lora', serif;">
                             Livre à emprunter

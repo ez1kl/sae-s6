@@ -21,6 +21,7 @@ export class BookDetailComponent implements OnInit {
 
   book = signal<Book | null>(null);
   loading = signal(true);
+  coverImageBroken = signal(false);
   reservable = signal<boolean | null>(null);
   reservationBlockReason = signal<'reserved' | 'loaned' | null>(null);
   reservationMessage = signal('');
@@ -31,6 +32,7 @@ export class BookDetailComponent implements OnInit {
     this.bookService.getBook(id).subscribe({
       next: (book) => {
         this.book.set(book);
+        this.coverImageBroken.set(false);
         this.loading.set(false);
         this.bookService.getReservationStatus(id).subscribe({
           next: (status) => {
@@ -45,6 +47,10 @@ export class BookDetailComponent implements OnInit {
       },
       error: () => this.loading.set(false)
     });
+  }
+
+  onCoverImageError(): void {
+    this.coverImageBroken.set(true);
   }
 
   reserve(): void {
